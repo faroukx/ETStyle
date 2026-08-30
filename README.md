@@ -5,6 +5,7 @@
 
 Tout tourne dans le navigateur : aucune donnée n'est envoyée à un serveur autre que ceux de l'ÉTS déjà utilisés par les pages elles-mêmes.
 
+
 ## Le portail
 
 L'en-tête, le menu de gauche et les blocs natifs sont réhabillés avec un système de thème cohérent, en clair comme en sombre.
@@ -22,7 +23,7 @@ La barre de raccourcis ne garde que les sites officiels de l'ÉTS.
 
 Chaque note est colorée selon son écart à la moyenne du groupe, avec la cote estimée et le rang centile ajoutés directement dans le tableau des cours.
 
-![Tableau de notes coloré](docs/images/signets-notes.png)
+![](docs/images/signets-notes.png)
 
 Le graphique d'évolution retrace la cote cumulative session par session, avec une ligne distincte par programme pour les étudiants qui en ont suivi plusieurs.
 
@@ -30,5 +31,15 @@ La distribution estimée des notes du groupe se lit en histogramme ou en courbe,
 
 Le simulateur de moyenne calcule la cote requise aux évaluations restantes pour atteindre un objectif, session par session.
 
-![Simulateur de moyenne](docs/images/simulateur.png)
+![](docs/images/simulateur.png)
+
+
+## Thèmes
+
+Quatre thèmes, chacun avec une version claire et une version sombre, synchronisés entre le portail et SignETS.
+
+![](docs/images/themesdark.png)
+![](docs/images/themeslight.png)
+
+L'accent de couleur, la police et plusieurs options d'affichage se règlent depuis le panneau des paramètres.
 
