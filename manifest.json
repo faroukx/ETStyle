@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "ETStyle — Thème, Console & Notes",
+  "version": "1.0.0",
+  "description": "ETStyle donne une nouvelle interface et des fonctionnalités additionnelles au portail étudiant et à SignETS de l'ÉTS.",
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://portail.etsmtl.ca/*"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "js": [
+        "sync.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "*://signets-ens.etsmtl.ca/*"
+      ],
+      "js": [
+        "signets-early.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://signets-ens.etsmtl.ca/*"
+      ],
+      "css": [
+        "signets.css"
+      ],
+      "js": [
+        "vendors/chartjs/Chart.min.js",
+        "vendors/chartjs/chartjs-plugin-annotation.min.js",
+        "sync.js",
+        "signets.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

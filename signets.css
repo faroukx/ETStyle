@@ -1,0 +1,595 @@
+/* =============================================================================
+ * ETStyle — Thème & Notes colorées · SIGNETS
+ * Cible : *://signets-ens.etsmtl.ca/*  (ASP.NET WebForms / Infragistics / Kentico)
+ *
+ * Même système de design tokens que le portail (data-etsx-skin / -theme).
+ * On garde la STRUCTURE propre de SignETS : pas de barre latérale ni de
+ * « console de semaine » du portail — uniquement thème + lisibilité + notes.
+ * ========================================================================== */
+
+/* ----------------------------------------------------------------------------
+ * 1. DESIGN TOKENS (identiques au portail — gardés synchronisés)
+ * ------------------------------------------------------------------------- */
+:root { --etsx-on-accent:#fff; --etsx-radius:10px; --etsx-radius-sm:7px;
+  --etsx-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; --etsx-head:var(--etsx-ui); }
+
+html[data-etsx-skin="minimal"] {
+  --etsx-bg:#f1f3f7; --etsx-surface:#fff; --etsx-surface-2:#f4f6f9; --etsx-surface-3:#eef1f6;
+  --etsx-line:#e6e9ef; --etsx-line-2:#d6dbe4; --etsx-ink:#1c1f26; --etsx-ink-2:#5a6473; --etsx-ink-3:#9aa3b2;
+  --etsx-radius:10px; --etsx-radius-sm:7px;
+  --etsx-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; --etsx-head:var(--etsx-ui);
+  --etsx-shadow:0 1px 2px rgba(20,22,27,.05); --etsx-shadow-pop:0 8px 28px rgba(20,22,27,.14); }
+html[data-etsx-skin="minimal"][data-etsx-theme="dark"] {
+  --etsx-bg:#121419; --etsx-surface:#1b1e24; --etsx-surface-2:#23272f; --etsx-surface-3:#2a2f38;
+  --etsx-line:#2c313a; --etsx-line-2:#3a414c; --etsx-ink:#e9ebf1; --etsx-ink-2:#a7b0bd; --etsx-ink-3:#6f7886;
+  --etsx-shadow:0 1px 2px rgba(0,0,0,.45); --etsx-shadow-pop:0 8px 28px rgba(0,0,0,.6); }
+
+html[data-etsx-skin="classic"] {
+  --etsx-bg:#e9eef5; --etsx-surface:#fff; --etsx-surface-2:#eef3f9; --etsx-surface-3:#e2ebf4;
+  --etsx-line:#cdd9e6; --etsx-line-2:#b3c4d7; --etsx-ink:#102444; --etsx-ink-2:#3f5a78; --etsx-ink-3:#7d93ad;
+  --etsx-radius:6px; --etsx-radius-sm:4px; --etsx-ui:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif; --etsx-head:"Segoe UI",Tahoma,sans-serif;
+  --etsx-shadow:0 1px 2px rgba(16,36,63,.10); --etsx-shadow-pop:0 8px 26px rgba(16,36,63,.20); }
+html[data-etsx-skin="classic"][data-etsx-theme="dark"] {
+  --etsx-bg:#0c1622; --etsx-surface:#14202f; --etsx-surface-2:#1b2a3c; --etsx-surface-3:#21344a;
+  --etsx-line:#27394d; --etsx-line-2:#35495f; --etsx-ink:#e7eef6; --etsx-ink-2:#a8c0d6; --etsx-ink-3:#6f879e;
+  --etsx-shadow:0 1px 2px rgba(0,0,0,.5); --etsx-shadow-pop:0 8px 28px rgba(0,0,0,.6); }
+
+html[data-etsx-skin="prestige"] {
+  --etsx-bg:#f3eee8; --etsx-surface:#fffdfb; --etsx-surface-2:#f4ece3; --etsx-surface-3:#ede2d6;
+  --etsx-line:#e1d6c8; --etsx-line-2:#ccbba6; --etsx-ink:#1d1916; --etsx-ink-2:#5a4f47; --etsx-ink-3:#8b7d70;
+  --etsx-radius:4px; --etsx-radius-sm:3px; --etsx-ui:Georgia,"Times New Roman","Iowan Old Style",serif; --etsx-head:Georgia,"Times New Roman",serif;
+  --etsx-shadow:0 1px 2px rgba(30,20,15,.08); --etsx-shadow-pop:0 10px 30px rgba(30,20,15,.22); }
+html[data-etsx-skin="prestige"][data-etsx-theme="dark"] {
+  --etsx-bg:#16110e; --etsx-surface:#211a16; --etsx-surface-2:#2a211c; --etsx-surface-3:#332821;
+  --etsx-line:#3a2f28; --etsx-line-2:#4d3f35; --etsx-ink:#f1eae3; --etsx-ink-2:#c6b6a8; --etsx-ink-3:#927f70;
+  --etsx-shadow:0 1px 2px rgba(0,0,0,.5); --etsx-shadow-pop:0 10px 30px rgba(0,0,0,.65); }
+
+html[data-etsx-skin="gaming"] {
+  --etsx-bg:#eef0fb; --etsx-surface:#ffffff; --etsx-surface-2:#f1effc; --etsx-surface-3:#e7e3f9;
+  --etsx-line:#dcd8f4; --etsx-line-2:#c7c1ec; --etsx-ink:#181425; --etsx-ink-2:#5b5480; --etsx-ink-3:#948dbd;
+  --etsx-radius:8px; --etsx-radius-sm:6px;
+  --etsx-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --etsx-head:Consolas,"SF Mono","Cascadia Code","Segoe UI Mono",ui-monospace,monospace;
+  --etsx-shadow:0 1px 2px rgba(90,60,200,.12); --etsx-shadow-pop:0 10px 32px rgba(90,60,200,.22);
+  --etsx-glow:0 0 0 1px rgba(139,92,246,.35), 0 0 16px rgba(139,92,246,.25); }
+html[data-etsx-skin="gaming"][data-etsx-theme="dark"] {
+  --etsx-bg:#0a0a12; --etsx-surface:#121225; --etsx-surface-2:#191a33; --etsx-surface-3:#212247;
+  --etsx-line:#2c2d55; --etsx-line-2:#3d3f74; --etsx-ink:#eae9ff; --etsx-ink-2:#a9a8d6; --etsx-ink-3:#6f6ea3;
+  --etsx-shadow:0 1px 2px rgba(0,0,0,.5); --etsx-shadow-pop:0 10px 34px rgba(124,58,237,.35);
+  --etsx-glow:0 0 0 1px rgba(139,92,246,.5), 0 0 18px rgba(139,92,246,.35); }
+
+html:not([data-etsx-skin]) { --etsx-bg:#f1f3f7; --etsx-surface:#fff; --etsx-surface-2:#f4f6f9; --etsx-surface-3:#eef1f6; --etsx-line:#e6e9ef; --etsx-line-2:#d6dbe4; --etsx-ink:#1c1f26; --etsx-ink-2:#5a6473; --etsx-ink-3:#9aa3b2; --etsx-shadow:0 1px 2px rgba(20,22,27,.05); --etsx-shadow-pop:0 8px 28px rgba(20,22,27,.14); }
+
+/* ----------------------------------------------------------------------------
+ * 2. FONDATIONS
+ * ------------------------------------------------------------------------- */
+html[data-etsx-skin] body { background: var(--etsx-bg) !important; color: var(--etsx-ink) !important; font-family: var(--etsx-ui) !important; -webkit-font-smoothing: antialiased; }
+html[data-etsx-skin] #etsBellowHeader, html[data-etsx-skin] #etspage { background: transparent !important; background-image: none !important; }
+html[data-etsx-skin] #etsMCContainer, html[data-etsx-skin] #etsMCTwoRight, html[data-etsx-skin] #etsMCContent, html[data-etsx-skin] #etsMCHeader { background: transparent !important; box-shadow: none !important; }
+html[data-etsx-skin] a { color: var(--etsx-accent); }
+html[data-etsx-skin] a:hover { color: var(--etsx-accent-700, var(--etsx-accent)); }
+html[data-etsx-skin] *::-webkit-scrollbar { width: 12px; height: 12px; }
+html[data-etsx-skin] *::-webkit-scrollbar-thumb { background: var(--etsx-line-2); border-radius: 8px; border: 3px solid var(--etsx-bg); }
+
+/* ----------------------------------------------------------------------------
+ * 3. EN-TÊTE SIGNETS
+ * ------------------------------------------------------------------------- */
+html[data-etsx-skin] #etsHeaderContainer { background: var(--etsx-surface) !important; border-bottom: 1px solid var(--etsx-line) !important; box-shadow: var(--etsx-shadow) !important; }
+html[data-etsx-skin] #etsheader, html[data-etsx-skin] #etsheader * { color: var(--etsx-ink) !important; }
+html[data-etsx-skin] #environnement { color: var(--etsx-ink-2) !important; }
+html[data-etsx-skin] #etsHeaderContainer a { color: var(--etsx-ink) !important; text-decoration: none !important; }
+html[data-etsx-skin] #etsHeaderContainer a:hover { color: var(--etsx-accent) !important; }
+
+/* ----------------------------------------------------------------------------
+ * 4. MENU GAUCHE (AspNet-Menu / Kentico)
+ * ------------------------------------------------------------------------- */
+html[data-etsx-skin] .etsMCLeft, html[data-etsx-skin] #ctl00_etsMCLeft { background: transparent !important; }
+html[data-etsx-skin] .AspNet-Menu, html[data-etsx-skin] .CMSListMenuUL { background: var(--etsx-surface) !important; border: 1px solid var(--etsx-line) !important; border-radius: var(--etsx-radius) !important; box-shadow: var(--etsx-shadow) !important; overflow: hidden; padding: 4px !important; }
+html[data-etsx-skin] .AspNet-Menu li { background: transparent !important; border: 0 !important; }
+html[data-etsx-skin] .AspNet-Menu .AspNet-Menu-Link { color: var(--etsx-ink) !important; background: transparent !important; border-radius: var(--etsx-radius-sm) !important; transition: background .12s ease, color .12s ease; padding: 7px 10px !important; }
+html[data-etsx-skin] .AspNet-Menu .AspNet-Menu-Link:hover { background: var(--etsx-surface-2) !important; color: var(--etsx-accent) !important; }
+html[data-etsx-skin] .AspNet-Menu .AspNet-Menu-Selected, html[data-etsx-skin] .AspNet-Menu .CMSListMenuLinkHighlighted { background: var(--etsx-accent) !important; color: var(--etsx-on-accent) !important; }
+html[data-etsx-skin] .AspNet-Menu .active > .AspNet-Menu-Link { background: var(--etsx-accent-soft, var(--etsx-surface-2)) !important; color: var(--etsx-accent) !important; }
+
+/* ----------------------------------------------------------------------------
+ * 5. PANNEAUX / ACCORDÉON jQuery UI
+ * ------------------------------------------------------------------------- */
+html[data-etsx-skin] .ui-accordion, html[data-etsx-skin] .ui-widget-content { background: var(--etsx-surface) !important; color: var(--etsx-ink) !important; border: 1px solid var(--etsx-line) !important; border-radius: var(--etsx-radius) !important; }
+html[data-etsx-skin] .ui-accordion-header { background: var(--etsx-surface-2) !important; color: var(--etsx-ink) !important; border: 1px solid var(--etsx-line) !important; border-radius: var(--etsx-radius-sm) !important; font-family: var(--etsx-head) !important; }
+html[data-etsx-skin] .ui-accordion-header.ui-state-active, html[data-etsx-skin] .ui-accordion-header:hover { background: var(--etsx-surface-3) !important; color: var(--etsx-accent) !important; }
+html[data-etsx-skin] .ui-accordion-content { background: var(--etsx-surface) !important; color: var(--etsx-ink) !important; }
+
+/* ----------------------------------------------------------------------------
+ * 6. GRILLES INFRAGISTICS (Office2010Blue*) — listes de cours et de notes
+ * ------------------------------------------------------------------------- */
+html[data-etsx-skin] [class*="Office2010Blue"] { font-family: var(--etsx-ui) !important; }
+html[data-etsx-skin] .ig_Office2010BlueControl, html[data-etsx-skin] .igg_Office2010BlueControl, html[data-etsx-skin] .ighg_Office2010BlueControl {
+  background: var(--etsx-surface) !important; color: var(--etsx-ink) !important; border: 1px solid var(--etsx-line) !important; border-radius: var(--etsx-radius) !important; box-shadow: var(--etsx-shadow) !important; }
+html[data-etsx-skin] .ig_Office2010BlueHeader, html[data-etsx-skin] .igg_Office2010BlueHeader, html[data-etsx-skin] .igg_Office2010BlueHeaderCaption {
+  background: var(--etsx-surface-2) !important; background-image: none !important; color: var(--etsx-ink) !important; border-color: var(--etsx-line) !important; font-family: var(--etsx-head) !important; font-weight: 700 !important; }
+html[data-etsx-skin] .ig_Office2010BlueItem, html[data-etsx-skin] .igg_Office2010BlueItem {
+  background: var(--etsx-surface) !important; color: var(--etsx-ink) !important; border-color: var(--etsx-line) !important; }
+html[data-etsx-skin] .ig_Office2010BlueAlt, html[data-etsx-skin] .igg_Office2010BlueAlt {
+  background: var(--etsx-surface-2) !important; color: var(--etsx-ink) !important; border-color: var(--etsx-line) !important; }
+/* survol de ligne */
+html[data-etsx-skin] tr:hover > .ig_Office2010BlueItem, html[data-etsx-skin] tr:hover > .ig_Office2010BlueAlt { filter: brightness(0.97); }
+html[data-etsx-theme="dark"] tr:hover > .ig_Office2010BlueItem, html[data-etsx-theme="dark"] tr:hover > .ig_Office2010BlueAlt { filter: brightness(1.12); }
+/* en-tête de la grille de notes : filet d'accent */
+html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader"] { border-bottom: 1px solid var(--etsx-line) !important; }
+
+/* ----------------------------------------------------------------------------
+ * 7. NOTES COLORÉES — 5 paliers (écart à la moyenne) + cote (lettre)
+ *    Les classes sont posées par signets.js ; couleurs tokenisées clair/sombre.
+ * ------------------------------------------------------------------------- */
+html[data-etsx-skin] .etsx-g { font-weight: 700 !important; border-left: 4px solid transparent !important; transition: background .15s ease; }
+/* CLAIR */
+html[data-etsx-skin] .etsx-g-vhigh { background:#c4eccf !important; color:#14532d !important; border-left-color:#16a34a !important; }
+html[data-etsx-skin] .etsx-g-high  { background:#dcf3e1 !important; color:#166534 !important; border-left-color:#4ade80 !important; }
+html[data-etsx-skin] .etsx-g-mid   { background:#fbf0c4 !important; color:#854d0e !important; border-left-color:#eab308 !important; }
+html[data-etsx-skin] .etsx-g-low   { background:#ffe2c4 !important; color:#9a3412 !important; border-left-color:#f97316 !important; }
+html[data-etsx-skin] .etsx-g-vlow  { background:#ffd2d2 !important; color:#991b1b !important; border-left-color:#ef4444 !important; }
+html[data-etsx-skin] .etsx-g-na    { background:var(--etsx-surface-2) !important; color:var(--etsx-ink-2) !important; border-left-color:var(--etsx-line-2) !important; }
+/* SOMBRE */
+html[data-etsx-theme="dark"] .etsx-g-vhigh { background:#10401f !important; color:#bbf7ce !important; border-left-color:#22c55e !important; }
+html[data-etsx-theme="dark"] .etsx-g-high  { background:#14301d !important; color:#9ae6b4 !important; border-left-color:#34d399 !important; }
+html[data-etsx-theme="dark"] .etsx-g-mid   { background:#3a300f !important; color:#fde68a !important; border-left-color:#eab308 !important; }
+html[data-etsx-theme="dark"] .etsx-g-low   { background:#3a2410 !important; color:#fdba74 !important; border-left-color:#f97316 !important; }
+html[data-etsx-theme="dark"] .etsx-g-vlow  { background:#3a1515 !important; color:#fca5a5 !important; border-left-color:#ef4444 !important; }
+
+/* petite puce d'écart à la moyenne + cote lettre */
+/* écart à la moyenne : sous la note, sur sa propre ligne (ne déborde plus) */
+.etsx-delta { display:block; margin:3px auto 0; width:fit-content; padding:0 6px; border-radius:999px; font:700 10px/1.5 var(--etsx-ui); white-space:nowrap; }
+.etsx-delta.up   { background:rgba(22,163,74,.16);  color:#15803d; }
+.etsx-delta.down { background:rgba(239,68,68,.16);  color:#b91c1c; }
+.etsx-delta.flat { background:var(--etsx-surface-3); color:var(--etsx-ink-2); }
+html[data-etsx-theme="dark"] .etsx-delta.up   { background:rgba(34,197,94,.2);  color:#86efac; }
+html[data-etsx-theme="dark"] .etsx-delta.down { background:rgba(239,68,68,.22);  color:#fca5a5; }
+.etsx-cote { display:inline-block; min-width:30px; text-align:center; padding:1px 8px; border-radius:var(--etsx-radius-sm); font:800 13px/1.5 var(--etsx-head); color:#fff; }
+
+/* ----------------------------------------------------------------------------
+/* ----------------------------------------------------------------------------
+ * 8. BARRE SUPÉRIEURE UNIFIÉE (#etsx-sig-hdr) + nom natif masqué
+ * ------------------------------------------------------------------------- */
+html[data-etsx-skin] #etsMCTop { display: none !important; }            /* ancienne barre du nom */
+html[data-etsx-skin] #etsheader { display: flex !important; align-items: center; flex-wrap: wrap; gap: 10px; min-height: 56px; padding: 9px 16px !important; }
+html[data-etsx-skin] #etsHeaderContainer { padding: 0 !important; }
+/* #6 — descendre le menu de gauche pour l'aligner avec le haut du tableau de droite
+   (le logo retiré laissait le menu trop haut) */
+html[data-etsx-skin] #leftMenu { margin-top: 34px !important; }
+html[data-etsx-skin] #etsheader > div[style*="position:relative"], html[data-etsx-skin] #etsheader #ctl00_Image1 { flex: 0 0 auto; }
+
+#etsx-sig-hdr { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: 1 1 420px; flex-wrap: nowrap; }
+#etsx-sig-hdr .etsx-sig-left, #etsx-sig-hdr .etsx-sig-right { display: inline-flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+#etsx-sig-hdr .etsx-sig-center { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; min-width: 0; cursor: pointer; text-decoration: none !important; }
+#etsx-sig-hdr a.etsx-sig-center:hover .etsx-sig-sub { color: var(--etsx-accent) !important; }
+#etsx-sig-hdr .etsx-sig-brand { font: 800 21px/1 var(--etsx-head); letter-spacing: .14em; color: var(--etsx-accent) !important; text-shadow: 0 1px 0 rgba(0,0,0,.04); }
+#etsx-sig-hdr .etsx-sig-sub { margin-top: 3px; font: 600 10px/1 var(--etsx-ui); letter-spacing: .22em; text-transform: uppercase; color: var(--etsx-ink-3) !important; }
+/* logo natif du menu de gauche retiré (remplacé par le titre de la barre) */
+html[data-etsx-skin] #ctl00_LoginViewLeftColumn_imgLogoMenu,
+html[data-etsx-skin] .etsPerLogoMenu { display: none !important; }
+@media (max-width: 900px) { #etsx-sig-hdr .etsx-sig-center { display: none; } }
+#etsx-sig-hdr .etsx-sig-seg { display: inline-flex; gap: 3px; padding: 3px; background: var(--etsx-surface-2); border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius-sm); }
+#etsx-sig-hdr .etsx-sig-seg button { cursor: pointer; border: 1px solid transparent; background: transparent; color: var(--etsx-ink) !important; font: 700 11.5px/1 var(--etsx-ui); border-radius: 5px; padding: 6px 10px; transition: background .12s, color .12s; }
+#etsx-sig-hdr .etsx-sig-seg button:hover { color: var(--etsx-accent) !important; }
+#etsx-sig-hdr .etsx-sig-seg button.is-active { background: var(--etsx-accent); color: var(--etsx-on-accent) !important; }
+#etsx-sig-hdr .etsx-sig-ico { display: inline-flex; width: 32px; height: 30px; align-items: center; justify-content: center; padding: 0; cursor: pointer; border: 1px solid var(--etsx-line); background: var(--etsx-surface-2); color: var(--etsx-ink) !important; border-radius: var(--etsx-radius-sm); }
+#etsx-sig-hdr .etsx-sig-ico:hover { color: var(--etsx-accent) !important; border-color: var(--etsx-accent); }
+#etsx-sig-hdr svg { width: 15px; height: 15px; }
+#etsx-sig-hdr .etsx-swatches { display: inline-flex; align-items: center; gap: 6px; }
+#etsx-sig-hdr .etsx-swatch { width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+#etsx-sig-hdr .etsx-swatch.is-active { border-color: var(--etsx-ink); }
+#etsx-sig-hdr .etsx-swatch-custom { position: relative; overflow: hidden; }
+#etsx-sig-hdr .etsx-swatch-custom input { position: absolute; inset: -4px; opacity: 0; cursor: pointer; }
+#etsx-sig-hdr .etsx-sig-name { font: 700 13px/1.1 var(--etsx-ui); color: var(--etsx-ink) !important; padding: 0 4px; }
+#etsx-sig-hdr .etsx-sig-btn { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius-sm); background: var(--etsx-surface-2); color: var(--etsx-ink) !important; font: 600 12.5px/1 var(--etsx-ui); cursor: pointer; transition: border-color .12s, color .12s; }
+#etsx-sig-hdr .etsx-sig-btn:hover { border-color: var(--etsx-accent); color: var(--etsx-accent) !important; }
+#etsx-sig-hdr .etsx-sig-ico2 { padding: 0; width: 32px; justify-content: center; }
+
+/* ----------------------------------------------------------------------------
+ * 9. PANNEAU PARAMÈTRES (mêmes classes que le portail)
+ * ------------------------------------------------------------------------- */
+#etsx-settings { position: fixed; top: 64px; right: 16px; z-index: 100000; width: 320px; max-height: 82vh; overflow-y: auto; padding: 14px; background: var(--etsx-surface) !important; color: var(--etsx-ink) !important; border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius); box-shadow: var(--etsx-shadow-pop); font-family: var(--etsx-ui); }
+#etsx-settings .etsx-set-head { font: 800 14px/1.2 var(--etsx-head); color: var(--etsx-ink); margin-bottom: 8px; }
+#etsx-settings .etsx-set-title { font: 700 11px/1 var(--etsx-ui); letter-spacing: .04em; text-transform: uppercase; color: var(--etsx-ink-3); margin: 14px 0 7px; }
+#etsx-settings .etsx-skins { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+#etsx-settings .etsx-skin { cursor: pointer; border: 1.5px solid var(--etsx-line); border-radius: var(--etsx-radius-sm); padding: 8px 4px; text-align: center; transition: border-color .12s; background: var(--etsx-surface-2); }
+#etsx-settings .etsx-skin:hover { border-color: var(--etsx-line-2); }
+#etsx-settings .etsx-skin.is-active { border-color: var(--etsx-accent); box-shadow: 0 0 0 1px var(--etsx-accent); }
+html[data-etsx-skin="gaming"] #etsx-settings .etsx-skin.is-active { box-shadow: 0 0 0 1px var(--etsx-accent), 0 0 12px rgba(139, 92, 246, 0.4); }
+#etsx-settings .etsx-skin-sw { display: flex; justify-content: center; gap: 3px; margin-bottom: 6px; }
+#etsx-settings .etsx-skin-sw span { width: 14px; height: 14px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+#etsx-settings .etsx-skin-name { font: 700 11.5px/1 var(--etsx-ui); color: var(--etsx-ink); }
+#etsx-settings .etsx-check { display: flex; align-items: center; gap: 9px; padding: 6px 0; font: 500 13px/1.3 var(--etsx-ui); color: var(--etsx-ink); cursor: pointer; }
+#etsx-settings .etsx-check input { width: 16px; height: 16px; accent-color: var(--etsx-accent); }
+#etsx-settings .etsx-row-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+#etsx-settings .etsx-fontbtn { cursor: pointer; border: 1px solid var(--etsx-line); background: var(--etsx-surface-2); color: var(--etsx-ink); border-radius: var(--etsx-radius-sm); padding: 6px 10px; font: 600 12px/1 var(--etsx-ui); transition: border-color .12s, color .12s; }
+#etsx-settings .etsx-fontbtn:hover { border-color: var(--etsx-accent); color: var(--etsx-accent); }
+#etsx-settings .etsx-fontbtn.is-active { background: var(--etsx-accent); color: var(--etsx-on-accent); border-color: var(--etsx-accent); }
+/* champ URL + boutons du Fond d'écran (panneau Paramètres) */
+#etsx-settings .etsx-input { width: 100%; box-sizing: border-box; height: 34px; padding: 0 10px; border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius-sm); background: var(--etsx-surface-2); color: var(--etsx-ink); font: 500 12.5px var(--etsx-ui); margin-bottom: 6px; }
+#etsx-settings .etsx-bg-file input { display: none; }
+/* FOND D'ÉCRAN personnalisé : image appliquée sur le body, conteneurs transparents */
+html.etsx-has-bg body { background-image: var(--etsx-bg-img) !important; background-size: cover !important; background-position: center !important; background-attachment: fixed !important; }
+#etsx-settings .etsx-set-note { font: 500 11px/1.45 var(--etsx-ui); color: var(--etsx-ink-3); margin-top: 12px; }
+#etsx-settings .etsx-about { font: 500 12px/1.4 var(--etsx-ui); }
+#etsx-settings .etsx-about-repo { display: inline-flex; align-items: center; gap: 7px; color: var(--etsx-accent); text-decoration: none; font-weight: 600; }
+#etsx-settings .etsx-about-repo:hover { text-decoration: underline; }
+#etsx-settings .etsx-about-author { display: flex; align-items: center; gap: 9px; margin-top: 8px; color: var(--etsx-ink-2); }
+#etsx-settings .etsx-about-icon-link { display: inline-flex; }
+#etsx-settings .etsx-about-icon-link:hover { opacity: .7; }
+#etsx-settings .etsx-about-icon { width: 15px; height: 15px; flex: 0 0 auto; color: #16181d; }
+html[data-etsx-theme="dark"] #etsx-settings .etsx-about-icon { color: #ffffff; }
+#etsx-settings .etsx-about .etsx-set-note { margin-top: 8px; }
+
+/* ----------------------------------------------------------------------------
+ * 10. MODE LARGE — on élargit la page SANS casser les floats (239px + reste)
+ * ------------------------------------------------------------------------- */
+html.etsx-sig-wide #etspage { width: 95vw !important; max-width: 1500px !important; }
+html.etsx-sig-wide #etsMCContainer { width: 100% !important; }
+html.etsx-sig-wide #etsMCTwoRight { width: calc(100% - 239px) !important; }   /* reste à droite */
+html.etsx-sig-wide .etsMCLeft { width: 239px !important; }                     /* colonne gauche inchangée */
+html.etsx-sig-wide #etsMCContent { width: auto !important; }
+/* NB : on NE force PAS width:100% sur les grilles Infragistics — l'en-tête et le
+   corps sont des tables séparées et se désalignent sinon (colonnes décalées). */
+
+/* Page d'un cours — le panneau à onglets (Mes notes, Coéquipiers, Dates
+   importantes, Enseignants, Séances, Évaluation du cours) est un contrôle
+   Infragistics WebTab dont le script pose une hauteur FIXE en pixels à même
+   l'élément (style="height:570px") — pas dans une feuille de style, donc
+   invisible en lisant le CSS natif. Un
+   cours avec beaucoup d'éléments d'évaluation pondérés dépasse cette hauteur
+   et se retrouve dans un ascenseur interne, alors qu'il y a de la place en
+   dessous sur la page. Toujours ce même contrôle, quel que soit l'onglet
+   affiché — la hauteur fixe et l'ascenseur disparaissent partout où il sert. */
+.igtab_Office2010BlueTHContentHolder, .igtab_Office2010BlueTHContent {
+  height: auto !important; max-height: none !important; overflow: visible !important;
+}
+#ctl00_ContentPlaceHolderMain_lesOnglets { height: auto !important; overflow: visible !important; }
+
+/* ----------------------------------------------------------------------------
+ * 11. MENU MINIMAL (icône au-dessus, titre dessous) — dans la colonne 239px
+ *     Pas de changement de largeur des colonnes : on ne touche pas aux floats.
+ * ------------------------------------------------------------------------- */
+html.etsx-sig-minnav .etsPerLogoMenu { display: block; max-width: 100%; height: auto; border-radius: var(--etsx-radius); margin: 0 0 10px; }
+html.etsx-sig-minnav #ctl00_LoginViewLeftColumn_MenuVertical { background: transparent !important; border: 0 !important; }
+html.etsx-sig-minnav #menuElem { list-style: none !important; margin: 0 !important; padding: 0 !important; display: flex !important; flex-direction: column; gap: 7px; background: transparent !important; border: 0 !important; width: auto !important; }
+html.etsx-sig-minnav #menuElem > li { position: relative; display: block !important; float: none !important; width: auto !important; margin: 0 !important; padding: 0 !important; background: transparent !important; border: 0 !important; }
+html.etsx-sig-minnav #menuElem > li > a {
+  display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  min-height: 0 !important; padding: 10px 8px !important;
+  background: var(--etsx-surface) !important; color: var(--etsx-ink) !important;
+  border: 1px solid var(--etsx-line) !important; border-radius: var(--etsx-radius) !important; box-shadow: var(--etsx-shadow);
+  text-align: center; text-decoration: none !important;
+  font: 600 12.5px/1.25 var(--etsx-ui) !important; white-space: normal !important;
+  transition: border-color .12s, color .12s, transform .08s;
+}
+html.etsx-sig-minnav #menuElem > li > a:hover { border-color: var(--etsx-accent) !important; color: var(--etsx-accent) !important; transform: translateY(-1px); }
+html.etsx-sig-minnav #menuElem > li.AspNet-Menu-Selected > a, html.etsx-sig-minnav #menuElem > li.active > a { border-color: var(--etsx-accent) !important; box-shadow: 0 0 0 1px var(--etsx-accent); color: var(--etsx-accent) !important; }
+/* icône proportionnée (au-dessus du libellé natif, qui reste l'unique texte) */
+html.etsx-sig-minnav #menuElem > li > a .etsx-navi { display: inline-flex; width: 22px; height: 22px; align-items: center; justify-content: center; color: var(--etsx-accent); }
+html.etsx-sig-minnav #menuElem > li > a .etsx-navi svg { width: 20px; height: 20px; }
+/* sous-menus en flyout à droite, au survol */
+html.etsx-sig-minnav #menuElem > li > ul { position: absolute; top: 0; left: calc(100% + 6px); z-index: 9000; min-width: 210px; padding: 6px !important; margin: 0 !important; background: var(--etsx-surface) !important; border: 1px solid var(--etsx-line) !important; border-radius: var(--etsx-radius) !important; box-shadow: var(--etsx-shadow-pop) !important; display: none; }
+html.etsx-sig-minnav #menuElem > li:hover > ul { display: block !important; }
+html.etsx-sig-minnav #menuElem > li > ul li { float: none !important; width: auto !important; }
+html.etsx-sig-minnav #menuElem > li > ul a { display: block !important; padding: 7px 10px !important; border-radius: var(--etsx-radius-sm) !important; color: var(--etsx-ink) !important; font-size: 12.5px !important; text-decoration: none !important; }
+html.etsx-sig-minnav #menuElem > li > ul a:hover { background: var(--etsx-surface-2) !important; color: var(--etsx-accent) !important; }
+
+/* ----------------------------------------------------------------------------
+ * 12. NOTES — légende
+ * ------------------------------------------------------------------------- */
+#etsx-legend { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0 4px; padding: 8px 12px; background: var(--etsx-surface) !important; border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius); font: 600 11.5px/1 var(--etsx-ui); color: var(--etsx-ink-2) !important; box-shadow: var(--etsx-shadow); }
+#etsx-legend .k { display: inline-flex; align-items: center; gap: 5px; }
+#etsx-legend .sw { width: 13px; height: 13px; border-radius: 3px; display: inline-block; }
+html.etsx-sig-nocolor #etsx-legend { display: none; }
+
+/* ----------------------------------------------------------------------------
+ * 13. TABLEAU DE PROGRAMME — coloration de la LIGNE selon le rang centile
+ *     (classes posées par signets.js : etsx-grow + niveau). Texte lisible.
+ * ------------------------------------------------------------------------- */
+html[data-etsx-skin] td.etsx-grow { border-color: rgba(0,0,0,.06) !important; }
+html[data-etsx-skin] td.etsx-grow-vhigh { background: #1ea14d !important; color: #ffffff !important; }
+html[data-etsx-skin] td.etsx-grow-high  { background: #a8e0b6 !important; color: #14532d !important; }
+html[data-etsx-skin] td.etsx-grow-mid   { background: #fde68a !important; color: #7c5e10 !important; }
+html[data-etsx-skin] td.etsx-grow-low   { background: #fdba74 !important; color: #7c3a10 !important; }
+html[data-etsx-skin] td.etsx-grow-vlow  { background: #f3a3a3 !important; color: #7c1414 !important; }
+html[data-etsx-skin] td.etsx-grow a { color: inherit !important; text-decoration: underline; }
+/* lisibilité en sombre : on garde les mêmes fonds (assez contrastés) */
+html.etsx-sig-nocolor td.etsx-grow { background: revert !important; color: revert !important; }
+
+/* petit pourcentage affiché à côté de la note (page d'un cours) */
+.etsx-pct { font: 700 11px/1 var(--etsx-ui); opacity: .85; margin-left: 4px; }
+
+/* ----------------------------------------------------------------------------
+ * 14. GRAPHIQUES (colonne gauche) + rang centile dans la cote
+ * ------------------------------------------------------------------------- */
+#etsx-charts { margin-top: 12px; display: flex; flex-direction: column; gap: 12px; }
+/* les graphiques restent affichés même si le tint des lignes est désactivé */
+.etsx-chart-card { background: var(--etsx-surface) !important; border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius); box-shadow: var(--etsx-shadow); padding: 10px 12px 12px; }
+.etsx-chart-title { font: 700 12px/1.25 var(--etsx-head); color: var(--etsx-ink) !important; margin: 0 0 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.etsx-chart-title .etsx-hint { font: 600 9.5px/1 var(--etsx-ui); letter-spacing: .02em; color: var(--etsx-ink-3) !important; border: 1px solid var(--etsx-line); border-radius: 999px; padding: 3px 6px; cursor: help; white-space: nowrap; }
+.etsx-chart-card svg { display: block; }
+.etsx-chart-card svg text { font-family: var(--etsx-ui); }
+.etsx-chart-empty { font: 600 11px/1.4 var(--etsx-ui); color: var(--etsx-ink-3) !important; text-align: center; padding: 22px 6px; }
+.etsx-chart-note { margin-top: 6px; font: 500 9.5px/1.4 var(--etsx-ui); color: var(--etsx-ink-3) !important; }
+.etsx-chart-legend { display: flex; gap: 14px; justify-content: center; margin-top: 6px; font: 600 10px/1 var(--etsx-ui); color: var(--etsx-ink-2) !important; }
+.etsx-chart-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.etsx-chart-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+#etsx-detail-extras { display: flex; flex-direction: column; gap: 12px; }
+
+/* rang centile glissé dans la cellule de cote (liste des cours) */
+.etsx-rc { font: 600 10px/1 var(--etsx-ui); color: var(--etsx-ink-3) !important; margin-left: 4px; white-space: nowrap; }
+
+/* ----------------------------------------------------------------------------
+ * 15. TÉMOIN « Notes ✓ » dans la barre (confirme que l'intégration tourne)
+ * ------------------------------------------------------------------------- */
+#etsx-sig-hdr .etsx-sig-badge { display: none; align-items: center; gap: 4px; margin-top: 4px; padding: 2px 8px; border-radius: 999px; font: 700 9.5px/1.4 var(--etsx-ui); letter-spacing: .04em; pointer-events: none; }
+#etsx-sig-hdr .etsx-sig-badge[data-state="on"] { background: rgba(22,163,74,.16); color: #15803d; }
+#etsx-sig-hdr .etsx-sig-badge[data-state="load"] { background: var(--etsx-accent-soft); color: var(--etsx-accent); }
+html[data-etsx-theme="dark"] #etsx-sig-hdr .etsx-sig-badge[data-state="on"] { background: rgba(34,197,94,.2); color: #86efac; }
+
+/* ----------------------------------------------------------------------------
+ * 16. INFOBULLES MAISON (data-etsx-tip) — tokenisées clair/sombre
+ * ------------------------------------------------------------------------- */
+#etsx-tip { position: fixed; z-index: 2147483600; display: none; max-width: 240px; pointer-events: none;
+  background: var(--etsx-ink) !important; color: var(--etsx-surface) !important;
+  font: 600 11.5px/1.4 var(--etsx-ui); padding: 7px 10px; border-radius: var(--etsx-radius-sm);
+  box-shadow: var(--etsx-shadow-pop); border: 1px solid var(--etsx-line-2); }
+html[data-etsx-theme="dark"] #etsx-tip { background: var(--etsx-surface-3) !important; color: var(--etsx-ink) !important; border-color: var(--etsx-line-2); }
+[data-etsx-tip] { cursor: help; }
+
+/* ----------------------------------------------------------------------------
+ * 17. ESTIMATEUR DE COTE (carte dans la colonne gauche)
+ * ------------------------------------------------------------------------- */
+.etsx-estimator .etsx-est-row { display: flex; gap: 8px; }
+.etsx-estimator label { flex: 1 1 0; display: flex; flex-direction: column; gap: 4px; font: 600 10px/1 var(--etsx-ui); color: var(--etsx-ink-2) !important; }
+.etsx-estimator input { width: 100%; box-sizing: border-box; padding: 6px 8px; border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius-sm); background: var(--etsx-surface-2) !important; color: var(--etsx-ink) !important; font: 600 12px/1.2 var(--etsx-ui); }
+.etsx-estimator input:focus { outline: none; border-color: var(--etsx-accent); box-shadow: 0 0 0 2px var(--etsx-accent-soft); }
+.etsx-est-go { margin-top: 9px; width: 100%; cursor: pointer; padding: 7px 10px; border: 0; border-radius: var(--etsx-radius-sm); background: var(--etsx-accent) !important; color: var(--etsx-on-accent) !important; font: 700 12px/1 var(--etsx-ui); transition: filter .12s; }
+.etsx-est-go:hover { filter: brightness(1.06); }
+.etsx-est-out { margin-top: 9px; min-height: 1px; font: 600 12px/1.4 var(--etsx-ui); color: var(--etsx-ink-2) !important; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.etsx-est-out.is-on { color: var(--etsx-ink) !important; }
+.etsx-est-badge { display: inline-block; padding: 2px 9px; border-radius: var(--etsx-radius-sm); color: #fff !important; font: 800 13px/1.5 var(--etsx-head); }
+.etsx-est-pts { font: 600 11px/1 var(--etsx-ui); color: var(--etsx-ink-3) !important; cursor: help; }
+
+/* ----------------------------------------------------------------------------
+ * 18. GLISSER-DÉPOSER DES ÉVALUATIONS (page d'un cours)
+ * ------------------------------------------------------------------------- */
+html
+/* =============================================================================
+ * v20 — MODE SOMBRE : forcer les grilles/tableaux SignETS en sombre (lisible).
+ * Infragistics peint des fonds blancs via des classes/inline variés : on couvre
+ * largement la zone de contenu. Les lignes COLORÉES (etsx-grow, posées en inline
+ * !important par signets.js) restent prioritaires et gardent leur couleur.
+ * ========================================================================== */
+html[data-etsx-theme="dark"] #etsMCContainer,
+html[data-etsx-theme="dark"] #etsMCTwoRight,
+html[data-etsx-theme="dark"] #etsMCContent,
+html[data-etsx-theme="dark"] #etsMCTwoRight table,
+html[data-etsx-theme="dark"] #etsMCContent table,
+html[data-etsx-theme="dark"] #etsMCTwoRight tr,
+html[data-etsx-theme="dark"] #etsMCTwoRight td,
+html[data-etsx-theme="dark"] #etsMCTwoRight th,
+html[data-etsx-theme="dark"] #etsMCContent td,
+html[data-etsx-theme="dark"] #etsMCContent th,
+html[data-etsx-theme="dark"] [class*="Office2010Blue"],
+html[data-etsx-theme="dark"] [class*="ig_"][class*="Item"],
+html[data-etsx-theme="dark"] [class*="ig_"][class*="Cell"] {
+  background-color: var(--etsx-surface) !important;
+  background-image: none !important;
+  color: var(--etsx-ink) !important;
+  border-color: var(--etsx-line) !important;
+}
+/* en-têtes et lignes alternées un peu plus claires */
+html[data-etsx-theme="dark"] [class*="Office2010BlueHeader"],
+html[data-etsx-theme="dark"] [class*="Office2010BlueAlt"],
+html[data-etsx-theme="dark"] #etsMCTwoRight th {
+  background-color: var(--etsx-surface-2) !important; color: var(--etsx-ink) !important;
+}
+/* liens dans les tableaux sombres */
+html[data-etsx-theme="dark"] #etsMCTwoRight a,
+html[data-etsx-theme="dark"] #etsMCContent a { color: var(--etsx-accent) !important; }
+/* accordéon / panneaux en sombre */
+html[data-etsx-theme="dark"] .ui-widget-content,
+html[data-etsx-theme="dark"] .ui-accordion-content { background-color: var(--etsx-surface) !important; color: var(--etsx-ink) !important; }
+
+/* =============================================================================
+ * v21 — Barre du haut : tout contenir DANS la barre, centré verticalement.
+ * (Le titre SIGNETS débordait au-dessus du bandeau blanc.)
+ * ========================================================================== */
+html[data-etsx-skin] #etsHeaderContainer { display: flex !important; align-items: center !important; min-height: 64px !important; height: auto !important; padding: 0 !important; overflow: visible !important; }
+html[data-etsx-skin] #etsheader { width: 100% !important; display: flex !important; align-items: center !important; min-height: 64px !important; height: auto !important; padding: 8px 18px !important; }
+html[data-etsx-skin] #etsheader > div[style*="position:relative"] { height: auto !important; display: flex; align-items: center; }
+#etsx-sig-hdr { align-items: center !important; }
+#etsx-sig-hdr .etsx-sig-center { justify-content: center !important; }
+#etsx-sig-hdr .etsx-sig-brand { font-size: 18px !important; line-height: 1 !important; }
+#etsx-sig-hdr .etsx-sig-sub { line-height: 1 !important; }
+
+/* contrôle « par session » du graphique de barres */
+#etsx-charts .etsx-chart-ctrl { display: flex; justify-content: center; margin: 2px 0 8px; }
+#etsx-charts .etsx-chart-ctrl label { font: 600 11.5px/1 var(--etsx-ui); color: var(--etsx-ink-2); display: inline-flex; align-items: center; gap: 6px; }
+#etsx-charts .etsx-chart-ctrl select { font: 600 12px/1 var(--etsx-ui); color: var(--etsx-ink); background: var(--etsx-surface-2); border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius-sm); padding: 4px 8px; cursor: pointer; }
+
+/* simulateur de moyenne (GPA) */
+.etsx-gpa-result { text-align: center; font: 800 26px/1 var(--etsx-head); color: var(--etsx-accent); margin: 4px 0 10px; }
+.etsx-gpa-result span { font: 600 12px/1 var(--etsx-ui); color: var(--etsx-ink-3); }
+.etsx-gpa-table { width: 100%; border-collapse: collapse; font: 500 11.5px/1.3 var(--etsx-ui); }
+.etsx-gpa-table th { text-align: left; font: 700 10.5px/1 var(--etsx-ui); text-transform: uppercase; letter-spacing: .03em; color: var(--etsx-ink-3); padding: 3px 4px; border-bottom: 1px solid var(--etsx-line); }
+.etsx-gpa-table td { padding: 3px 4px; border-bottom: 1px solid var(--etsx-line); color: var(--etsx-ink); }
+.etsx-gpa-table .etsx-gpa-cr { text-align: center; color: var(--etsx-ink-2); }
+.etsx-gpa-sel { width: 100%; font: 600 11.5px/1 var(--etsx-ui); color: var(--etsx-ink); background: var(--etsx-surface-2); border: 1px solid var(--etsx-line); border-radius: 5px; padding: 3px 5px; cursor: pointer; }
+
+/* =============================================================================
+ * v23 — « ETS » rouge dans SIGNETS, lisibilité dark, R-centile, espacement
+ * ========================================================================== */
+/* la partie ETS du titre SIGNETS en rouge (clair ET sombre) */
+#etsx-sig-hdr .etsx-sig-brand .etsx-red { color: #e2001a !important; }
+html[data-etsx-theme="dark"] #etsx-sig-hdr .etsx-sig-brand .etsx-red { color: #ff4d4d !important; }
+/* liens (cours-groupe) lisibles sur les lignes colorées (clair + sombre) */
+html[data-etsx-skin] td.etsx-grow a { color: inherit !important; font-weight: 700 !important; text-decoration: underline; }
+/* colonne R-centile insérée : centrée */
+html[data-etsx-skin] .etsx-rc-cell { text-align: center !important; }
+/* un peu plus d'air entre la colonne de gauche et le tableau de session */
+/* gap léger entre la colonne de gauche et le contenu, SANS faire déborder les
+   floats (on rétrécit la colonne de gauche au lieu de pousser celle de droite) */
+html[data-etsx-skin] .etsMCLeft, html[data-etsx-skin] #ctl00_etsMCLeft { width: 225px !important; padding-right: 14px !important; box-sizing: border-box !important; }
+/* =============================================================================
+ * v26 — Badge rang centile, résumé du cours, simulateur de moyenne (refonte)
+ * ========================================================================== */
+/* rang centile : petit badge dans la cellule Cote */
+html[data-etsx-skin] .etsx-rc { display: inline-block; margin-left: 6px; padding: 0 6px; border-radius: 999px; font: 700 10px/1.5 var(--etsx-ui); background: var(--etsx-accent-soft, var(--etsx-surface-3)); color: var(--etsx-accent) !important; vertical-align: middle; }
+/* résumé du cours : % et cote estimée */
+.etsx-pct-big { font-weight: 800; margin-left: 6px; }
+.etsx-est-inline { font-weight: 800; }
+.etsx-est-inline small { font-weight: 600; opacity: .75; font-size: 10px; }
+
+/* simulateur de moyenne — refonte minimale */
+.etsx-gpa-card .etsx-chart-title { display: flex; align-items: center; justify-content: space-between; }
+.etsx-gpa-resetall, .etsx-gpa-reset { cursor: pointer; border: 1px solid var(--etsx-line); background: var(--etsx-surface-2); color: var(--etsx-ink-2); border-radius: 999px; font: 700 10px/1 var(--etsx-ui); padding: 4px 8px; transition: color .12s, border-color .12s; }
+.etsx-gpa-resetall:hover, .etsx-gpa-reset:hover { color: var(--etsx-accent); border-color: var(--etsx-accent); }
+.etsx-gpa-result { text-align: center; font: 800 26px/1 var(--etsx-head); color: var(--etsx-accent); margin: 6px 0 12px; position: relative; }
+.etsx-gpa-result .etsx-gpa-glabel { display: block; font: 700 9.5px/1 var(--etsx-ui); letter-spacing: .18em; text-transform: uppercase; color: var(--etsx-ink-3); margin-bottom: 4px; }
+.etsx-gpa-result span { font: 600 12px/1 var(--etsx-ui); color: var(--etsx-ink-3); }
+.etsx-gpa-group { border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius-sm); margin-bottom: 8px; overflow: hidden; background: var(--etsx-surface); }
+.etsx-gpa-ghead { display: flex; align-items: center; gap: 8px; padding: 7px 10px; cursor: pointer; background: var(--etsx-surface-2); user-select: none; }
+.etsx-gpa-ghead:hover { background: var(--etsx-surface-3); }
+.etsx-gpa-fold { width: 12px; color: var(--etsx-ink-3); font-size: 11px; }
+.etsx-gpa-gname { font: 700 12px/1 var(--etsx-ui); color: var(--etsx-ink); }
+.etsx-gpa-ggpa { margin-left: auto; font: 800 13px/1 var(--etsx-head); color: var(--etsx-accent); }
+.etsx-gpa-group .etsx-gpa-reset { margin-left: 4px; padding: 3px 6px; }
+.etsx-gpa-group .etsx-gpa-table { margin: 0; }
+/* =============================================================================
+ * v27 — Tailles de police, gras cote/cours-groupe, détail cours, R-centile, cote visée
+ * ========================================================================== */
+/* S1 — taille du texte du tableau de programme (réglable : --etsx-prog-font) */
+html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_1"],
+html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_2"],
+html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_3"],
+html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_4"],
+html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_5"] {
+  font-size: calc(12.5px * var(--etsx-prog-font, 1)) !important;
+}
+/* S3 — cote (col 5) et cours-groupe (col 2) en GROS et gras (non réglables) */
+html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_2"] { font-weight: 600 !important; }
+html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_5"] { font-weight: 700 !important; font-size: calc(13px * var(--etsx-prog-font, 1)) !important; }
+html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_5"] .etsx-rc { font-weight: 700 !important; }
+
+/* S6 — masquer le badge R-centile si désactivé */
+html.etsx-sig-norc .etsx-rc { display: none !important; }
+
+/* S2 — détail d'un cours (grilleNotes) : gras + colonne Note lisible */
+html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader_0"] { font-weight: 700 !important; }
+html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader_3"],
+html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader_6"],
+html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader_9"] { font-weight: 600 !important; }
+/* cellule Note : on laisse la note + l'écart s'empiler verticalement (pas de chevauchement) */
+html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader_3"] { white-space: normal !important; overflow: visible !important; vertical-align: middle !important; text-align: center; }
+
+/* S7 — mode « Cote visée » */
+.etsx-gpa-target { margin: 4px 0 10px; padding: 8px 10px; background: var(--etsx-surface-2); border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius-sm); }
+.etsx-gpa-target label { display: flex; align-items: center; gap: 8px; font: 700 11.5px/1 var(--etsx-ui); color: var(--etsx-ink-2); }
+.etsx-gpa-target input { width: 72px; font: 700 13px/1 var(--etsx-ui); color: var(--etsx-ink); background: var(--etsx-surface); border: 1px solid var(--etsx-line); border-radius: 5px; padding: 4px 6px; }
+.etsx-gpa-tgt-out { margin-top: 7px; font: 500 11.5px/1.4 var(--etsx-ui); color: var(--etsx-ink); }
+.etsx-gpa-tgt-out b { color: var(--etsx-accent); }
+.etsx-tgt-warn { color: #c0392b; font-weight: 600; }
+.etsx-tgt-ok { color: #1ea14d; font-weight: 700; }
+
+/* boutons taille de texte dans les paramètres */
+.etsx-fontsize { align-items: center; gap: 10px; }
+.etsx-fontsize #etsx-font-val { font: 700 12px/1 var(--etsx-ui); color: var(--etsx-ink-2); min-width: 42px; text-align: center; }
+
+/* =============================================================================
+ * v28 — masquage menu (classe), cote visée par session
+ * ========================================================================== */
+/* masquage d'un élément de menu (gagne sur le !important du menu minimal) */
+html[data-etsx-skin] #menuElem > li.etsx-navhide { display: none !important; }
+
+/* cote visée par session (dans le simulateur) */
+.etsx-gpa-stgt { display: flex; align-items: center; gap: 6px; padding: 5px 10px; background: var(--etsx-surface-2); border-top: 1px solid var(--etsx-line); font: 600 11px/1.3 var(--etsx-ui); color: var(--etsx-ink-2); flex-wrap: wrap; }
+.etsx-gpa-stgt-l { white-space: nowrap; }
+.etsx-gpa-stgt-in { width: 60px; font: 700 11.5px/1 var(--etsx-ui); color: var(--etsx-ink); background: var(--etsx-surface); border: 1px solid var(--etsx-line); border-radius: 5px; padding: 3px 5px; }
+.etsx-gpa-stgt-out { color: var(--etsx-ink); }
+.etsx-gpa-stgt-out b { color: var(--etsx-accent); }
+
+/* Conteneur des graphiques Chart.js (Évolution de votre moyenne, Distribution
+   estimée des notes) : Chart.js dessine lui-même la grille, les info-bulles et
+   les titres d'axes sur le canevas — plus besoin d'habillage HTML autour.
+   maintainAspectRatio:false + une hauteur fixe sur le parent (exigée par
+   Chart.js) : plus grand qu'avant (les graphiques semblaient écrasés dans la
+   colonne étroite du menu), sans devenir démesuré. */
+.etsx-chart-canvaswrap { position: relative; height: 230px; margin-top: 4px; }
+
+/* sélecteur de style pour « Distribution estimée des notes » (Écart de 5 /
+   Écart de 10 / Courbe) — mêmes codes visuels que les boutons de bascule des
+   Paramètres, mais utilisables ici (hors du panneau #etsx-settings). */
+.etsx-dist-modes { display: flex; justify-content: center; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.etsx-dist-mode { cursor: pointer; border: 1px solid var(--etsx-line); background: var(--etsx-surface-2); color: var(--etsx-ink); border-radius: var(--etsx-radius-sm); padding: 5px 10px; font: 600 11px/1 var(--etsx-ui); transition: border-color .12s, color .12s, background .12s; }
+.etsx-dist-mode:hover { border-color: var(--etsx-accent); color: var(--etsx-accent); }
+.etsx-dist-mode.is-active { background: var(--etsx-accent); color: var(--etsx-on-accent); border-color: var(--etsx-accent); }
+
+/* texte lisible sur les lignes teintées (pas de texte blanc illisible) */
+html[data-etsx-skin] td.etsx-grow { color: var(--etsx-ink) !important; }
+html[data-etsx-skin] td.etsx-grow * { color: inherit !important; }
+html[data-etsx-skin] td.etsx-grow a { color: var(--etsx-accent) !important; font-weight: 600; }
+html[data-etsx-skin] td.etsx-grow .etsx-rc { color: var(--etsx-accent) !important; }
+
+/* =============================================================================
+ * v33 — Simulateur en modal (fond flouté) + board sessions + boutons d'en-tête
+ * ========================================================================== */
+/* boutons « Simulateur » / « À l'aide » dans la barre (à droite des accents) */
+#etsx-sig-hdr .etsx-sig-feat { margin-left: 2px; }
+
+/* overlay modal */
+#etsx-modal { position: fixed; inset: 0; z-index: 2147483600; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(10,12,16,0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.etsx-modal-panel { width: 100%; max-width: 560px; max-height: 86vh; display: flex; flex-direction: column; background: var(--etsx-surface); color: var(--etsx-ink); border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius); box-shadow: var(--etsx-shadow-pop); overflow: hidden; }
+#etsx-modal.etsx-modal-wide .etsx-modal-panel { max-width: min(1100px, 94vw); }
+.etsx-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--etsx-line); background: var(--etsx-surface-2); }
+.etsx-modal-title { font: 800 15px/1.2 var(--etsx-head); color: var(--etsx-ink); }
+.etsx-modal-x { cursor: pointer; border: 0; background: transparent; color: var(--etsx-ink-2); font: 700 22px/1 var(--etsx-ui); width: 30px; height: 30px; border-radius: 7px; }
+.etsx-modal-x:hover { background: var(--etsx-surface-3); color: var(--etsx-accent); }
+.etsx-modal-body { padding: 14px 16px; overflow: auto; }
+
+/* simulateur : haut (global + visée + reset) */
+.etsx-sim-top { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--etsx-line); }
+.etsx-sim-global { font: 800 26px/1 var(--etsx-head); color: var(--etsx-accent); display: flex; align-items: baseline; gap: 6px; }
+.etsx-sim-global .etsx-gpa-glabel { display: block; font: 700 9.5px/1 var(--etsx-ui); letter-spacing: .16em; text-transform: uppercase; color: var(--etsx-ink-3); }
+.etsx-sim-global span:last-child { font: 600 12px/1 var(--etsx-ui); color: var(--etsx-ink-3); }
+.etsx-sim-gtgt label { display: flex; align-items: center; gap: 8px; font: 700 12px/1 var(--etsx-ui); color: var(--etsx-ink-2); }
+.etsx-sim-gtgt input { width: 80px; font: 700 13px/1 var(--etsx-ui); color: var(--etsx-ink); background: var(--etsx-surface-2); border: 1px solid var(--etsx-line); border-radius: 6px; padding: 5px 7px; }
+.etsx-sim-gtgt .etsx-gpa-tgt-out { margin-top: 6px; font: 500 12px/1.4 var(--etsx-ui); color: var(--etsx-ink); }
+.etsx-sim-gtgt .etsx-gpa-tgt-out b { color: var(--etsx-accent); }
+.etsx-sim-top .etsx-gpa-resetall { margin-left: auto; cursor: pointer; border: 1px solid var(--etsx-line); background: var(--etsx-surface-2); color: var(--etsx-ink-2); border-radius: 999px; font: 700 11px/1 var(--etsx-ui); padding: 7px 12px; }
+.etsx-sim-top .etsx-gpa-resetall:hover { color: var(--etsx-accent); border-color: var(--etsx-accent); }
+
+/* board : sessions en colonnes côte à côte */
+.etsx-simboard { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; }
+.etsx-simcol { flex: 0 0 200px; background: var(--etsx-surface); border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius-sm); overflow: hidden; }
+.etsx-simcol-head { display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: var(--etsx-surface-2); }
+.etsx-simcol-name { font: 800 13px/1 var(--etsx-head); color: var(--etsx-ink); }
+.etsx-simcol-gpa { margin-left: auto; font: 800 13px/1 var(--etsx-head); color: var(--etsx-accent); }
+.etsx-simcol-head .etsx-gpa-reset { cursor: pointer; border: 1px solid var(--etsx-line); background: var(--etsx-surface); color: var(--etsx-ink-2); border-radius: 6px; font: 700 11px/1 var(--etsx-ui); padding: 3px 6px; }
+.etsx-simcol-head .etsx-gpa-reset:hover { color: var(--etsx-accent); border-color: var(--etsx-accent); }
+.etsx-simcol-tgt { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 7px 10px; border-bottom: 1px solid var(--etsx-line); font: 600 11px/1.3 var(--etsx-ui); color: var(--etsx-ink-2); }
+.etsx-simcol-tgt input { width: 56px; font: 700 11.5px/1 var(--etsx-ui); color: var(--etsx-ink); background: var(--etsx-surface-2); border: 1px solid var(--etsx-line); border-radius: 5px; padding: 3px 5px; }
+.etsx-simcol-tgt .etsx-gpa-stgt-out { width: 100%; color: var(--etsx-ink); }
+.etsx-simcol-tgt .etsx-gpa-stgt-out b { color: var(--etsx-accent); }
+.etsx-simcol-body { padding: 6px 8px; display: flex; flex-direction: column; gap: 5px; }
+.etsx-simrow { display: flex; align-items: center; gap: 6px; }
+.etsx-simsig { flex: 1 1 auto; font: 600 12px/1.2 var(--etsx-ui); color: var(--etsx-ink); }
+.etsx-simcr { font: 500 10.5px/1 var(--etsx-ui); color: var(--etsx-ink-3); white-space: nowrap; }
+.etsx-simrow select { width: 56px; font: 700 11.5px/1 var(--etsx-ui); color: var(--etsx-ink); background: var(--etsx-surface-2); border: 1px solid var(--etsx-line); border-radius: 5px; padding: 3px 4px; cursor: pointer; }
+
+/* aide */
+.etsx-help { font: 400 13px/1.55 var(--etsx-ui); color: var(--etsx-ink); }
+.etsx-help b { color: var(--etsx-ink); }
+.etsx-help ul { margin: 8px 0; padding-left: 18px; }
+.etsx-h
+/* =============================================================================
+ * v34 — exclure une session du global + aide
+ * ========================================================================== */
+.etsx-gpa-excl { cursor: pointer; border: 1px solid var(--etsx-line); background: var(--etsx-surface); color: var(--etsx-ink-3); border-radius: 999px; font: 700 9.5px/1 var(--etsx-ui); text-transform: uppercase; letter-spacing: .03em; padding: 3px 7px; }
+.etsx-gpa-excl:hover { border-color: var(--etsx-accent); color: var(--etsx-accent); }
+.etsx-gpa-excl.is-excl { background: var(--etsx-surface-3); color: var(--etsx-ink-2); border-style: dashed; }
+.etsx-simcol.is-excl { opacity: .55; }
+.etsx-simcol.is-excl .etsx-simcol-gpa { text-decoration: line-through; }
+.etsx-help-h { margin: 14px 0 6px; font: 800 13px/1.2 var(--etsx-head); color: var(--etsx-ink); }
