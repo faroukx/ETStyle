@@ -43,3 +43,40 @@ Quatre thèmes, chacun avec une version claire et une version sombre, synchronis
 
 L'accent de couleur, la police et plusieurs options d'affichage se règlent depuis le panneau des paramètres.
 
+## Installation en local
+
+Pour installer le projet depuis le code source plutôt que depuis le Chrome Web Store :
+
+```bash
+git clone https://github.com/faroukx/ETStyle.git
+```
+
+1. Ouvrir `chrome://extensions`.
+2. Activer le **Mode développeur** en haut à droite.
+3. Cliquer **Charger l'extension non empaquetée** et choisir le dossier cloné.
+4. Se rendre sur `portail.etsmtl.ca` ou `signets-ens.etsmtl.ca`.
+
+## Confidentialité
+
+Les préférences (thème, accent, options d'affichage) sont conservées en local, dans `localStorage` et dans `chrome.storage.sync` pour la synchronisation entre les deux sites. Rien d'autre n'est collecté, et rien n'est envoyé à un serveur tiers. Détails dans [PRIVACY.md](PRIVACY.md).
+
+## Licence
+
+Ce projet est distribué sous licence [MIT](LICENSE).
+
+Il utilise [Chart.js](https://www.chartjs.org/) et [chartjs-plugin-annotation](https://github.com/chartjs/Chart.Annotation.js), tous deux sous licence MIT, inclus dans `vendors/chartjs/`.
+
+L'historique des versions est dans [CHANGELOG.md](CHANGELOG.md).
+
+## À propos
+
+Développé par **Saad Farouk**
+[GitHub](https://github.com/faroukx) · [LinkedIn](https://www.linkedin.com/in/farouks/)
+
+Dépôt du projet : [github.com/faroukx/ETStyle](https://github.com/faroukx/ETStyle)
+
+ETStyle est un projet personnel, développé de façon indépendante et sans lien officiel avec l'École de technologie supérieure : l'ÉTS ne l'a ni revu, ni approuvé, ni financé.
+
+## Avertissement
+
+ETStyle modifie l'apparence et le comportement de pages qui ne sont pas sous son contrôle : une mise à jour du portail ou de SignETS peut casser une fonctionnalité sans préavis.
