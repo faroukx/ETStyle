@@ -1,5 +1,5 @@
 /* =============================================================================
- * ETStyle — Thème & Console de session
+ * ETStyle, Thème & Console de session
  * Injecté sur https://portail.etsmtl.ca/*
  * Confidentialité : tout est calculé/enregistré localement (localStorage). Rien
  * n'est collecté ni envoyé.
@@ -12,7 +12,7 @@
   var CONFIG = {
     quickLinks: [
       // sameTab : SignETS est l'autre moitié de monÉTS (même thème, même
-      // session) — on y navigue dans le même onglet, plutôt que target="_blank"
+      // session), on y navigue dans le même onglet, plutôt que target="_blank"
       // qui pouvait créer un nouvel onglet hors du groupe d'onglets, voire une
       // toute nouvelle fenêtre selon la configuration du navigateur.
       { label: "SignETS",   url: "https://signets-ens.etsmtl.ca/", icon: "chart", desc: "tes notes", sameTab: true },
@@ -28,7 +28,7 @@
     accents: ["#da291c", "#2563eb", "#0d9488", "#7c3aed", "#16a34a", "#475569"]
   };
 
-  /* Logos de marque (GitHub, LinkedIn) pour le bloc « À propos » — fill:currentColor,
+  /* Logos de marque (GitHub, LinkedIn) pour le bloc « À propos », fill:currentColor,
      couleur pilotée en CSS par .etsx-about-icon (noir/blanc selon le thème). */
   var ICON_GITHUB = '<svg class="etsx-about-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.026 2c-5.509 0-9.974 4.465-9.974 9.974 0 4.406 2.857 8.145 6.821 9.465.499.09.679-.217.679-.481 0-.237-.008-.865-.011-1.696-2.775.602-3.361-1.338-3.361-1.338-.452-1.152-1.107-1.459-1.107-1.459-.905-.619.069-.605.069-.605 1.002.07 1.527 1.028 1.527 1.028.89 1.524 2.336 1.084 2.902.829.091-.645.351-1.085.635-1.334-2.214-.251-4.542-1.107-4.542-4.93 0-1.087.389-1.979 1.024-2.675-.101-.253-.446-1.268.099-2.64 0 0 .837-.269 2.742 1.021a9.582 9.582 0 0 1 2.496-.336 9.554 9.554 0 0 1 2.496.336c1.906-1.291 2.742-1.021 2.742-1.021.545 1.372.203 2.387.099 2.64.64.696 1.024 1.587 1.024 2.675 0 3.833-2.33 4.675-4.552 4.922.355.308.675.916.675 1.846 0 1.334-.012 2.41-.012 2.737 0 .267.178.577.687.479C19.146 20.115 22 16.379 22 11.974 22 6.465 17.535 2 12.026 2z"/></svg>';
   var ICON_LINKEDIN = '<svg class="etsx-about-icon" viewBox="0 0 97.75 97.75" fill="currentColor" aria-hidden="true"><path d="M48.875,0C21.882,0,0,21.882,0,48.875S21.882,97.75,48.875,97.75S97.75,75.868,97.75,48.875S75.868,0,48.875,0z M30.562,81.966h-13.74V37.758h13.74V81.966z M23.695,31.715c-4.404,0-7.969-3.57-7.969-7.968c0.001-4.394,3.565-7.964,7.969-7.964c4.392,0,7.962,3.57,7.962,7.964C31.657,28.146,28.086,31.715,23.695,31.715z M82.023,81.966H68.294V60.467c0-5.127-0.095-11.721-7.142-11.721c-7.146,0-8.245,5.584-8.245,11.35v21.869H39.179V37.758h13.178v6.041h0.185c1.835-3.476,6.315-7.14,13-7.14c13.913,0,16.481,9.156,16.481,21.059V81.966z"/></svg>';
@@ -38,7 +38,7 @@
   // L'accent par défaut est celui du thème « classic », comme sur SignETS : sans
   // ça une installation neuve démarrait rouge sur le portail et bleue sur SignETS.
   // Écrit en dur parce que SKINS est défini plus bas dans le fichier.
-  var DEFAULTS = { theme: "light", accent: "#1c4e89", sourceAccent: false, showConsole: true, hiddenNav: [], hiddenBlocks: [], collapsed: [], rememberLayout: false, sidebarHidden: false, cols: 2, bg: "", font: "", skin: "classic", coursView: "table", compact: false, square: false, clock: false, hideQuickbar: false };
+  var DEFAULTS = { theme: "light", accent: "#1c4e89", sourceAccent: false, showConsole: true, hiddenNav: [], hiddenBlocks: [], collapsed: [], rememberLayout: false, sidebarHidden: false, cols: 2, bg: "", font: "", skin: "classic", coursView: "table", compact: false, clock: false, hideQuickbar: false, enabled: true };
   var settings = loadSettings();
   // Disposition temporaire par défaut : on ne restaure les blocs réduits que si demandé.
   if (!settings.rememberLayout) { settings.collapsed = []; saveSettings(); }
@@ -193,18 +193,18 @@
   }
 
   /* =========================================================================
-   * CALENDRIER ÉTS — moteur de sessions
+   * CALENDRIER ÉTS, moteur de sessions
    * -------------------------------------------------------------------------
    * Trois sessions par année : Hiver, Été, Automne, séparées par des congés.
    *
    * Les dates NE se déduisent PAS d'une formule : l'ÉTS les fixe par comité.
-   * Preuve — premier jour de cours à l'automne : mardi 2 septembre 2025,
+   * Preuve, premier jour de cours à l'automne : mardi 2 septembre 2025,
    * lundi 31 août 2026, mercredi 1er septembre 2027. Aucune règle simple ne
    * produit ces trois-là. D'où deux niveaux :
    *
-   *   1. OFFICIEL — dates relevées sur etsmtl.ca/etudes/calendrier-universitaire.
+   *   1. OFFICIEL, dates relevées sur etsmtl.ca/etudes/calendrier-universitaire.
    *                 Elles gagnent toujours.
-   *   2. ESTIMÉ   — règles générées pour toute année absente du tableau, sans
+   *   2. ESTIMÉ, règles générées pour toute année absente du tableau, sans
    *                 limite dans le temps. Signalé par « ≈ » à l'affichage.
    *
    * Arithmétique des dates : tout passe par des jours entiers comptés depuis
@@ -252,12 +252,12 @@
   function dateLongue(d) { return d.toLocaleDateString("fr-CA", { weekday: "long", day: "numeric", month: "long" }); }
 
   // Règles de repli, calées sur les sessions officielles connues :
-  //   Été     — premier lundi de mai (exact pour 2025, 2026 et 2027).
-  //   Hiver   — premier jour ouvrable à partir du 5 janvier (exact pour 2027).
-  //   Automne — lundi de la semaine du 1er septembre ; si ce lundi est la fête
+  //   Été, premier lundi de mai (exact pour 2025, 2026 et 2027).
+  //   Hiver, premier jour ouvrable à partir du 5 janvier (exact pour 2027).
+  //   Automne, lundi de la semaine du 1er septembre ; si ce lundi est la fête
   //             du Travail, on démarre le mardi (exact pour 2025 et 2026).
   // Durée retenue : 14 semaines de cours plus les semaines de relâche, puis
-  // 11 jours d'examens — la moyenne des cinq sessions officielles.
+  // 11 jours d'examens, la moyenne des cinq sessions officielles.
   function estimerSession(annee, saison) {
     var cours, relache = [];
     if (saison === "hiver") {
@@ -288,7 +288,7 @@
     s.finCours = addDays(s.exam[0], -1);
     // Une relâche d'au moins 5 jours consécutifs est une SEMAINE sans cours :
     // elle décale la numérotation. Les congés isolés (un férié, une journée
-    // d'activités) ne la décalent pas — l'ÉTS ne renumérote pas pour un lundi.
+    // d'activités) ne la décalent pas, l'ÉTS ne renumérote pas pour un lundi.
     s.semainesOff = s.relache.filter(function (p) { return joursEntre(p[0], p[1]) + 1 >= 5; });
     s.joursOff = 0;
     s.semainesOff.forEach(function (p) { s.joursOff += joursEntre(p[0], p[1]) + 1; });
@@ -334,7 +334,7 @@
 
         // Une SEMAINE de relâche (≥ 5 jours) suspend la session ; un congé ISOLé
         // (fête du Travail, Action de grâce, journée d'activités) est juste une
-        // journée sans cours — la session, elle, continue.
+        // journée sans cours, la session, elle, continue.
         var enRelache = null, ferie = null;
         s.semainesOff.forEach(function (p) { if (dansPlage(j, p)) enRelache = p; });
         if (!enRelache) s.relache.forEach(function (p) { if (dansPlage(j, p)) ferie = p; });
@@ -415,7 +415,7 @@
   }
 
   // À gauche de l'en-tête : bascule clair/sombre + pastilles d'accent (comme
-  // SignETS). Collées au bord (left:16px) — #logo-group n'existe plus, plus
+  // SignETS). Collées au bord (left:16px), #logo-group n'existe plus, plus
   // besoin de deviner une largeur à éviter.
   function buildLeftAccents() {
     var box = document.createElement("div");
@@ -488,7 +488,7 @@
 
   /* HORAIRE GÉNÉRAL : le tableau « Cours » contient un FullCalendar (jours de la
      semaine) qui, replié au départ, se rend à 0px. Quand on le déplie, on force
-     le rendu pour que les jours réapparaissent — sans toucher au reste de l'UI. */
+     le rendu pour que les jours réapparaissent, sans toucher au reste de l'UI. */
   function fixInnerCalendars(scopeEl) {
     if (!window.jQuery) return;
     var scope = scopeEl || document.getElementById("wid-id-cours");
@@ -502,7 +502,6 @@
   function applyAdvanced() {
     var root = document.documentElement;
     root.classList.toggle("etsx-compact", !!settings.compact);
-    root.classList.toggle("etsx-square", !!settings.square);
     // Horloge retirée : fonctionnalité inutile dans l'en-tête.
     var clk = document.getElementById("etsx-clock");
     if (clk) clk.remove();
@@ -596,7 +595,6 @@
       '<div class="etsx-set-title">Blocs du tableau de bord</div>' + blockRows +
       '<div class="etsx-set-title">Fonctions avancées</div>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-compact" ' + (settings.compact ? "checked" : "") + '><span>Mode compact</span></label>' +
-      '<label class="etsx-check"><input type="checkbox" id="etsx-opt-square" ' + (settings.square ? "checked" : "") + '><span>Coins carrés</span></label>' +
       '<div class="etsx-set-note">Chaque bloc se réduit aussi via le chevron de son en-tête. Par défaut l’état revient au rechargement ; coche « mémoriser » pour le garder.</div>' +
       '<div class="etsx-set-title">À propos</div>' +
       '<div class="etsx-about">' +
@@ -674,7 +672,7 @@
       var rd = new FileReader(); rd.onload = function () { setBackground(rd.result); }; rd.readAsDataURL(file);
     });
     var adv = function (id, key) { var el = p.querySelector(id); if (el) el.addEventListener("change", function (e) { settings[key] = e.target.checked; saveSettings(); applyAdvanced(); }); };
-    adv("#etsx-opt-compact", "compact"); adv("#etsx-opt-square", "square");
+    adv("#etsx-opt-compact", "compact");
     return p;
   }
 
@@ -747,7 +745,7 @@
     var eyebrow, prefixe = "SEM.", grand, sousTitre, statusClass = "", segTotal, segCourant, pct;
 
     if (!st) {                                   // filet : ne devrait pas arriver
-      eyebrow = "Session"; grand = "—"; sousTitre = "Calendrier indisponible";
+      eyebrow = "Session"; grand = "N/D"; sousTitre = "Calendrier indisponible";
       segTotal = 15; segCourant = 0; pct = 0;
 
     } else if (st.etat === "conge") {            // entre deux sessions : pas d'école
@@ -785,7 +783,7 @@
     var hello = greetingWord(now);
     var dateStr = cap(now.toLocaleDateString("fr-CA", { weekday: "long", day: "numeric", month: "long" }));
     // (le bloc "chips" qui vivait ici était mort : jamais inséré dans le HTML
-    // de la console — buildQuickbar() construit les vraies puces.)
+    // de la console, buildQuickbar() construit les vraies puces.)
     var collapsed = settings.rememberLayout && settings.collapsed.indexOf("etsx-console") !== -1;
     var el = document.createElement("section");
     el.id = "etsx-console";
@@ -820,7 +818,7 @@
   function buildQuickbar() {
     var bar = document.createElement("div"); bar.id = "etsx-quickbar";
     function chip(l) {
-      // sameTab (SignETS) : lien normal, sans target/rel — reste dans le même
+      // sameTab (SignETS) : lien normal, sans target/rel, reste dans le même
       // onglet. Les autres gardent target="_blank" mais SANS noopener/noreferrer,
       // pour que Chrome garde la relation d'ouverture et place le nouvel onglet
       // dans le même groupe que celui-ci plutôt que dans une fenêtre à part.
@@ -871,7 +869,7 @@
       new MutationObserver(function () { if (scheduled) return; scheduled = true; setTimeout(function () { scheduled = false; applyAll(); }, 200); }).observe(root, { childList: true, subtree: true });
     }
     scheduleMidnightRefresh();
-    // Synchronisation du thème depuis l'autre site (SignETS) — sans boucle.
+    // Synchronisation du thème depuis l'autre site (SignETS), sans boucle.
     if (window.ETSXSync) window.ETSXSync.subscribe(function (shared) {
       ["theme", "skin", "accent", "sourceAccent", "font"].forEach(function (k) { if (shared[k] !== undefined) settings[k] = shared[k]; });
       if (settings.skin === "harvard") settings.skin = "prestige"; // ancien nom, valeur partagée possiblement périmée
@@ -888,6 +886,22 @@
     setTimeout(function () { refreshConsole(); scheduleMidnightRefresh(); }, next - now);
   }
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
+  /* Pont de messages avec la popup de la barre d'outils, toujours actif, même
+     si le thème est désactivé sur ce site, pour pouvoir le réactiver depuis là. */
+  if (window.chrome && chrome.runtime && chrome.runtime.onMessage) {
+    chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+      if (!msg || msg.target !== "etsx-popup") return;
+      if (msg.type === "getState") {
+        sendResponse({ site: "portail", enabled: settings.enabled !== false, theme: settings.theme, skin: settings.skin, accent: settings.accent });
+        return;
+      }
+      if (msg.type === "setEnabled") { settings.enabled = !!msg.value; saveSettings(); sendResponse({ ok: true }); return; }
+      if (msg.type === "setTheme") { settings.theme = msg.value === "dark" ? "dark" : "light"; saveSettings(); applyTheme(); sendResponse({ ok: true }); return; }
+      if (msg.type === "setSkin") { if (SKINS[msg.value]) setSkin(msg.value); sendResponse({ ok: true }); return; }
+    });
+  }
+
+  if (settings.enabled === false) { /* thème désactivé sur ce site : page laissée intacte */ }
+  else if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
   else start();
 })();

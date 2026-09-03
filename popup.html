@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ETStyle</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="p-hdr">
+    <span class="p-logo"><span class="p-red">ETS</span>tyle</span>
+    <span class="p-site" id="p-site" hidden></span>
+  </header>
+
+  <div class="p-body">
+    <div class="p-empty" id="p-unsupported" hidden>
+      <p>ETStyle fonctionne sur <strong>portail.etsmtl.ca</strong> et <strong>signets-ens.etsmtl.ca</strong>.</p>
+      <p class="p-empty-sub">Ouvre un de ces deux sites pour voir les options ici.</p>
+    </div>
+
+    <div class="p-empty" id="p-stale" hidden>
+      <p>Cette page a été chargée avant la dernière mise à jour d'ETStyle.</p>
+      <p class="p-empty-sub">Actualise-la pour reconnecter l'extension.</p>
+      <button type="button" class="p-reload-btn" id="p-reload">Actualiser la page</button>
+    </div>
+
+    <div class="p-controls" id="p-controls" hidden>
+      <label class="p-toggle-row">
+        <span>Thème actif sur ce site</span>
+        <span class="p-switch">
+          <input type="checkbox" id="p-enabled">
+          <span class="p-switch-track"><span class="p-switch-thumb"></span></span>
+        </span>
+      </label>
+
+      <div id="p-when-enabled">
+        <div class="p-row">
+          <span class="p-label">Apparence</span>
+          <div class="p-seg" id="p-seg-theme">
+            <button type="button" class="p-seg-btn" data-theme="light">Clair</button>
+            <button type="button" class="p-seg-btn" data-theme="dark">Sombre</button>
+          </div>
+        </div>
+
+        <div class="p-row">
+          <span class="p-label">Thème visuel</span>
+          <div class="p-skins" id="p-skins"></div>
+        </div>
+
+        <p class="p-note">Plus d'options dans le panneau <strong>Paramètres</strong> de la page (icône d'engrenage).</p>
+      </div>
+
+      <p class="p-note" id="p-disabled-note" hidden>ETStyle est désactivé sur ce site : la page reste dans son état natif.</p>
+    </div>
+
+    <div class="p-loading" id="p-loading">Chargement…</div>
+  </div>
+
+  <footer class="p-footer">
+    <span>ETStyle</span>
+    <span class="p-footer-links">
+      <a href="https://github.com/faroukx" target="_blank" rel="noopener noreferrer" title="GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.026 2c-5.509 0-9.974 4.465-9.974 9.974 0 4.406 2.857 8.145 6.821 9.465.499.09.679-.217.679-.481 0-.237-.008-.865-.011-1.696-2.775.602-3.361-1.338-3.361-1.338-.452-1.152-1.107-1.459-1.107-1.459-.905-.619.069-.605.069-.605 1.002.07 1.527 1.028 1.527 1.028.89 1.524 2.336 1.084 2.902.829.091-.645.351-1.085.635-1.334-2.214-.251-4.542-1.107-4.542-4.93 0-1.087.389-1.979 1.024-2.675-.101-.253-.446-1.268.099-2.64 0 0 .837-.269 2.742 1.021a9.582 9.582 0 0 1 2.496-.336 9.554 9.554 0 0 1 2.496.336c1.906-1.291 2.742-1.021 2.742-1.021.545 1.372.203 2.387.099 2.64.64.696 1.024 1.587 1.024 2.675 0 3.833-2.33 4.675-4.552 4.922.355.308.675.916.675 1.846 0 1.334-.012 2.41-.012 2.737 0 .267.178.577.687.479C19.146 20.115 22 16.379 22 11.974 22 6.465 17.535 2 12.026 2z"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/farouks/" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+        <svg viewBox="0 0 97.75 97.75" fill="currentColor" aria-hidden="true"><path d="M48.875,0C21.882,0,0,21.882,0,48.875S21.882,97.75,48.875,97.75S97.75,75.868,97.75,48.875S75.868,0,48.875,0z M30.562,81.966h-13.74V37.758h13.74V81.966z M23.695,31.715c-4.404,0-7.969-3.57-7.969-7.968c0.001-4.394,3.565-7.964,7.969-7.964c4.392,0,7.962,3.57,7.962,7.964C31.657,28.146,28.086,31.715,23.695,31.715z M82.023,81.966H68.294V60.467c0-5.127-0.095-11.721-7.142-11.721c-7.146,0-8.245,5.584-8.245,11.35v21.869H39.179V37.758h13.178v6.041h0.185c1.835-3.476,6.315-7.14,13-7.14c13.913,0,16.481,9.156,16.481,21.059V81.966z"/></svg>
+      </a>
+    </span>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>

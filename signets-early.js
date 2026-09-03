@@ -3,6 +3,7 @@
   try {
     var raw = localStorage.getItem("etsx-settings-v3");
     var s = raw ? JSON.parse(raw) : {};
+    if (s.enabled === false) return; // thème désactivé sur ce site : rien à poser avant signets.js
     var SK = { classic: "#1c4e89", prestige: "#a51c30", minimal: "#da291c", gaming: "#8b5cf6" };
     var skin = s.skin === "harvard" ? "prestige" : (s.skin || "classic"); // ancien nom du skin "Prestige"
     if (!SK[skin]) skin = "classic";

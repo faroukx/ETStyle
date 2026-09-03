@@ -1,5 +1,5 @@
 /* =============================================================================
- * ETStyle — Synchronisation inter-origines (portail <-> signets)
+ * ETStyle, Synchronisation inter-origines (portail <-> signets)
  * Propage le thème via chrome.storage.sync (clé etsx_shared).
  * Champs partagés : theme, skin, accent, sourceAccent, font.
  * ========================================================================== */

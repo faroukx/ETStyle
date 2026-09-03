@@ -1,7 +1,7 @@
 ![](docs/images/etstyle.png)
 
 
-**ETStyle** est une extension de navigateur pour **portail.etsmtl.ca** et **signets-ens.etsmtl.ca**, le portail étudiant et le système de notes de l'ÉTS. Elle refait l'interface des deux sites, ajoute une console de session calée sur le vrai calendrier universitaire, et enrichit SignETS avec des notes colorées, des graphiques et un simulateur de moyenne.
+**ETStyle** est une extension de navigateur pour **portail.etsmtl.ca** et **signets-ens.etsmtl.ca**, le portail étudiant et le système de notes de l'ÉTS. Elle refait l'interface des deux sites, ajoute une console de session calée sur le vrai calendrier universitaire, et enrichit SignETS avec des graphiques et un simulateur de moyenne.
 
 Tout tourne dans le navigateur : aucune donnée n'est envoyée à un serveur autre que ceux de l'ÉTS déjà utilisés par les pages elles-mêmes.
 
@@ -21,7 +21,7 @@ La barre de raccourcis ne garde que les sites officiels de l'ÉTS.
 
 ## SignETS
 
-Chaque note est colorée selon son écart à la moyenne du groupe, avec la cote estimée et le rang centile ajoutés directement dans le tableau des cours.
+La cote estimée et le rang centile sont ajoutés directement dans le tableau des cours, avec l'écart à la moyenne du groupe pour chaque évaluation.
 
 ![](docs/images/signets-notes.png)
 
@@ -32,6 +32,8 @@ La distribution estimée des notes du groupe se lit en histogramme ou en courbe,
 Le simulateur de moyenne calcule la cote requise aux évaluations restantes pour atteindre un objectif, session par session.
 
 ![](docs/images/simulateur.png)
+
+L'historique des cours réunit tous les cours suivis dans un seul tableau, triable par cote, par sigle ou par titre, avec un filtre par programme (le programme actif est détecté automatiquement).
 
 
 ## Thèmes
@@ -65,8 +67,6 @@ Les préférences (thème, accent, options d'affichage) sont conservées en loca
 Ce projet est distribué sous licence [MIT](LICENSE).
 
 Il utilise [Chart.js](https://www.chartjs.org/) et [chartjs-plugin-annotation](https://github.com/chartjs/Chart.Annotation.js), tous deux sous licence MIT, inclus dans `vendors/chartjs/`.
-
-L'historique des versions est dans [CHANGELOG.md](CHANGELOG.md).
 
 ## À propos
 

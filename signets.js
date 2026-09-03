@@ -1,5 +1,5 @@
 /* =============================================================================
- * ETStyle — SIGNETS : thème, barre unifiée, paramètres, nav minimal, notes
+ * ETStyle, SIGNETS : thème, barre unifiée, paramètres, nav minimal, notes
  * Cible : *://signets-ens.etsmtl.ca/*
  *
  * Coloration des notes (note vs moyenne ± écart-type), enrichissement du
@@ -28,9 +28,9 @@
   };
   var DEFAULTS = {
     theme: "light", skin: "classic", accent: SKINS.classic.accent, sourceAccent: false, font: "",
-    wideTable: false, minimalNav: false, colorNotes: true, hiddenSigNav: [],
+    wideTable: false, minimalNav: false, hiddenSigNav: [],
     hideBar: false, hideEvo: false,
-    progFont: 1, showRcentile: false, showDelta: true, excludedSessions: [], bg: ""
+    progFont: 1, showRcentile: false, showDelta: true, excludedSessions: [], bg: "", enabled: true
   };
 
   function loadSettings() {
@@ -69,7 +69,6 @@
     else root.style.removeProperty("--etsx-ui");
     root.classList.toggle("etsx-sig-wide", !!settings.wideTable);
     root.classList.toggle("etsx-sig-minnav", !!settings.minimalNav);
-    root.classList.toggle("etsx-sig-nocolor", !settings.colorNotes);
     root.classList.toggle("etsx-sig-norc", !settings.showRcentile);
     root.style.setProperty("--etsx-prog-font", String(settings.progFont || 1));
     applyBackground();
@@ -86,7 +85,7 @@
 
   /* ---- ICÔNES -------------------------------------------------------------- */
   function svg(inner) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + inner + '</svg>'; }
-  /* Logos de marque (GitHub, LinkedIn) pour le bloc « À propos » — fill:currentColor,
+  /* Logos de marque (GitHub, LinkedIn) pour le bloc « À propos », fill:currentColor,
      couleur pilotée en CSS par .etsx-about-icon (noir/blanc selon le thème). */
   var ICON_GITHUB = '<svg class="etsx-about-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.026 2c-5.509 0-9.974 4.465-9.974 9.974 0 4.406 2.857 8.145 6.821 9.465.499.09.679-.217.679-.481 0-.237-.008-.865-.011-1.696-2.775.602-3.361-1.338-3.361-1.338-.452-1.152-1.107-1.459-1.107-1.459-.905-.619.069-.605.069-.605 1.002.07 1.527 1.028 1.527 1.028.89 1.524 2.336 1.084 2.902.829.091-.645.351-1.085.635-1.334-2.214-.251-4.542-1.107-4.542-4.93 0-1.087.389-1.979 1.024-2.675-.101-.253-.446-1.268.099-2.64 0 0 .837-.269 2.742 1.021a9.582 9.582 0 0 1 2.496-.336 9.554 9.554 0 0 1 2.496.336c1.906-1.291 2.742-1.021 2.742-1.021.545 1.372.203 2.387.099 2.64.64.696 1.024 1.587 1.024 2.675 0 3.833-2.33 4.675-4.552 4.922.355.308.675.916.675 1.846 0 1.334-.012 2.41-.012 2.737 0 .267.178.577.687.479C19.146 20.115 22 16.379 22 11.974 22 6.465 17.535 2 12.026 2z"/></svg>';
   var ICON_LINKEDIN = '<svg class="etsx-about-icon" viewBox="0 0 97.75 97.75" fill="currentColor" aria-hidden="true"><path d="M48.875,0C21.882,0,0,21.882,0,48.875S21.882,97.75,48.875,97.75S97.75,75.868,97.75,48.875S75.868,0,48.875,0z M30.562,81.966h-13.74V37.758h13.74V81.966z M23.695,31.715c-4.404,0-7.969-3.57-7.969-7.968c0.001-4.394,3.565-7.964,7.969-7.964c4.392,0,7.962,3.57,7.962,7.964C31.657,28.146,28.086,31.715,23.695,31.715z M82.023,81.966H68.294V60.467c0-5.127-0.095-11.721-7.142-11.721c-7.146,0-8.245,5.584-8.245,11.35v21.869H39.179V37.758h13.178v6.041h0.185c1.835-3.476,6.315-7.14,13-7.14c13.913,0,16.481,9.156,16.481,21.059V81.966z"/></svg>';
@@ -103,6 +102,7 @@
     cap: svg('<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/>'),
     help: svg('<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><line x1="12" y1="17" x2="12" y2="17.01"/>'),
     mail: svg('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'),
+    table: svg('<rect x="3" y="3" width="18" height="18" rx="1"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/>'),
     dot: svg('<circle cx="12" cy="12" r="8"/>'),
     bars: svg('<line x1="6" y1="20" x2="6" y2="11"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/>')
   };
@@ -142,6 +142,7 @@
           '<span class="etsx-swatch etsx-swatch-custom" title="Couleur personnalisée"><input type="color" value="' + settings.accent + '"></span>' +
         '</span>' +
         '<button type="button" class="etsx-sig-btn etsx-sig-feat" id="etsx-sig-sim" title="Simulateur de moyenne">' + ICONS.bars + '<span>Simulateur</span></button>' +
+        '<button type="button" class="etsx-sig-btn etsx-sig-feat" id="etsx-sig-hist" title="Historique des cours">' + ICONS.table + '<span>Historique</span></button>' +
         '<button type="button" class="etsx-sig-btn etsx-sig-feat" id="etsx-sig-help" title="Aide / tutoriel">' + ICONS.help + '<span>À l\'aide</span></button>' +
       '</div>' +
       '<a class="etsx-sig-center" href="https://signets-ens.etsmtl.ca/" title="Accueil SignETS"><span class="etsx-sig-brand">SIGN<span class="etsx-red">ETS</span></span><span class="etsx-sig-sub">Guichet interactif</span></a>' +
@@ -156,6 +157,7 @@
       if (b.hasAttribute("data-accent")) { e.preventDefault(); setAccent(b.getAttribute("data-accent")); }
       else if (b.id === "etsx-sig-theme") { e.preventDefault(); settings.theme = settings.theme === "dark" ? "light" : "dark"; saveSettings(); applyTheme(); }
       else if (b.id === "etsx-sig-sim") { e.preventDefault(); openSimModal(); }
+      else if (b.id === "etsx-sig-hist") { e.preventDefault(); openHistModal(); }
       else if (b.id === "etsx-sig-help") { e.preventDefault(); openHelpModal(); }
       else if (b.id === "etsx-sig-gear") { e.preventDefault(); toggleSettings(); }
       else if (b.id === "etsx-sig-logout") { e.preventDefault(); if (logoutHref) location.href = logoutHref; }
@@ -228,7 +230,6 @@
       '<div class="etsx-set-title">Affichage</div>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-wide" ' + (settings.wideTable ? "checked" : "") + '><span>Mode large (élargir les tableaux)</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-minnav" ' + (settings.minimalNav ? "checked" : "") + '><span>Menu en style minimal (icônes)</span></label>' +
-      '<label class="etsx-check"><input type="checkbox" id="etsx-opt-color" ' + (settings.colorNotes ? "checked" : "") + '><span>Colorer les notes et graphiques</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-rc" ' + (settings.showRcentile ? "checked" : "") + '><span>Afficher la colonne R-centile</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-delta" ' + (settings.showDelta ? "checked" : "") + '><span>Afficher l\'écart à la moyenne (+x)</span></label>' +
       '<div class="etsx-set-title">Taille du texte (tableau)</div>' +
@@ -259,14 +260,6 @@
       '</div>';
     p.querySelector("#etsx-opt-wide").addEventListener("change", function (e) { settings.wideTable = e.target.checked; saveSettings(); applyTheme(); });
     p.querySelector("#etsx-opt-minnav").addEventListener("change", function (e) { settings.minimalNav = e.target.checked; saveSettings(); applyTheme(); manageNav(); });
-    p.querySelector("#etsx-opt-color").addEventListener("change", function (e) {
-      settings.colorNotes = e.target.checked; saveSettings(); applyTheme();
-      // réinitialise les marqueurs pour réappliquer (ou retirer) couleurs + R.centile
-      document.querySelectorAll("[data-etsx-done]").forEach(function (tr) { tr.removeAttribute("data-etsx-done"); });
-      document.querySelectorAll("[data-etsx-row]").forEach(function (tr) { tr.removeAttribute("data-etsx-row"); });
-      if (!settings.colorNotes) clearAllRowColors();
-      repaintAll(); try { repaintList(); } catch (e2) {}
-    });
     p.querySelector("#etsx-opt-rc").addEventListener("change", function (e) { settings.showRcentile = e.target.checked; saveSettings(); applyTheme(); });
     p.querySelector("#etsx-opt-delta").addEventListener("change", function (e) {
       settings.showDelta = e.target.checked; saveSettings();
@@ -340,26 +333,6 @@
   function isEmpty(el) { var t = txt(el); return t === "" || t === "-"; }
   function r1(n) { return Math.round(n * 10) / 10; }
 
-  // Détermine le palier de couleur d'une note par rapport à la moyenne du groupe.
-  function getColorTier(note, grp, ecartType, valid) {
-    if (!valid || isNaN(note) || isNaN(grp)) return "na";
-    if (Math.floor(note) > Math.round(grp)) return (note > grp + ecartType) ? "vhigh" : "high";
-    if (Math.ceil(note) < Math.round(grp)) return (note + ecartType < grp) ? "vlow" : "low";
-    return "mid";
-  }
-  function pctTier(p) { if (isNaN(p)) return "na"; if (p >= 85) return "vhigh"; if (p >= 65) return "high"; if (p >= 35) return "mid"; if (p >= 15) return "low"; return "vlow"; }
-  // Palier d'après la COTE (lettre) — pour colorer le tableau de programme.
-  // Un cours SANS cote (non complété) -> "na" -> pas de couleur.
-  function coteTier(cote) {
-    cote = (cote || "").toUpperCase().replace(/\s/g, "");
-    if (!cote) return "na";
-    if (/^A/.test(cote)) return "vhigh";
-    if (/^B/.test(cote)) return "high";
-    if (/^C/.test(cote)) return "mid";
-    if (/^D/.test(cote)) return "low";
-    if (/^E/.test(cote)) return "vlow";
-    return "na"; // S, K, AX, etc. : non comptés
-  }
   function deltaChip(note, moy, denom) {
     if (isNaN(note) || isNaN(moy)) return null;
     var d = note - moy, cls = Math.abs(d) < 0.05 ? "flat" : d > 0 ? "up" : "down", label;
@@ -379,42 +352,6 @@
     if (/^E|ECHEC|ÉCHEC/.test(letter)) return "#dc2626";
     return null;
   }
-  // Couleurs des 5 paliers (fond, texte). Mapping demandé :
-  //   vhigh = vert foncé (au-dessus de la moyenne + 1 écart-type)
-  //   high  = vert       (au-dessus de la moyenne)
-  //   mid   = jaune      (très proche de la moyenne)
-  //   low   = rose       (en dessous de la moyenne)
-  //   vlow  = rouge      (en dessous de la moyenne − 1 écart-type)
-  // Fonds TRANSLUCIDES (tints) : lisibles en clair ET sombre, le badge R reste visible.
-  var TIER_BG = {
-    vhigh: "rgba(26,161,77,0.45)",
-    high:  "rgba(120,200,125,0.42)",
-    mid:   "rgba(240,200,60,0.45)",
-    low:   "rgba(244,150,70,0.45)",
-    vlow:  "rgba(233,80,80,0.45)"
-  };
-  // Coloration en INLINE !important : imbattable face aux styles natifs
-  // d'Infragistics, et insensible à la spécificité CSS.
-  function colorRow(row, t) {
-    if (!row) return;
-    var bg = TIER_BG[t];
-    [].forEach.call(row.children, function (td) {
-      td.classList.remove("etsx-grow", "etsx-grow-vhigh", "etsx-grow-high", "etsx-grow-mid", "etsx-grow-low", "etsx-grow-vlow");
-      [].forEach.call(td.querySelectorAll("a"), function (a) { a.style.removeProperty("color"); a.style.removeProperty("font-weight"); });
-      if (!bg) { td.style.removeProperty("background-color"); td.style.removeProperty("color"); return; }
-      td.classList.add("etsx-grow", "etsx-grow-" + t);
-      td.style.setProperty("background-color", bg, "important");  // tint translucide
-      td.style.removeProperty("color");                          // texte par défaut (lisible)
-    });
-  }
-  // Retire toute coloration de ligne (quand l'option est décochée).
-  function clearAllRowColors() {
-    document.querySelectorAll("td.etsx-grow").forEach(function (td) {
-      td.classList.remove("etsx-grow", "etsx-grow-vhigh", "etsx-grow-high", "etsx-grow-mid", "etsx-grow-low", "etsx-grow-vlow");
-      td.style.removeProperty("background-color"); td.style.removeProperty("color");
-      [].forEach.call(td.querySelectorAll("a"), function (a) { a.style.removeProperty("color"); a.style.removeProperty("font-weight"); });
-    });
-  }
   // Masquer/afficher les cartes de graphiques selon les Paramètres.
   function applyChartVisibility() {
     var host = document.getElementById("etsx-charts"); if (!host) return;
@@ -422,13 +359,12 @@
     var evo = host.querySelector(".etsx-evo-card"); if (evo) evo.style.display = settings.hideEvo ? "none" : "";
   }
 
-  // Page d'un cours (DetailsCoursGroupe) : couleur de CHAQUE LIGNE + % + écart.
+  // Page d'un cours (DetailsCoursGroupe) : % de chaque évaluation + écart.
   function paintCourseDetail() {
-    if (!settings.colorNotes) return false;
     // Égalité stricte remplacée par *= : Infragistics préfixe l'identifiant de la
-    // grille, et le préfixe varie. Avec `=`, cette fonction sortait en silence —
-    // ni couleurs de lignes, ni pourcentages, ni cote estimée. Le reste du fichier
-    // utilisait déjà *= partout ailleurs.
+    // grille, et le préfixe varie. Avec `=`, cette fonction sortait en silence,
+    // ni pourcentages, ni cote estimée. Le reste du fichier utilisait déjà *=
+    // partout ailleurs.
     var notes = document.querySelectorAll('[aria-describedby*="grilleNotes_columnheader_3"]');
     if (!notes.length) return false;
     if (!document.body.getAttribute("data-etsx-detail-logged")) {
@@ -437,14 +373,12 @@
     }
     var denom = document.querySelectorAll('[aria-describedby*="grilleNotes_columnheader_4"]');
     var grp = document.querySelectorAll('[aria-describedby*="grilleNotes_columnheader_6"]');
-    var sd = document.querySelectorAll('[aria-describedby*="grilleNotes_columnheader_7"]');
     for (var i = 0; i < notes.length; i++) {
       var cell = notes[i];
       var valid = !isEmpty(grp[i]);
-      var n = num(txt(cell)), m = num(txt(grp[i])), s = num(txt(sd[i])), d = num(txt(denom[i]));
+      var n = num(txt(cell)), m = num(txt(grp[i])), d = num(txt(denom[i]));
       var row = cell.closest("tr");
       if (row && row.getAttribute("data-etsx-row") !== "1") {
-        colorRow(row, getColorTier(n, m, s, valid));
         row.setAttribute("data-etsx-row", "1");
         // écart à la moyenne (+x), optionnel (Paramètres). Petit, ne déborde pas.
         if (valid && settings.showDelta) { var chip = deltaChip(n, m, d); if (chip) cell.appendChild(chip); }
@@ -475,7 +409,6 @@
           tot.insertAdjacentHTML("beforeend", ' <strong class="etsx-pct-big">(' + r1(noteVal / maxVal * 100) + '%)</strong>');
         }
         tot.setAttribute("data-etsx-p", "1");
-        if (settings.colorNotes) { var tr = tot.closest("tr"); if (tr) colorRow(tr, getColorTier(noteVal, num(txt(totMoy)), num(txt(totSd)), !isNaN(maxVal) && maxVal !== 0)); }
         pctOf(totMoy, maxVal); pctOf(totSd, maxVal); pctOf(totMed, maxVal);
       }
     }
@@ -546,8 +479,7 @@
     return {
       note: note, max: max, moy: moy, sd: sd, rang: rang, cote: cote,
       notePct: validMax ? r1(note / max * 100) : NaN,
-      moyPct: (validMax && !isNaN(moy)) ? r1(moy / max * 100) : NaN,
-      tier: getColorTier(note, moy, sd, validMax)
+      moyPct: (validMax && !isNaN(moy)) ? r1(moy / max * 100) : NaN
     };
   }
 
@@ -581,9 +513,12 @@
       var href = link.href;
       var pid = (href.match(/[?&]p=(\d+)/) || [])[1] || (href.match(/[?&][^=]*=(\d+)/) || [])[1] || href;
       var sigleCell = cellByCol(row, 2) || link.closest("td") || link.parentNode;
+      var sigleTxt = ((sigleCell && sigleCell.textContent) || link.textContent || "").trim();
       rows.push({
         row: row, href: href, key: "etsx-sum-" + pid,
-        sigle: ((sigleCell && sigleCell.textContent) || link.textContent || "").trim().split("-")[0].trim(),
+        sigle: sigleTxt.split("-")[0].trim(),
+        titre: sigleTxt.indexOf("-") !== -1 ? sigleTxt.split("-").slice(1).join("-").trim() : "",
+        session: nearestSessionLabel(row),
         coteCell: cellByCol(row, 5),
         rangCell: cellByCol(row, 6),
         credCell: cellByCol(row, 4)
@@ -605,7 +540,7 @@
   }
   // Insère NOTRE colonne « R-centile » juste APRÈS la colonne « Cote ».
   // (La colonne native columnheader_6 est de largeur nulle et ses cellules
-  //  contiennent le sigle de base — inutilisable. On crée donc la nôtre. Vérifié
+  //  contiennent le sigle de base, inutilisable. On crée donc la nôtre. Vérifié
   //  en direct : l'insertion s'aligne avec les colonnes natives.)
   function ensureRcentileColumn() {
     // Colonne insérée DÉSACTIVÉE : l'en-tête et le corps d'Infragistics sont des
@@ -620,8 +555,8 @@
     // Rafraîchissement : on efface d'abord ce que NOUS avions écrit dans la cellule
     // Cote (le pourcentage et le badge R), sinon la nouvelle valeur ne s'affiche pas.
     if (forcer && info.coteCell && info.coteCell.getAttribute("data-etsx-ours") === "1") info.coteCell.textContent = "";
-    if (!quiet) LOG("  •", info.sigle, "| note%:", isNaN(sum.notePct) ? "—" : sum.notePct, "moy%:", isNaN(sum.moyPct) ? "—" : sum.moyPct,
-        "| rang:", sum.rang || "—", "| cote:", sum.cote || "—", "| couleur:", sum.tier, "| cellCote:", !!info.coteCell, "cellRang:", !!info.rangCell);
+    if (!quiet) LOG("  •", info.sigle, "| note%:", isNaN(sum.notePct) ? "N/D" : sum.notePct, "moy%:", isNaN(sum.moyPct) ? "N/D" : sum.moyPct,
+        "| rang:", sum.rang || "N/D", "| cote:", sum.cote || "N/D", "| cellCote:", !!info.coteCell, "cellRang:", !!info.rangCell);
     // Cote (%) si la cellule est vide. On marque la cellule pour pouvoir la
     // réécrire lors d'un rafraîchissement (voir plus haut).
     if (info.coteCell && !txt(info.coteCell) && !isNaN(sum.notePct)) {
@@ -636,29 +571,11 @@
       if (!rc) { rc = document.createElement("span"); rc.className = "etsx-rc"; info.coteCell.appendChild(rc); }
       rc.textContent = "R" + sum.rang; rc.title = "Rang centile : " + sum.rang + "e";
     }
-    // Couleur de la ligne : UNIQUEMENT selon la cote finale (cours complété).
-    var t = coteTier(sum.cote || (info.coteCell ? txt(info.coteCell) : ""));
-    if (settings.colorNotes && t !== "na") colorRow(info.row, t);
     info.row.setAttribute("data-etsx-done", "1");
   }
 
-  // Repli SANS fetch : colore la ligne d'après le rang centile / la cote déjà
-  // visibles nativement (utile pour les sessions passées, ou si le fetch est
-  // bloqué par les cookies). Provisoire : le fetch raffinera ensuite.
-  function colorFromNative(info) {
-    if (!settings.colorNotes || !info.row) return false;
-    // déjà traité (fetch OU natif) → ne PAS recolorer (évite la boucle de re-rendu / clignotement)
-    if (info.row.getAttribute("data-etsx-done") === "1" || info.row.getAttribute("data-etsx-native") === "1") return false;
-    // couleur d'après la cote affichée (lettre) ; sans cote => pas de couleur
-    var t = coteTier(info.coteCell ? txt(info.coteCell) : "");
-    if (t === "na") { info.row.setAttribute("data-etsx-native", "1"); return false; }
-    colorRow(info.row, t);
-    info.row.setAttribute("data-etsx-native", "1");
-    return true;
-  }
-
-  // Réapplique Cote / R.centile / couleur depuis le cache mémoire, à chaque
-  // cycle. Survit aux re-rendus d'Infragistics (qui recréent les <tr>).
+  // Réapplique Cote / R.centile depuis le cache mémoire, à chaque cycle.
+  // Survit aux re-rendus d'Infragistics (qui recréent les <tr>).
   function repaintList() {
     if (!isListPage()) return;
     var rows = collectCourseRows();
@@ -669,7 +586,6 @@
       if (info.row.getAttribute("data-etsx-done") === "1") return;
       var sum = _lastCache && _lastCache[info.key];
       if (sum) { applySummaryToRow(info, sum, true); any = true; }
-      else colorFromNative(info);
     });
     if (any) { try { buildCharts(rows, _lastCache); } catch (e) {} }
   }
@@ -690,7 +606,7 @@
         if (cached) {
           applySummaryToRow(info, cached);              // affichage immédiat
           if (perime(cached)) pending.push(info);       // puis rafraîchissement
-        } else { colorFromNative(info); pending.push(info); }
+        } else { pending.push(info); }
       });
       try { buildCharts(rows, cache || {}); } catch (e) { LOG("buildCharts (cache) erreur", e); }
       if (pending.length) LOG("récupération de", pending.length, "sommaire(s) à (re)charger…");
@@ -746,8 +662,8 @@
       var hn = isNaN(d.notePct) ? 0 : (H - padT - padB) * d.notePct / 100;
       var hm = isNaN(d.moyPct) ? 0 : (H - padT - padB) * d.moyPct / 100;
       var by = H - padB;
-      var meTxt = esc(name) + " — vous : " + (isNaN(d.notePct) ? "—" : d.notePct + "%");
-      var grpTxt = esc(name) + " — groupe : " + (isNaN(d.moyPct) ? "—" : d.moyPct + "%");
+      var meTxt = esc(name) + " : vous " + (isNaN(d.notePct) ? "N/D" : d.notePct + "%");
+      var grpTxt = esc(name) + " : groupe " + (isNaN(d.moyPct) ? "N/D" : d.moyPct + "%");
       bars += '<rect data-etsx-tip="' + meTxt + '" x="' + (cx - bw - 1) + '" y="' + (by - hn) + '" width="' + bw + '" height="' + hn + '" rx="2" fill="var(--etsx-accent)"><title>' + meTxt + '</title></rect>';
       bars += '<rect data-etsx-tip="' + grpTxt + '" x="' + (cx + 1) + '" y="' + (by - hm) + '" width="' + bw + '" height="' + hm + '" rx="2" fill="var(--etsx-ink-3)"><title>' + grpTxt + '</title></rect>';
       labels += '<text x="' + cx + '" y="' + (H - padB + 12) + '" text-anchor="end" font-size="8" fill="var(--etsx-ink-2)" transform="rotate(-40 ' + cx + ' ' + (H - padB + 12) + ')">' + esc(name) + '</text>';
@@ -755,11 +671,11 @@
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%">' + grid + bars + labels + '</svg>';
   }
 
-  // Une ligne par programme (repli sans historique multi-programmes) — via
+  // Une ligne par programme (repli sans historique multi-programmes), via
   // Chart.js pour la même raison que les deux autres graphiques : grille,
   // survol fiable, et surtout la légende cliquable native de Chart.js qui
   // permet de masquer un programme (ex. un cheminement préparatoire terminé)
-  // sans rien coder de spécifique — c'est un comportement de base de la
+  // sans rien coder de spécifique, c'est un comportement de base de la
   // bibliothèque dès qu'on lui donne plusieurs jeux de données.
   var _evoChart = null;
   function renderEvoChart(canvas, series) {
@@ -843,7 +759,7 @@
   function buildBarChart(host, rows, cache) {
     var withSess = rows.map(function (r) {
       var s = cache[r.key] || {};
-      var lbl = shortSession(nearestSessionLabel(r.row) || "") || "—";
+      var lbl = shortSession(nearestSessionLabel(r.row) || "") || "N/D";
       return { sigle: r.sigle, notePct: s.notePct, moyPct: s.moyPct, session: lbl };
     }).filter(function (d) { return !isNaN(d.notePct) || !isNaN(d.moyPct); });
     var sessions = [];
@@ -919,12 +835,36 @@
    * SUIVANTE (jamais deux fois le même) : plus robuste que de réutiliser
    * indéfiniment celui de la première page, au cas où l'un des postbacks le
    * renouvelle. */
+  // Sigle officiel du programme (ex. « Baccalauréat en génie électrique » -> ELE),
+  // pour un affichage court dans la légende du graphique d'évolution. Programmes
+  // connus en dur ; pour un programme absent de la liste, repli sur les initiales
+  // des mots significatifs du nom.
+  var PROGRAMME_SIGLES = [
+    { re: /cheminement universitaire en technologie/i, sigle: "CUT" },
+    { re: /g[ée]nie [ée]lectrique/i, sigle: "ELE" },
+    { re: /g[ée]nie logiciel/i, sigle: "LOG" },
+    { re: /g[ée]nie m[ée]canique/i, sigle: "MEC" },
+    { re: /g[ée]nie de la construction/i, sigle: "CTN" },
+    { re: /g[ée]nie de la production automatis[ée]e/i, sigle: "GPA" },
+    { re: /g[ée]nie des op[ée]rations et de la logistique/i, sigle: "GOL" }
+  ];
+  var SIGLE_STOPWORDS = /^(de|des|du|la|le|les|l|en|et|d|à|au|aux|baccalaur[ée]at)$/i;
+  function programmeSigle(nom) {
+    nom = (nom || "").trim();
+    if (!nom) return nom;
+    for (var i = 0; i < PROGRAMME_SIGLES.length; i++) { if (PROGRAMME_SIGLES[i].re.test(nom)) return PROGRAMME_SIGLES[i].sigle; }
+    var mots = nom.split(/\s+/).filter(function (w) { return w && !SIGLE_STOPWORDS.test(w.replace(/['’]/g, "")); });
+    if (!mots.length) return nom;
+    var sigle = mots.map(function (w) { return w.charAt(0).toUpperCase(); }).join("").slice(0, 4);
+    return sigle || nom;
+  }
   function parseProgrammeOptions(doc) {
     var sel = doc.getElementById("ctl00_ContentPlaceHolderMain_lisPgm");
     if (!sel) return null;
     return Array.from(sel.options).map(function (o) {
       var m = o.textContent.match(/^\s*\d+\s+(.*?)\s*:\s*(actif|inactif)/i);
-      return { code: o.value, nom: m ? m[1].trim() : o.textContent.trim() };
+      var complet = m ? m[1].trim() : o.textContent.trim();
+      return { code: o.value, nom: programmeSigle(complet), nomComplet: complet, actif: m ? /^actif$/i.test(m[2]) : false };
     });
   }
   function aspHiddenFields(doc) {
@@ -946,7 +886,7 @@
   }
   // cb reçoit [{code, nom, sessions}], ou null si la requête initiale échoue.
   // Un programme sans historique (jamais suivi de cours, moyenne à 0) a
-  // simplement sessions:[] — filtré par l'appelant, pas ici.
+  // simplement sessions:[], filtré par l'appelant, pas ici.
   function fetchProgrammes(cb) {
     if (programmesData) { cb(programmesData); return; }
     fetch("https://signets-ens.etsmtl.ca/Secure/DocEvolutionMoyenne.aspx", { credentials: "same-origin" })
@@ -955,16 +895,16 @@
         if (!html) { cb(null); return; }
         var doc = new DOMParser().parseFromString(html, "text/html");
         var options = parseProgrammeOptions(doc);
-        var premier = { code: options && options[0] ? options[0].code : "", nom: options && options[0] ? options[0].nom : "Votre programme", sessions: parseEvolution(html) || [] };
+        var premier = { code: options && options[0] ? options[0].code : "", nom: options && options[0] ? options[0].nom : "Votre programme", nomComplet: options && options[0] ? options[0].nomComplet : "", actif: options && options[0] ? options[0].actif : true, sessions: parseEvolution(html) || [] };
         if (!options || options.length <= 1) { LOG("cheminement : un seul programme"); cb([premier]); return; }
-        LOG("cheminement :", options.length, "programme(s) —", options.map(function (o) { return o.nom; }).join(", "));
+        LOG("cheminement :", options.length, "programme(s), ", options.map(function (o) { return o.nom; }).join(", "));
         var out = [premier], fields = aspHiddenFields(doc);
         (function next(i) {
           if (i >= options.length) { cb(out); return; }
           postProgramme(options[i].code, fields).then(function (html2) {
             if (html2) {
               var doc2 = new DOMParser().parseFromString(html2, "text/html");
-              out.push({ code: options[i].code, nom: options[i].nom, sessions: parseEvolution(html2) || [] });
+              out.push({ code: options[i].code, nom: options[i].nom, nomComplet: options[i].nomComplet, actif: options[i].actif, sessions: parseEvolution(html2) || [] });
               fields = aspHiddenFields(doc2);
             } else LOG("cheminement : échec pour", options[i].nom);
             setTimeout(function () { next(i + 1); }, 150); // séquentiel, doux pour le serveur
@@ -1018,10 +958,9 @@
         url: location.href,
         conteneurGraphiques: !!document.getElementById("etsx-charts"),
         menuGauche: !!document.getElementById("ctl00_LoginViewLeftColumn_MenuVertical"),
-        colorNotes: settings.colorNotes,
         cours: _lastRows.map(function (r) {
           var s = _lastCache[r.key] || {};
-          return { sigle: r.sigle, notePct: s.notePct, moyPct: s.moyPct, rang: s.rang, cote: s.cote, couleur: s.tier, cellCote: !!r.coteCell, cellRang: !!r.rangCell, href: r.href };
+          return { sigle: r.sigle, notePct: s.notePct, moyPct: s.moyPct, rang: s.rang, cote: s.cote, cellCote: !!r.coteCell, cellRang: !!r.rangCell, href: r.href };
         }),
         programmes: programmesData
       };
@@ -1156,8 +1095,8 @@
     return { a: mu * k, b: (1 - mu) * k };
   }
 
-  /* ---- (3c) GRAPHIQUE DE DISTRIBUTION — via Chart.js ------------------------
-   * Rendu avec Chart.js (vendored, licence MIT — voir vendors/chartjs/) : grille
+  /* ---- (3c) GRAPHIQUE DE DISTRIBUTION, via Chart.js ------------------------
+   * Rendu avec Chart.js (vendored, licence MIT, voir vendors/chartjs/) : grille
    * complète, info-bulles fiables au survol. Le calcul (loi Bêta calée sur
    * moyenne + écart-type, zones colorées par écart à la moyenne) ne change pas.
    *   rouge (< moy − σ) · rose (< moy) · vert clair (< moy + σ) · vert (≥ moy + σ) */
@@ -1202,7 +1141,7 @@
   }
   // Un histogramme « en escalier » ne peut pas se découper par zone de la
   // même façon qu'une courbe : la dernière barre d'une zone n'a de bord droit
-  // que si SON dataset porte aussi le point qui le ferme — sans quoi
+  // que si SON dataset porte aussi le point qui le ferme, sans quoi
   // steppedLine n'a rien vers quoi prolonger le palier, et la barre manque à
   // l'appel (c'est le trou repéré sur les histogrammes). On regroupe donc les
   // bacs consécutifs d'une même zone, et chaque groupe ferme lui-même sa
@@ -1229,7 +1168,7 @@
         ink3 = cssVar("--etsx-ink-3", "#8a8f99"), line = cssVar("--etsx-line", "#e6e9ef");
     // Ligne verticale « Votre moyenne » : même habillage que sur l'ancien
     // rendu SVG (fine, en tirets, dans l'accent) plutôt qu'un trait plein
-    // épais — plus discrète, elle se pose sur la couleur de zone sans l'écraser.
+    // épais, plus discrète, elle se pose sur la couleur de zone sans l'écraser.
     // « Moyenne du groupe » n'apparaît plus sur les histogrammes : la forme
     // même de l'histogramme EST déjà centrée sur elle, une deuxième ligne à
     // côté de « Votre moyenne » n'ajoutait qu'une confusion visuelle. Elle
@@ -1352,7 +1291,7 @@
     return cr ? pts / cr : 0;
   }
   /* buildGpaSim() a été retirée en v42 : remplacée par buildGpaBoard() (fenêtre
-     superposÃ©e, v33), elle n'était plus appelée que par ses propres écouteurs —
+     superposÃ©e, v33), elle n'était plus appelée que par ses propres écouteurs,
      105 lignes de code inatteignable. */
 
   /* ---- MODAL (fenêtre superposée, fond flouté) -------------------------- */
@@ -1373,7 +1312,7 @@
     document.addEventListener("keydown", escClose);
   }
 
-  /* ---- SIMULATEUR — board (sessions en colonnes) ------------------------- */
+  /* ---- SIMULATEUR, board (sessions en colonnes) ------------------------- */
   // Instantané des cours conservé dans chrome.storage : _lastRows ne vit qu'en
   // mémoire, or SignETS recharge une vraie page à chaque navigation. Le simulateur
   // s'ouvrait donc vide partout ailleurs que sur « Mes cours ».
@@ -1390,7 +1329,7 @@
         var nativeCote = r.coteCell ? txt(r.coteCell).replace(/[^A-EX+\-]/gi, "").toUpperCase() : "";
         return { key: r.key, sigle: r.sigle, cred: numf(txt(r.credCell)) || 0,
                  cote: sm.cote || nativeCote || "",
-                 session: shortSession(nearestSessionLabel(r.row) || "") || "—" };
+                 session: shortSession(nearestSessionLabel(r.row) || "") || "N/D" };
       });
       var st = {}; st[GPA_SNAP] = _gpaSnapshot; cacheSet(st);
     }
@@ -1419,7 +1358,7 @@
       var its = groups[sess];
       var g = gpaCompute(its);
       var rowsHtml = its.map(function (it) {
-        var opts = '<option value="">—</option>' + GPA_COTES.map(function (c) { return '<option value="' + c + '"' + (c === it.cote ? " selected" : "") + '>' + c + '</option>'; }).join("");
+        var opts = '<option value=""></option>' + GPA_COTES.map(function (c) { return '<option value="' + c + '"' + (c === it.cote ? " selected" : "") + '>' + c + '</option>'; }).join("");
         return '<div class="etsx-simrow"><span class="etsx-simsig">' + esc(it.sigle) + '</span><span class="etsx-simcr">' + (it.cred || "") + ' cr</span><select data-key="' + esc(it.key) + '" class="etsx-gpa-sel">' + opts + '</select></div>';
       }).join("");
       return '<div class="etsx-simcol' + (isExcl(sess) ? ' is-excl' : '') + '">' +
@@ -1464,13 +1403,128 @@
   }
   function openSimModal() { openModal("Simulateur de moyenne", buildGpaBoard(), "etsx-modal-wide"); }
 
+  /* ---- HISTORIQUE, vue d'ensemble des cours, triable et filtrable par programme --
+   * Réutilise le même principe que le simulateur (gpaItems) : un instantané des
+   * lignes de cours vues sur « Mes cours » est gardé dans chrome.storage, donc la
+   * vue reste utilisable ailleurs sur SignETS. Le programme de chaque cours est
+   * déduit de sa session via fetchProgrammes() (même mécanisme que le graphique
+   * « Évolution de votre cote ») : rien à saisir à la main, ni ici ni dans les
+   * Paramètres. */
+  var HIST_SNAP = "etsx-hist-items";
+  var _histSnapshot = null;
+  cacheGet([HIST_SNAP], function (o) { if (o && o[HIST_SNAP]) _histSnapshot = o[HIST_SNAP]; });
+
+  function histItems() {
+    var rows = (isListPage() ? collectCourseRows() : _lastRows) || [];
+    var cache = _lastCache || {};
+    if (rows.length) {
+      _histSnapshot = rows.map(function (r) {
+        var sm = cache[r.key] || {};
+        var nativeCote = r.coteCell ? txt(r.coteCell).replace(/[^A-EX+\-]/gi, "").toUpperCase() : "";
+        return { key: r.key, sigle: r.sigle, titre: r.titre, cote: sm.cote || nativeCote || "",
+                 session: shortSession(nearestSessionLabel(r.row) || "") || "" };
+      });
+      var st = {}; st[HIST_SNAP] = _histSnapshot; cacheSet(st);
+    }
+    // Seuls les cours avec une cote connue ont leur place dans un classement.
+    return (_histSnapshot || []).filter(function (it) { return it.cote; });
+  }
+  // sessionOrder() normalise déjà « H26 » et « H2026 » vers la même valeur : plus
+  // fiable que de comparer les libellés bruts, qui n'ont pas toujours le même format
+  // selon qu'ils viennent du calendrier de la page ou de la page d'évolution.
+  function sessionProgrammeMap(programmes) {
+    var map = {};
+    (programmes || []).forEach(function (p) {
+      (p.sessions || []).forEach(function (s) { map[sessionOrder(s.id)] = p.nom; });
+    });
+    return map;
+  }
+  var HIST_SORTS = {
+    cote: function (a, b) { return (COTE_POINTS[b.cote] != null ? COTE_POINTS[b.cote] : -1) - (COTE_POINTS[a.cote] != null ? COTE_POINTS[a.cote] : -1); },
+    titre: function (a, b) { return (a.titre || a.sigle).localeCompare(b.titre || b.sigle, "fr"); },
+    sigle: function (a, b) { return a.sigle.localeCompare(b.sigle, "fr"); }
+  };
+  function buildHistView() {
+    var el = document.createElement("div"); el.className = "etsx-hist";
+    var items = histItems();
+    if (!items.length) {
+      el.innerHTML = '<div class="etsx-chart-empty">Ouvrez « Mes cours » pour charger votre historique : il restera ensuite disponible ici, partout sur SignETS.</div>';
+      return el;
+    }
+    el.innerHTML =
+      '<div class="etsx-hist-toolbar">' +
+        '<div class="etsx-hist-progs" id="etsx-hist-progs"><span class="etsx-hist-progs-loading">Détection du programme…</span></div>' +
+        '<div class="etsx-hist-sorts">' +
+          '<button type="button" class="etsx-hist-sortbtn is-active" data-sort="cote">Cote</button>' +
+          '<button type="button" class="etsx-hist-sortbtn" data-sort="sigle">Sigle</button>' +
+          '<button type="button" class="etsx-hist-sortbtn" data-sort="titre">Titre</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="etsx-hist-tablewrap"><table class="etsx-hist-table"><thead><tr><th>Sigle</th><th>Cours</th><th>Session</th><th>Cote</th></tr></thead><tbody id="etsx-hist-body"></tbody></table></div>';
+
+    var sort = "cote", activeProgs = {}, withProg = items;
+
+    function renderRows() {
+      var body = el.querySelector("#etsx-hist-body");
+      var filtered = withProg.filter(function (it) { return activeProgs[it.programme] !== false; });
+      filtered.sort(HIST_SORTS[sort]);
+      body.innerHTML = filtered.map(function (it) {
+        var col = coteColor(it.cote) || "var(--etsx-ink-3)";
+        return '<tr><td class="etsx-hist-sigle">' + esc(it.sigle) + '</td><td>' + esc(it.titre || "") + '</td><td>' + esc(it.session || "") + '</td>' +
+          '<td><span class="etsx-hist-cote" style="background:' + col + '">' + esc(it.cote) + '</span></td></tr>';
+      }).join("") || '<tr><td colspan="4" class="etsx-hist-empty">Aucun cours pour ce filtre.</td></tr>';
+    }
+    function renderProgChips(progs) {
+      var host = el.querySelector("#etsx-hist-progs");
+      host.innerHTML = progs.map(function (p) {
+        return '<button type="button" class="etsx-hist-chip' + (activeProgs[p] ? ' is-active' : '') + '" data-prog="' + esc(p) + '">' + esc(p) + '</button>';
+      }).join("");
+      host.querySelectorAll(".etsx-hist-chip").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var p = b.getAttribute("data-prog");
+          activeProgs[p] = !activeProgs[p];
+          b.classList.toggle("is-active", activeProgs[p]);
+          renderRows();
+        });
+      });
+    }
+    el.querySelectorAll(".etsx-hist-sortbtn").forEach(function (b) {
+      b.addEventListener("click", function () {
+        sort = b.getAttribute("data-sort");
+        el.querySelectorAll(".etsx-hist-sortbtn").forEach(function (x) { x.classList.toggle("is-active", x === b); });
+        renderRows();
+      });
+    });
+
+    renderRows(); // affichage immédiat, sans regroupement par programme
+    fetchProgrammes(function (programmes) {
+      if (!programmes) return;
+      var progMap = sessionProgrammeMap(programmes);
+      withProg = items.map(function (it) {
+        return { key: it.key, sigle: it.sigle, titre: it.titre, session: it.session, cote: it.cote,
+                 programme: progMap[sessionOrder(it.session)] || "Autre" };
+      });
+      var progsFound = [];
+      programmes.forEach(function (p) { if (progsFound.indexOf(p.nom) === -1) progsFound.push(p.nom); });
+      if (withProg.some(function (it) { return it.programme === "Autre"; }) && progsFound.indexOf("Autre") === -1) progsFound.push("Autre");
+      var actifs = programmes.filter(function (p) { return p.actif; }).map(function (p) { return p.nom; });
+      progsFound.forEach(function (p) { activeProgs[p] = actifs.length ? actifs.indexOf(p) !== -1 : true; });
+      renderProgChips(progsFound);
+      renderRows();
+    });
+
+    return el;
+  }
+  function openHistModal() { openModal("Historique des cours", buildHistView(), "etsx-modal-wide"); }
+
   /* ---- AIDE (tutoriel) --------------------------------------------------- */
   var HELP_HTML =
-    '<p>Bienvenue dans <b>SignETS amélioré</b>. Voici l\'essentiel :</p>' +
+    '<p>Voici ce qu\'ETStyle ajoute à SignETS :</p>' +
     '<ul>' +
-    '<li><b>Mes cours</b> : chaque ligne est colorée selon ta cote (vert = au-dessus, jaune = dans la moyenne, orange/rouge = en dessous). Le rang centile apparaît en petit badge « R ».</li>' +
+    '<li><b>Mes cours</b> : la cote estimée et le rang centile s\'affichent directement dans le tableau, à côté de chaque cours.</li>' +
     '<li><b>Page d\'un cours</b> : à gauche, « Évolution de votre moyenne » (toi vs le groupe) et « Distribution estimée des notes ». Le récap indique ta note, la moyenne, l\'écart-type, la médiane, le rang, et la cote (ou une prédiction si le cours est en cours).</li>' +
     '<li><b>Simulateur de moyenne</b> (bouton en haut) : modifie une cote pour voir l\'effet sur ta moyenne, par session et au global. Entre une « cote visée » pour savoir la cote minimale à obtenir.</li>' +
+    '<li><b>Historique des cours</b> (bouton en haut) : tous tes cours dans un seul tableau, triable par cote, par sigle ou par titre. Le programme actif est détecté automatiquement ; les autres se filtrent avec les puces en haut du tableau.</li>' +
     '<li><b>Thème</b> : clair/sombre et couleur d\'accent en haut à gauche ; plus d\'options dans « Paramètres ».</li>' +
     '</ul>' +
     '<h4 class="etsx-help-h">Aide officielle de SignETS</h4>' +
@@ -1489,7 +1543,7 @@
       });
     } catch (e) {}
   }
-  function openHelpModal() { var c = document.createElement("div"); c.className = "etsx-help"; c.innerHTML = HELP_HTML; openModal("À l\'aide — utiliser SignETS", c); }
+  function openHelpModal() { var c = document.createElement("div"); c.className = "etsx-help"; c.innerHTML = HELP_HTML; openModal("À l\'aide, utiliser SignETS", c); }
 
   /* ---- (5) GLISSER-DÉPOSER DES ÉVALUATIONS --------------------------------
    * Drag natif (HTML5) sur les lignes de la grille de notes ; au lâcher, on
@@ -1518,7 +1572,7 @@
       });
     }
     // Pas de tri géométrique : querySelectorAll rend déjà l'ordre du document, et le
-    // glisser-déposer déplace les vrais nœuds — l'ordre DOM EST l'ordre visuel.
+    // glisser-déposer déplace les vrais nœuds, l'ordre DOM EST l'ordre visuel.
     // Un getBoundingClientRect par ligne à chaque cycle forçait un recalcul de mise
     // en page pour rien.
     return rows;
@@ -1561,7 +1615,7 @@
       options: {
         // devicePixelRatio explicite : sans ça, un canevas redimensionné très
         // vite après sa création (avant que le navigateur n'ait posé sa taille
-        // finale) peut garder un ratio approximatif — le texte des axes
+        // finale) peut garder un ratio approximatif, le texte des axes
         // ressort alors légèrement flou au lieu d'être net.
         responsive: true, maintainAspectRatio: false, animation: { duration: 0 },
         devicePixelRatio: window.devicePixelRatio || 1,
@@ -1592,7 +1646,7 @@
   // réécrivait innerHTML à chaque passage ; comme le MutationObserver écoute
   // document.body en childList+subtree, cette écriture le réveillait, qui relançait
   // applyAll : boucle infinie à 4 Hz sur toute page de cours. Le graphique était
-  // détruit et recréé quatre fois par seconde — d'où les infobulles impossibles
+  // détruit et recréé quatre fois par seconde, d'où les infobulles impossibles
   // à attraper (en plus des points SVG minuscules, trop petits pour survoler).
   var _sigDetail = "";
   function renderDetailBarChart(forcer) {
@@ -1751,6 +1805,22 @@
       applyTheme();
     });
   }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
+  /* Pont de messages avec la popup de la barre d'outils, toujours actif, même
+     si le thème est désactivé sur ce site, pour pouvoir le réactiver depuis là. */
+  if (window.chrome && chrome.runtime && chrome.runtime.onMessage) {
+    chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+      if (!msg || msg.target !== "etsx-popup") return;
+      if (msg.type === "getState") {
+        sendResponse({ site: "signets", enabled: settings.enabled !== false, theme: settings.theme, skin: settings.skin, accent: settings.accent });
+        return;
+      }
+      if (msg.type === "setEnabled") { settings.enabled = !!msg.value; saveSettings(); sendResponse({ ok: true }); return; }
+      if (msg.type === "setTheme") { settings.theme = msg.value === "dark" ? "dark" : "light"; saveSettings(); applyTheme(); sendResponse({ ok: true }); return; }
+      if (msg.type === "setSkin") { if (SKINS[msg.value]) setSkin(msg.value); sendResponse({ ok: true }); return; }
+    });
+  }
+
+  if (settings.enabled === false) { /* thème désactivé sur ce site : page laissée intacte */ }
+  else if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
   else start();
 })();

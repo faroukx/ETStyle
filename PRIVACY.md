@@ -1,4 +1,4 @@
-# Politique de confidentialité — ETStyle
+# Politique de confidentialité d'ETStyle
 
 Dernière mise à jour : 30 août 2026
 
@@ -14,7 +14,7 @@ ETStyle ne collecte, ne transmet et ne vend aucune donnée. Tout se passe locale
 
 ## Serveurs contactés
 
-ETStyle ne communique avec aucun serveur autre que ceux de l'ÉTS déjà utilisés par les pages elles-mêmes — par exemple pour récupérer l'historique multi-programme sur la page « Évolution de votre cote » de SignETS. Aucune requête n'est envoyée vers un serveur appartenant au développeur ou à un tiers.
+ETStyle ne communique avec aucun serveur autre que ceux de l'ÉTS déjà utilisés par les pages elles-mêmes, par exemple pour récupérer l'historique multi-programme sur la page « Évolution de votre cote » de SignETS. Aucune requête n'est envoyée vers un serveur appartenant au développeur ou à un tiers.
 
 ## Bibliothèques incluses
 

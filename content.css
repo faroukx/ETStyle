@@ -1,5 +1,5 @@
 /* =============================================================================
- * ETStyle — Thème & Console de session
+ * ETStyle, Thème & Console de session
  * Cible : https://portail.etsmtl.ca/*  (SmartAdmin / JarvisWidget / FullCalendar v3)
  *
  * ARCHITECTURE : tout est piloté par des design tokens (variables CSS).
@@ -10,14 +10,17 @@
  * ========================================================================== */
 
 /* ----------------------------------------------------------------------------
- * 1. DESIGN TOKENS — partagés
+ * 1. DESIGN TOKENS, partagés
  * ------------------------------------------------------------------------- */
+/* --etsx-on-accent, --etsx-ui et --etsx-head n'ont volontairement pas de valeur
+   par défaut ici : ils ne sont posés que par applyTheme(), donc si le thème
+   est désactivé sur ce site (aucun attribut data-etsx-skin posé), toute règle
+   qui les référence devient invalide et n'a aucun effet, la page reste native. */
 :root {
-  --etsx-on-accent: #ffffff;
-  --etsx-radius: 10px;
-  --etsx-radius-sm: 7px;
-  --etsx-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --etsx-head: var(--etsx-ui);
+  --etsx-radius: 0;
+  --etsx-radius-sm: 0;
+  --etsx-shadow: none;
+  --etsx-shadow-pop: none;
 }
 
 /* ---- SKIN : MINIMAL ------------------------------------------------------- */
@@ -25,17 +28,13 @@ html[data-etsx-skin="minimal"] {
   --etsx-bg: #f1f3f7; --etsx-surface: #ffffff; --etsx-surface-2: #f4f6f9; --etsx-surface-3: #eef1f6;
   --etsx-line: #e6e9ef; --etsx-line-2: #d6dbe4;
   --etsx-ink: #1c1f26; --etsx-ink-2: #5a6473; --etsx-ink-3: #9aa3b2;
-  --etsx-radius: 10px; --etsx-radius-sm: 7px;
   --etsx-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --etsx-head: var(--etsx-ui);
-  --etsx-shadow: 0 1px 2px rgba(20, 22, 27, 0.05);
-  --etsx-shadow-pop: 0 8px 28px rgba(20, 22, 27, 0.14);
 }
 html[data-etsx-skin="minimal"][data-etsx-theme="dark"] {
   --etsx-bg: #121419; --etsx-surface: #1b1e24; --etsx-surface-2: #23272f; --etsx-surface-3: #2a2f38;
   --etsx-line: #2c313a; --etsx-line-2: #3a414c;
   --etsx-ink: #e9ebf1; --etsx-ink-2: #a7b0bd; --etsx-ink-3: #6f7886;
-  --etsx-shadow: 0 1px 2px rgba(0,0,0,.45); --etsx-shadow-pop: 0 8px 28px rgba(0,0,0,.6);
 }
 
 /* ---- SKIN : CLASSIC (ÉTSignets, bleu marine + accent) -------------------- */
@@ -43,17 +42,13 @@ html[data-etsx-skin="classic"] {
   --etsx-bg: #e9eef5; --etsx-surface: #ffffff; --etsx-surface-2: #eef3f9; --etsx-surface-3: #e2ebf4;
   --etsx-line: #cdd9e6; --etsx-line-2: #b3c4d7;
   --etsx-ink: #102444; --etsx-ink-2: #3f5a78; --etsx-ink-3: #7d93ad;
-  --etsx-radius: 6px; --etsx-radius-sm: 4px;
   --etsx-ui: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   --etsx-head: "Segoe UI", Tahoma, sans-serif;
-  --etsx-shadow: 0 1px 2px rgba(16, 36, 63, 0.10);
-  --etsx-shadow-pop: 0 8px 26px rgba(16, 36, 63, 0.20);
 }
 html[data-etsx-skin="classic"][data-etsx-theme="dark"] {
   --etsx-bg: #0c1622; --etsx-surface: #14202f; --etsx-surface-2: #1b2a3c; --etsx-surface-3: #21344a;
   --etsx-line: #27394d; --etsx-line-2: #35495f;
   --etsx-ink: #e7eef6; --etsx-ink-2: #a8c0d6; --etsx-ink-3: #6f879e;
-  --etsx-shadow: 0 1px 2px rgba(0,0,0,.5); --etsx-shadow-pop: 0 8px 28px rgba(0,0,0,.6);
 }
 
 /* ---- SKIN : PRESTIGE (crimson + papier, sérif académique) ---------------- */
@@ -61,17 +56,13 @@ html[data-etsx-skin="prestige"] {
   --etsx-bg: #f3eee8; --etsx-surface: #fffdfb; --etsx-surface-2: #f4ece3; --etsx-surface-3: #ede2d6;
   --etsx-line: #e1d6c8; --etsx-line-2: #ccbba6;
   --etsx-ink: #1d1916; --etsx-ink-2: #5a4f47; --etsx-ink-3: #8b7d70;
-  --etsx-radius: 4px; --etsx-radius-sm: 3px;
   --etsx-ui: Georgia, "Times New Roman", "Iowan Old Style", serif;
   --etsx-head: Georgia, "Times New Roman", serif;
-  --etsx-shadow: 0 1px 2px rgba(30, 20, 15, 0.08);
-  --etsx-shadow-pop: 0 10px 30px rgba(30, 20, 15, 0.22);
 }
 html[data-etsx-skin="prestige"][data-etsx-theme="dark"] {
   --etsx-bg: #16110e; --etsx-surface: #211a16; --etsx-surface-2: #2a211c; --etsx-surface-3: #332821;
   --etsx-line: #3a2f28; --etsx-line-2: #4d3f35;
   --etsx-ink: #f1eae3; --etsx-ink-2: #c6b6a8; --etsx-ink-3: #927f70;
-  --etsx-shadow: 0 1px 2px rgba(0,0,0,.5); --etsx-shadow-pop: 0 10px 30px rgba(0,0,0,.65);
 }
 
 /* ---- SKIN : GAMING (violet néon + noir bleuté, technique mais lisible) --- */
@@ -79,23 +70,19 @@ html[data-etsx-skin="gaming"] {
   --etsx-bg: #eef0fb; --etsx-surface: #ffffff; --etsx-surface-2: #f1effc; --etsx-surface-3: #e7e3f9;
   --etsx-line: #dcd8f4; --etsx-line-2: #c7c1ec;
   --etsx-ink: #181425; --etsx-ink-2: #5b5480; --etsx-ink-3: #948dbd;
-  --etsx-radius: 8px; --etsx-radius-sm: 6px;
   --etsx-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --etsx-head: Consolas, "SF Mono", "Cascadia Code", "Segoe UI Mono", ui-monospace, monospace;
-  --etsx-shadow: 0 1px 2px rgba(90, 60, 200, 0.12);
-  --etsx-shadow-pop: 0 10px 32px rgba(90, 60, 200, 0.22);
-  --etsx-glow: 0 0 0 1px rgba(139, 92, 246, 0.35), 0 0 16px rgba(139, 92, 246, 0.25);
 }
 html[data-etsx-skin="gaming"][data-etsx-theme="dark"] {
   --etsx-bg: #0a0a12; --etsx-surface: #121225; --etsx-surface-2: #191a33; --etsx-surface-3: #212247;
   --etsx-line: #2c2d55; --etsx-line-2: #3d3f74;
   --etsx-ink: #eae9ff; --etsx-ink-2: #a9a8d6; --etsx-ink-3: #6f6ea3;
-  --etsx-shadow: 0 1px 2px rgba(0,0,0,.5); --etsx-shadow-pop: 0 10px 34px rgba(124,58,237,.35);
-  --etsx-glow: 0 0 0 1px rgba(139, 92, 246, 0.5), 0 0 18px rgba(139, 92, 246, 0.35);
 }
 
-/* repli si aucun skin (anciens réglages) */
-html:not([data-etsx-skin]) { --etsx-bg:#f1f3f7; --etsx-surface:#fff; --etsx-surface-2:#f4f6f9; --etsx-surface-3:#eef1f6; --etsx-line:#e6e9ef; --etsx-line-2:#d6dbe4; --etsx-ink:#1c1f26; --etsx-ink-2:#5a6473; --etsx-ink-3:#9aa3b2; --etsx-shadow:0 1px 2px rgba(20,22,27,.05); --etsx-shadow-pop:0 8px 28px rgba(20,22,27,.14); }
+/* Volontairement pas de repli « aucun skin » : quand le thème est désactivé sur
+   ce site, data-etsx-skin n'est jamais posé et --etsx-bg/--etsx-surface/etc.
+   restent indéfinis, donc les règles ci-dessous qui les utilisent n'ont aucun
+   effet et la page garde son apparence native. */
 
 /* ----------------------------------------------------------------------------
  * 2. FONDATIONS
@@ -108,7 +95,7 @@ body.desktop-detected, body {
 #content { padding: 16px 16px 28px !important; }
 ::selection { background: var(--etsx-accent); color: var(--etsx-on-accent); }
 *::-webkit-scrollbar { width: 12px; height: 12px; }
-*::-webkit-scrollbar-thumb { background: var(--etsx-line-2); border-radius: 8px; border: 3px solid var(--etsx-bg); }
+*::-webkit-scrollbar-thumb { background: var(--etsx-line-2); border-radius: 0; border: 3px solid var(--etsx-bg); }
 *::-webkit-scrollbar-thumb:hover { background: var(--etsx-ink-3); }
 h1, h2, h3, h4, .h1, .h2, .h3 { font-family: var(--etsx-head) !important; }
 
@@ -117,9 +104,9 @@ h1, h2, h3, h4, .h1, .h2, .h3 { font-family: var(--etsx-head) !important; }
  * ------------------------------------------------------------------------- */
 html body #header { background: var(--etsx-surface) !important; background-image: none !important; border-bottom: 1px solid var(--etsx-line) !important; box-shadow: none !important; z-index: 900 !important; }
 html body #header #logo-group { background: var(--etsx-surface) !important; background-image: none !important; }
-#logo img { display: none !important; }
-#googleApps-menu, #header #profile-menu, #header ul.header-dropdown-list.btn-header { display: none !important; }
-#header > section#top-right > .pull-right > .txt-color-white { display: none !important; }
+html[data-etsx-skin] #logo img { display: none !important; }
+html[data-etsx-skin] #googleApps-menu, html[data-etsx-skin] #header #profile-menu, html[data-etsx-skin] #header ul.header-dropdown-list.btn-header { display: none !important; }
+html[data-etsx-skin] #header > section#top-right > .pull-right > .txt-color-white { display: none !important; }
 html body #header, html body #header a, html body #header span,
 html body #header .txt-color-white, html body #header .txt-color-white * { color: var(--etsx-ink) !important; }
 
@@ -148,46 +135,46 @@ html body #header .txt-color-white, html body #header .txt-color-white * { color
  * 4. NAVIGATION LATÉRALE
  * ------------------------------------------------------------------------- */
 /* position réelle (fixed) et z-index définis plus bas, avec le reste des
-   règles d'en-tête/menu — cette règle ne fixe plus que le reste des
+   règles d'en-tête/menu, cette règle ne fixe plus que le reste des
    styles visuels du panneau. */
 #logo-group, aside#left-panel, body #left-panel { background: var(--etsx-surface) !important; background-image: none !important; border-right: 1px solid var(--etsx-line); }
 #logo-group { border-right: 0; border-bottom: 1px solid var(--etsx-line); }
 #left-panel nav i.fa, #left-panel nav .fa { color: var(--etsx-ink-2) !important; }
 /* Bouton natif « Réduire le menu » : retiré (comportement non nécessaire). */
-a[data-action="toggleMenu"] { display: none !important; }
+html[data-etsx-skin] a[data-action="toggleMenu"] { display: none !important; }
 #left-panel nav ul li a { color: var(--etsx-ink) !important; transition: background .12s ease, color .12s ease; }
 #left-panel nav ul li a:hover { background: var(--etsx-surface-2) !important; color: var(--etsx-accent) !important; }
 #left-panel nav ul li.active > a { color: var(--etsx-accent) !important; font-weight: 600; }
 #left-panel nav ul li a:hover i.fa, #left-panel nav ul li.active > a i.fa { color: var(--etsx-accent) !important; }
 #left-panel nav ul li a .collapse-sign, #left-panel nav ul li a .collapse-sign .fa { color: var(--etsx-ink-3) !important; background: transparent !important; box-shadow: none !important; }
 /* sous-menus / flyouts lisibles */
-html body #left-panel nav ul ul,
-html body.minified #left-panel nav > ul > li:hover > ul,
-html body.minified #left-panel nav > ul > li > ul {
+html[data-etsx-skin] body #left-panel nav ul ul,
+html[data-etsx-skin] body.minified #left-panel nav > ul > li:hover > ul,
+html[data-etsx-skin] body.minified #left-panel nav > ul > li > ul {
   background: var(--etsx-surface) !important; border: 1px solid var(--etsx-line) !important;
   border-radius: 0 var(--etsx-radius-sm) var(--etsx-radius-sm) 0 !important; box-shadow: var(--etsx-shadow-pop) !important;
 }
-#left-panel nav ul ul li, #left-panel nav ul ul li.active { background: transparent !important; margin: 0 !important; border: 0 !important; }
-html body #left-panel nav ul ul li a { color: var(--etsx-ink-2) !important; background: transparent !important; border: 0 !important; }
-html body #left-panel nav ul ul li a:hover { background: var(--etsx-surface-2) !important; color: var(--etsx-accent) !important; }
-.minified nav > ul > li > a > .menu-item-parent { background: var(--etsx-accent) !important; color: var(--etsx-on-accent) !important; box-shadow: none !important; border: 0 !important; border-radius: var(--etsx-radius-sm) var(--etsx-radius-sm) 0 0 !important; }
-#left-panel nav ul ul::before, #left-panel nav ul ul::after,
-#left-panel nav > ul > li > a::after, #left-panel nav ul li.active > a::before, #left-panel nav ul li.active > a::after,
-#left-panel .arrow, .minifyme { display: none !important; content: none !important; border: 0 !important; }
+html[data-etsx-skin] #left-panel nav ul ul li, html[data-etsx-skin] #left-panel nav ul ul li.active { background: transparent !important; margin: 0 !important; border: 0 !important; }
+html[data-etsx-skin] body #left-panel nav ul ul li a { color: var(--etsx-ink-2) !important; background: transparent !important; border: 0 !important; }
+html[data-etsx-skin] body #left-panel nav ul ul li a:hover { background: var(--etsx-surface-2) !important; color: var(--etsx-accent) !important; }
+html[data-etsx-skin] .minified nav > ul > li > a > .menu-item-parent { background: var(--etsx-accent) !important; color: var(--etsx-on-accent) !important; box-shadow: none !important; border: 0 !important; border-radius: var(--etsx-radius-sm) var(--etsx-radius-sm) 0 0 !important; }
+html[data-etsx-skin] #left-panel nav ul ul::before, html[data-etsx-skin] #left-panel nav ul ul::after,
+html[data-etsx-skin] #left-panel nav > ul > li > a::after, html[data-etsx-skin] #left-panel nav ul li.active > a::before, html[data-etsx-skin] #left-panel nav ul li.active > a::after,
+html[data-etsx-skin] #left-panel .arrow, html[data-etsx-skin] .minifyme { display: none !important; content: none !important; border: 0 !important; }
 /* icônes custom (images de fond) */
-body.minified #left-panel nav > ul > li > a > i[class*="appsanywhere"],
-body.minified #left-panel nav > ul > li > a > i[class*="portailgus"],
-body.minified #left-panel nav > ul > li > a > i[class*="infoets"],
-body.minified #left-panel nav > ul > li > a > i[class*="distance"] { background-size: 16px 16px !important; background-repeat: no-repeat !important; background-position: center !important; width: 18px !important; height: 18px !important; font-size: 0 !important; }
+html[data-etsx-skin] body.minified #left-panel nav > ul > li > a > i[class*="appsanywhere"],
+html[data-etsx-skin] body.minified #left-panel nav > ul > li > a > i[class*="portailgus"],
+html[data-etsx-skin] body.minified #left-panel nav > ul > li > a > i[class*="infoets"],
+html[data-etsx-skin] body.minified #left-panel nav > ul > li > a > i[class*="distance"] { background-size: 16px 16px !important; background-repeat: no-repeat !important; background-position: center !important; width: 18px !important; height: 18px !important; font-size: 0 !important; }
 /* descriptions sous icônes (mode réduit) */
 .etsx-nav-cap { display: none; }
-html body.minified aside#left-panel { width: 76px !important; min-width: 76px !important; max-width: 76px !important; }
-html body.minified #main { margin-left: 76px !important; }
-body.minified #left-panel nav > ul > li > a { text-align: center !important; padding: 8px 3px 7px !important; height: auto !important; line-height: 1 !important; }
-body.minified #left-panel nav > ul > li > a > i.fa { display: block !important; float: none !important; margin: 0 auto 4px !important; font-size: 15px !important; width: auto !important; color: var(--etsx-ink-2) !important; }
-body.minified #left-panel nav > ul > li.active > a > i.fa, body.minified #left-panel nav > ul > li:hover > a > i.fa { color: var(--etsx-accent) !important; }
-body.minified #left-panel nav > ul > li > a > .etsx-nav-cap { display: block !important; font: 600 9px/1.15 var(--etsx-ui) !important; color: var(--etsx-ink-2) !important; white-space: normal; max-width: 70px; margin: 0 auto; }
-body.minified #left-panel nav > ul > li.active > a > .etsx-nav-cap { color: var(--etsx-accent) !important; }
+html[data-etsx-skin] body.minified aside#left-panel { width: 76px !important; min-width: 76px !important; max-width: 76px !important; }
+html[data-etsx-skin] body.minified #main { margin-left: 76px !important; }
+html[data-etsx-skin] body.minified #left-panel nav > ul > li > a { text-align: center !important; padding: 8px 3px 7px !important; height: auto !important; line-height: 1 !important; }
+html[data-etsx-skin] body.minified #left-panel nav > ul > li > a > i.fa { display: block !important; float: none !important; margin: 0 auto 4px !important; font-size: 15px !important; width: auto !important; color: var(--etsx-ink-2) !important; }
+html[data-etsx-skin] body.minified #left-panel nav > ul > li.active > a > i.fa, html[data-etsx-skin] body.minified #left-panel nav > ul > li:hover > a > i.fa { color: var(--etsx-accent) !important; }
+html[data-etsx-skin] body.minified #left-panel nav > ul > li > a > .etsx-nav-cap { display: block !important; font: 600 9px/1.15 var(--etsx-ui) !important; color: var(--etsx-ink-2) !important; white-space: normal; max-width: 70px; margin: 0 auto; }
+html[data-etsx-skin] body.minified #left-panel nav > ul > li.active > a > .etsx-nav-cap { color: var(--etsx-accent) !important; }
 /* masquer la barre de gauche */
 html.etsx-no-sidebar #left-panel { display: none !important; }
 html.etsx-no-sidebar #main { margin-left: 0 !important; }
@@ -202,12 +189,12 @@ section#widget-grid .jarviswidget > header > h2 { color: var(--etsx-ink) !import
 section#widget-grid .jarviswidget > header > h2 strong { font-weight: 700; }
 .jarviswidget > header > .widget-icon { background: transparent !important; color: var(--etsx-accent) !important; width: 22px; height: 22px; line-height: 22px !important; margin: 11px 4px 0 2px !important; font-size: 14px !important; box-shadow: none !important; }
 .jarviswidget > header .jarviswidget-ctrls, .jarviswidget > header .jarviswidget-ctrls > * { background: transparent !important; box-shadow: none !important; border: 0 !important; }
-.jarviswidget > header .button-icon, .jarviswidget > header .jarviswidget-ctrls a.button-icon { background: transparent !important; box-shadow: none !important; border: 0 !important; color: var(--etsx-ink-3) !important; border-radius: 6px; transition: color .12s ease; }
+.jarviswidget > header .button-icon, .jarviswidget > header .jarviswidget-ctrls a.button-icon { background: transparent !important; box-shadow: none !important; border: 0 !important; color: var(--etsx-ink-3) !important; border-radius: 0; transition: color .12s ease; }
 .jarviswidget > header .button-icon:hover { background: transparent !important; color: var(--etsx-accent) !important; }
 .jarviswidget > header .button-icon i { color: inherit !important; text-shadow: none !important; }
 .jarviswidget .widget-body { padding: 14px !important; color: var(--etsx-ink) !important; background: var(--etsx-surface) !important; }
 .jarviswidget .portlet-content-small, .jarviswidget .scrollable { background: var(--etsx-surface) !important; color: var(--etsx-ink) !important; }
-.etsx-collapse-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin-left: 2px; border: 0; background: transparent; cursor: pointer; color: var(--etsx-ink-3); border-radius: 6px; transition: color .12s ease; }
+.etsx-collapse-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin-left: 2px; border: 0; background: transparent; cursor: pointer; color: var(--etsx-ink-3); border-radius: 0; transition: color .12s ease; }
 .etsx-collapse-btn:hover { color: var(--etsx-accent); }
 .etsx-collapse-btn svg { width: 16px; height: 16px; transition: transform .15s ease; }
 .jarviswidget.etsx-collapsed > *:not(header) { display: none !important; }
@@ -232,7 +219,7 @@ section#widget-grid .jarviswidget > header > h2 strong { font-weight: 700; }
 .btn-primary, .btn-info { background: var(--etsx-accent) !important; border-color: var(--etsx-accent) !important; color: var(--etsx-on-accent) !important; box-shadow: none !important; }
 .btn-primary:hover, .btn-info:hover { background: var(--etsx-accent-700) !important; border-color: var(--etsx-accent-700) !important; }
 .dropdown-menu { background: var(--etsx-surface) !important; border: 1px solid var(--etsx-line) !important; border-radius: var(--etsx-radius-sm) !important; box-shadow: var(--etsx-shadow-pop) !important; padding: 6px !important; color: var(--etsx-ink) !important; }
-.dropdown-menu > li > a { border-radius: 6px !important; color: var(--etsx-ink) !important; padding: 8px 12px !important; }
+.dropdown-menu > li > a { border-radius: 0 !important; color: var(--etsx-ink) !important; padding: 8px 12px !important; }
 .dropdown-menu > li > a:hover { background: var(--etsx-surface-2) !important; color: var(--etsx-accent) !important; }
 .dropdown-menu label, .dropdown-menu li, .dropdown-menu .filtre-calendrier, .dropdown-menu .checkbox, .dropdown-menu span:not(.example-event):not(.fc-event) { color: var(--etsx-ink) !important; }
 .modal-content { background: var(--etsx-surface) !important; color: var(--etsx-ink) !important; border: 1px solid var(--etsx-line) !important; border-radius: var(--etsx-radius) !important; box-shadow: var(--etsx-shadow-pop) !important; overflow: hidden; }
@@ -243,7 +230,7 @@ section#widget-grid .jarviswidget > header > h2 strong { font-weight: 700; }
 .modal .modal-header, .modal .modal-body, .modal .modal-footer { display: block !important; height: auto !important; width: auto !important; opacity: 1 !important; }
 .modal { z-index: 100050 !important; } .modal-backdrop { z-index: 100040 !important; } body.modal-open { overflow: auto !important; }
 .label-danger, .badge-danger { background: var(--etsx-accent) !important; }
-.label, .badge { border-radius: 6px !important; font-weight: 700; }
+.label, .badge { border-radius: 0 !important; font-weight: 700; }
 .form-control, input.form-control, textarea, select.form-control { background: var(--etsx-surface) !important; color: var(--etsx-ink) !important; border: 1px solid var(--etsx-line) !important; border-radius: var(--etsx-radius-sm) !important; }
 .input-group-addon { background: var(--etsx-surface-2) !important; color: var(--etsx-ink-2) !important; border-color: var(--etsx-line) !important; }
 
@@ -275,7 +262,7 @@ section#widget-grid .jarviswidget > header > h2 strong { font-weight: 700; }
 .etsx-pct { font: 700 17px/1 var(--etsx-ui); color: var(--etsx-ink); font-variant-numeric: tabular-nums; }
 .etsx-pct small { font-size: 11px; color: var(--etsx-ink-2); margin-left: 1px; }
 .etsx-rail { display: flex; gap: 3px; }
-.etsx-seg { flex: 1 1 0; height: 8px; border-radius: 4px; background: var(--etsx-line); }
+.etsx-seg { flex: 1 1 0; height: 8px; border-radius: 0; background: var(--etsx-line); }
 .etsx-seg.is-done { background: var(--etsx-accent); }
 .etsx-seg.is-now { background: var(--etsx-accent); box-shadow: 0 0 0 2px var(--etsx-accent-soft); }
 .etsx-sub { font: 500 12.5px/1.3 var(--etsx-ui); color: var(--etsx-ink-2); }
@@ -311,7 +298,7 @@ html.etsx-no-quickbar #etsx-quickbar { display: none !important; }
 #etsx-settings { position: fixed; top: 56px; right: 14px; width: 330px; max-height: 82vh; overflow: auto; background: var(--etsx-surface); border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius); box-shadow: var(--etsx-shadow-pop); padding: 14px; z-index: 100000; }
 .etsx-set-title { font: 700 10px/1 var(--etsx-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--etsx-ink-3); margin: 16px 0 8px; }
 .etsx-set-title:first-child { margin-top: 0; }
-.etsx-check { display: flex; align-items: center; gap: 9px; padding: 6px 4px; border-radius: 7px; cursor: pointer; font: 500 13px/1.25 var(--etsx-ui); color: var(--etsx-ink); }
+.etsx-check { display: flex; align-items: center; gap: 9px; padding: 6px 4px; border-radius: 0; cursor: pointer; font: 500 13px/1.25 var(--etsx-ui); color: var(--etsx-ink); }
 .etsx-check:hover { background: var(--etsx-surface-2); }
 .etsx-check input { accent-color: var(--etsx-accent); width: 15px; height: 15px; cursor: pointer; flex: 0 0 auto; }
 .etsx-set-note { font: 500 11.5px/1.45 var(--etsx-ui); color: var(--etsx-ink-2); margin-top: 8px; }
@@ -337,7 +324,7 @@ html[data-etsx-theme="dark"] .etsx-about-icon { color: #ffffff; }
 .etsx-skin:hover { border-color: var(--etsx-accent); }
 .etsx-skin.is-active { border-color: var(--etsx-accent); box-shadow: inset 0 0 0 1px var(--etsx-accent); }
 .etsx-skin-sw { display: flex; gap: 3px; justify-content: center; margin-bottom: 6px; }
-.etsx-skin-sw span { width: 14px; height: 14px; border-radius: 4px; border: 1px solid rgba(0,0,0,.1); }
+.etsx-skin-sw span { width: 14px; height: 14px; border-radius: 0; border: 1px solid rgba(0,0,0,.1); }
 .etsx-skin-name { font: 600 11px/1.2 var(--etsx-ui); color: var(--etsx-ink); }
 
 /* ----------------------------------------------------------------------------
@@ -346,16 +333,15 @@ html[data-etsx-theme="dark"] .etsx-about-icon { color: #ffffff; }
 html.etsx-compact #content { padding: 10px !important; }
 html.etsx-compact section#widget-grid .jarviswidget { margin-bottom: 10px !important; }
 html.etsx-compact .jarviswidget .widget-body { padding: 9px !important; }
-html.etsx-square .jarviswidget, html.etsx-square .etsx-console, html.etsx-square .etsx-btn, html.etsx-square .etsx-chip, html.etsx-square #etsx-settings, html.etsx-square .btn, html.etsx-square .modal-content, html.etsx-square .dropdown-menu, html.etsx-square #etsx-quickbar { border-radius: 0 !important; }
 html.etsx-has-bg body { background-image: var(--etsx-bg-img) !important; background-size: cover !important; background-position: center !important; background-attachment: fixed !important; }
 html.etsx-has-bg #main { background: transparent !important; background-image: var(--etsx-bg-img) !important; background-size: cover !important; background-position: center !important; background-attachment: fixed !important; }
 html.etsx-has-bg #content { background: transparent !important; }
 
 /* ----------------------------------------------------------------------------
- * 11. CALENDRIER (FullCalendar v3) — thématisé clair ET sombre
+ * 11. CALENDRIER (FullCalendar v3), thématisé clair ET sombre
  * ------------------------------------------------------------------------- */
-#wid-id-calendrier { overflow: visible !important; }
-#wid-id-calendrier .widget-body { overflow: visible !important; }
+html[data-etsx-skin] #wid-id-calendrier { overflow: visible !important; }
+html[data-etsx-skin] #wid-id-calendrier .widget-body { overflow: visible !important; }
 /* en mode SOMBRE : on rend le calendrier réellement sombre et lisible */
 html[data-etsx-theme="dark"] #wid-id-calendrier .fc,
 html[data-etsx-theme="dark"] #wid-id-calendrier .fc-toolbar,
@@ -373,14 +359,14 @@ html[data-etsx-theme="dark"] #wid-id-calendrier .fc-axis,
 html[data-etsx-theme="dark"] #wid-id-calendrier .fc-day-header { color: var(--etsx-ink) !important; }
 html[data-etsx-theme="dark"] #wid-id-calendrier .fc-today, html[data-etsx-theme="dark"] #wid-id-calendrier td.fc-today { background: var(--etsx-accent-soft) !important; }
 /* les événements gardent leur couleur de source + texte blanc lisible */
-#wid-id-calendrier .fc-event, #wid-id-calendrier .fc-event *, #wid-id-calendrier .fc-time-grid-event, #wid-id-calendrier .fc-time-grid-event * { color: #fff !important; }
+html[data-etsx-skin] #wid-id-calendrier .fc-event, html[data-etsx-skin] #wid-id-calendrier .fc-event *, html[data-etsx-skin] #wid-id-calendrier .fc-time-grid-event, html[data-etsx-skin] #wid-id-calendrier .fc-time-grid-event * { color: #fff !important; }
 
 /* ----------------------------------------------------------------------------
- * 12. COUVERTURE SOMBRE GÉNÉRALE — neutralise les fonds blancs du portail
+ * 12. COUVERTURE SOMBRE GÉNÉRALE, neutralise les fonds blancs du portail
  * ------------------------------------------------------------------------- */
 /* barre grise sous l'en-tête (fil d'Ariane SmartAdmin) : retirée, elle ne
    servait à rien et mangeait de la hauteur en haut de chaque page. */
-#ribbon { display: none !important; }
+html[data-etsx-skin] #ribbon { display: none !important; }
 html[data-etsx-theme="dark"] .well, html[data-etsx-theme="dark"] .panel, html[data-etsx-theme="dark"] .panel-default,
 html[data-etsx-theme="dark"] .panel-heading, html[data-etsx-theme="dark"] .panel-body, html[data-etsx-theme="dark"] .jumbotron,
 html[data-etsx-theme="dark"] .popover, html[data-etsx-theme="dark"] .tab-content, html[data-etsx-theme="dark"] .nav-tabs > li > a,
@@ -401,7 +387,7 @@ html[data-etsx-theme="dark"] .jarviswidget:not(#wid-id-calendrier) table,
 html[data-etsx-theme="dark"] .jarviswidget:not(#wid-id-calendrier) td,
 html[data-etsx-theme="dark"] .jarviswidget:not(#wid-id-calendrier) th { border-color: var(--etsx-line) !important; }
 /* l'agent virtuel Kommunicate retiré */
-#kommunicate-widget-iframe, [id^="kommunicate"], .kommunicate-custom-iframe { display: none !important; }
+html[data-etsx-skin] #kommunicate-widget-iframe, html[data-etsx-skin] [id^="kommunicate"], html[data-etsx-skin] .kommunicate-custom-iframe { display: none !important; }
 
 /* ----------------------------------------------------------------------------
  * 13. RESPONSIVE + ACCESSIBILITÉ
@@ -411,7 +397,7 @@ html[data-etsx-theme="dark"] .jarviswidget:not(#wid-id-calendrier) th { border-c
 .etsx-chip:focus-visible, .etsx-btn:focus-visible, .etsx-swatch:focus-visible, .jarviswidget .button-icon:focus-visible, .btn:focus-visible { outline: 2px solid var(--etsx-accent); outline-offset: 2px; }
 
 /* =============================================================================
- * v11 — en-têtes de tableaux sombres, styles par thème, vues du bloc Cours
+ * v11, en-têtes de tableaux sombres, styles par thème, vues du bloc Cours
  * ========================================================================== */
 
 /* --- CORRECTIF SOMBRE : 1re rangée (en-tête) des tableaux (cours + calendrier) ---
@@ -433,7 +419,7 @@ html[data-etsx-theme="dark"] #wid-id-calendrier:not(#zz) .fc-widget-header {
 
 /* ============================ STYLE PAR THÈME ============================== */
 
-/* --- ÉTS (classic) : esthétique « Signets » — en-têtes bleus, lignes alternées --- */
+/* --- ÉTS (classic) : esthétique « Signets », en-têtes bleus, lignes alternées --- */
 html[data-etsx-skin="classic"] section#widget-grid .jarviswidget > header {
   background: linear-gradient(180deg, var(--etsx-surface-2), var(--etsx-surface)) !important;
   border-bottom: 2px solid var(--etsx-accent) !important;
@@ -463,7 +449,7 @@ html[data-etsx-skin="prestige"] .btn-primary, html[data-etsx-skin="prestige"] .b
 html[data-etsx-skin="prestige"] .etsx-week, html[data-etsx-skin="prestige"] .etsx-console-title { font-family: var(--etsx-head) !important; }
 html[data-etsx-skin="prestige"] .etsx-readout { background: var(--etsx-accent) !important; }
 
-/* --- Gaming : en-têtes techniques (monospace), accent violet néon, léger halo --- */
+/* --- Gaming : en-têtes techniques (monospace), accent violet néon --- */
 html[data-etsx-skin="gaming"] section#widget-grid .jarviswidget { border-color: var(--etsx-line-2) !important; }
 html[data-etsx-skin="gaming"] section#widget-grid .jarviswidget > header {
   background: linear-gradient(180deg, var(--etsx-surface-2), var(--etsx-surface)) !important;
@@ -482,9 +468,7 @@ html[data-etsx-skin="gaming"] .jarviswidget .table > thead > tr > th {
 html[data-etsx-skin="gaming"] .jarviswidget .table > tbody > tr:nth-child(even) > td { background: var(--etsx-surface-2) !important; }
 html[data-etsx-skin="gaming"] .btn-primary, html[data-etsx-skin="gaming"] .btn-info { background: var(--etsx-accent) !important; border-color: var(--etsx-accent) !important; }
 html[data-etsx-skin="gaming"] .etsx-week, html[data-etsx-skin="gaming"] .etsx-console-title { font-family: var(--etsx-head) !important; letter-spacing: .02em; }
-html[data-etsx-skin="gaming"] .etsx-readout { background: linear-gradient(135deg, var(--etsx-accent), #4c1d95) !important; box-shadow: var(--etsx-glow); }
-html[data-etsx-skin="gaming"] .etsx-swatch.is-active { box-shadow: 0 0 12px rgba(139, 92, 246, 0.55); }
-html[data-etsx-skin="gaming"] .etsx-skin.is-active { box-shadow: inset 0 0 0 1px var(--etsx-accent), 0 0 12px rgba(139, 92, 246, 0.4); }
+html[data-etsx-skin="gaming"] .etsx-readout { background: linear-gradient(135deg, var(--etsx-accent), #4c1d95) !important; }
 
 /* ===================== VUES DU BLOC « COURS » (Gallery / Board) ============ */
 .etsx-cours-view { margin-top: 4px; }
@@ -496,7 +480,7 @@ html[data-etsx-skin="gaming"] .etsx-skin.is-active { box-shadow: inset 0 0 0 1px
 .etsx-cc-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
 .etsx-cc-code, .etsx-cc-code a { font: 700 15px/1.2 var(--etsx-head) !important; color: var(--etsx-ink) !important; text-decoration: none !important; }
 .etsx-cc-code a:hover { color: var(--etsx-accent) !important; }
-.etsx-cc-cote { font: 700 11px/1 var(--etsx-ui); background: var(--etsx-accent); color: var(--etsx-on-accent); padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+.etsx-cc-cote { font: 700 11px/1 var(--etsx-ui); background: var(--etsx-accent); color: var(--etsx-on-accent); padding: 3px 8px; border-radius: 0; white-space: nowrap; }
 .etsx-cc-links ul, .etsx-cc-links .list-inline { list-style: none !important; margin: 0 !important; padding: 0 !important; display: flex; flex-wrap: wrap; gap: 12px; }
 .etsx-cc-links li { padding: 0 !important; }
 .etsx-cc-links a { color: var(--etsx-accent) !important; font: 600 12px/1 var(--etsx-ui) !important; text-decoration: none !important; display: inline-flex; align-items: center; gap: 4px; }
@@ -504,19 +488,19 @@ html[data-etsx-skin="gaming"] .etsx-skin.is-active { box-shadow: inset 0 0 0 1px
 .etsx-cc-links img { width: 14px; height: 14px; vertical-align: middle; }
 
 /* =============================================================================
- * v12 — correctifs ergonomie
+ * v12, correctifs ergonomie
  * ========================================================================== */
 
 /* #5 (v12) retiré en v42 : ces 10px de fond de page au-dessus de l'en-tête
-   étaient la « barre grise » — invisible quand l'en-tête défilait normalement,
+   étaient la « barre grise », invisible quand l'en-tête défilait normalement,
    mais devenue une bande grise permanente une fois l'en-tête rendue collante
    (position:sticky) en haut du viewport. Plus nécessaire : l'en-tête a
    maintenant son propre fond opaque et n'a plus besoin d'être décollée du bord. */
 
-/* #1 — retirer le bouton « − » natif (doublon avec le chevron du coin) */
-.jarviswidget > header .jarviswidget-toggle-btn { display: none !important; }
+/* #1, retirer le bouton « − » natif (doublon avec le chevron du coin) */
+html[data-etsx-skin] .jarviswidget > header .jarviswidget-toggle-btn { display: none !important; }
 
-/* #2 — CALENDRIER en SOMBRE : barre d'outils + contenu + boutons (rangée blanche du haut) */
+/* #2, CALENDRIER en SOMBRE : barre d'outils + contenu + boutons (rangée blanche du haut) */
 html[data-etsx-theme="dark"] #wid-id-calendrier .portlet-content,
 html[data-etsx-theme="dark"] #wid-id-calendrier .widget-body-toolbar,
 html[data-etsx-theme="dark"] #wid-id-calendrier .fc-toolbar {
@@ -532,12 +516,12 @@ html[data-etsx-theme="dark"] #wid-id-calendrier .fc-toolbar h2,
 html[data-etsx-theme="dark"] #wid-id-calendrier .widget-body-toolbar,
 html[data-etsx-theme="dark"] #wid-id-calendrier .widget-body-toolbar * { color: var(--etsx-ink) !important; }
 
-/* #4a — expander « + » du tableau Cours : toujours visible (couleur d'accent) */
+/* #4a, expander « + » du tableau Cours : toujours visible (couleur d'accent) */
 #wid-id-cours table td .fa-plus-square-o,
 #wid-id-cours table td .fa-minus-square-o { color: var(--etsx-accent) !important; }
 
 /* =============================================================================
- * EN-TÊTE — disposition en trois pièces indépendantes. #logo-group (la case
+ * EN-TÊTE, disposition en trois pièces indépendantes. #logo-group (la case
  * du logo natif) est complètement masqué : sa taille est imprévisible selon
  * le compte/l'écran, et le retirer laisse les accents coller proprement au
  * bord gauche.
@@ -550,9 +534,9 @@ html[data-etsx-theme="dark"] #wid-id-calendrier .widget-body-toolbar * { color: 
    natif de droite (Paramètres, nom, déconnexion), qui restait collé en haut
    de la bande avec un simple vertical-align:middle.
    justify-content:flex-end : #top-right était positionné par float:right, une
-   propriété que flex ignore — sans ce réglage il se retrouvait plaqué à
+   propriété que flex ignore, sans ce réglage il se retrouvait plaqué à
    gauche au lieu de sa place naturelle à droite. */
-html body #header {
+html[data-etsx-skin] body #header {
   position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important;
   z-index: 1100 !important; overflow: visible !important;
   height: 60px !important; display: flex !important; align-items: center !important; justify-content: flex-end !important;
@@ -561,28 +545,28 @@ html body #header {
 /* #etsx-hdr (40px) est encore imbriqué dans .pull-right (48px, display:block) :
    centrer #header ne centre que cette boîte de 48px, pas le contenu à
    l'intérieur. Même remède, un niveau plus bas. */
-html body #header .pull-right { display: flex !important; align-items: center !important; height: auto !important; }
+html[data-etsx-skin] body #header .pull-right { display: flex !important; align-items: center !important; height: auto !important; }
 /* Idem pour le menu de gauche : en position:absolute il défilait avec la page
    au lieu de rester en place. position:fixed corrige ça. */
-html body #left-panel { position: fixed !important; z-index: 1000 !important; }
+html[data-etsx-skin] body #left-panel { position: fixed !important; z-index: 1000 !important; }
 /* Compensation : #header et #left-panel étant hors du flux (fixed), rien ne
-   réserve plus leur espace — le contenu remonterait dessous sans ce padding. */
-html body #main { padding-top: 60px !important; }
+   réserve plus leur espace, le contenu remonterait dessous sans ce padding. */
+html[data-etsx-skin] body #main { padding-top: 60px !important; }
 
 /* La case blanche du logo natif, retirée : c'est elle qui rendait toute
    largeur de dodge illisible (elle pouvait être bien plus haute que l'en-tête,
    ombrée, et sa largeur réelle n'était jamais fiable). Le menu de gauche
-   reprend directement l'espace laissé libre — voir plus bas. */
-#logo-group { display: none !important; }
+   reprend directement l'espace laissé libre, voir plus bas. */
+html[data-etsx-skin] #logo-group { display: none !important; }
 
 /* bascule clair/sombre + pastilles d'accent, à gauche. Plus de largeur à
    deviner : #logo-group n'existe plus, on colle simplement au bord.
-   gap:10px pour matcher exactement l'espacement de SignETS (.etsx-sig-left) —
+   gap:10px pour matcher exactement l'espacement de SignETS (.etsx-sig-left),
    à 8px, la bascule et la première pastille se touchaient presque. */
 #etsx-accents-left { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); z-index: 905; display: inline-flex; align-items: center; gap: 10px; }
 /* pastilles d'accent : elles FLOTTENT (pas de fond/pilule), comme sur SignETS.
    margin-left en renfort du gap ci-dessus : signalé encore collé à la bascule
-   clair/sombre malgré le gap:10px — cette marge garantit l'écart même si le
+   clair/sombre malgré le gap:10px, cette marge garantit l'écart même si le
    gap ne s'applique pas comme prévu. */
 #etsx-accents-left .etsx-swatches { display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; }
 /* marque CENTRÉE dans l'en-tête, cliquable :
@@ -596,7 +580,7 @@ html body #main { padding-top: 60px !important; }
 @media (max-width: 980px) { #etsx-accents-left { display: none; } }
 
 /* =============================================================================
- * MENU DE GAUCHE — la liste de liens centrée verticalement
+ * MENU DE GAUCHE, la liste de liens centrée verticalement
  * -------------------------------------------------------------------------
  * Avec #logo-group retiré, le menu de gauche récupère tout l'espace au-dessus
  * de lui ; et comme les Paramètres permettent d'en masquer des entrées, une
@@ -604,7 +588,7 @@ html body #main { padding-top: 60px !important; }
  * haut. On centre donc le bloc <nav> dans toute la hauteur du menu : la liste
  * se recentre d'elle-même, qu'elle compte 15 entrées ou 3.
  * ========================================================================== */
-#left-panel nav {
+html[data-etsx-skin] #left-panel nav {
   display: flex !important; flex-direction: column !important; justify-content: center !important;
   height: 100% !important; box-sizing: border-box !important;
 }

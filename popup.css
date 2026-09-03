@@ -1,0 +1,70 @@
+:root {
+  --accent: #1c4e89;
+  --bg: #ffffff;
+  --surface-2: #f4f6f9;
+  --line: #e6e9ef;
+  --ink: #1c1f26;
+  --ink-2: #5a6473;
+  --ink-3: #9aa3b2;
+  --on-accent: #ffffff;
+}
+html.is-dark {
+  --bg: #1b1e24;
+  --surface-2: #23272f;
+  --line: #2c313a;
+  --ink: #e9ebf1;
+  --ink-2: #a7b0bd;
+  --ink-3: #6f7886;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; width: 300px;
+  background: var(--bg); color: var(--ink);
+  font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.p-hdr { display: flex; align-items: baseline; justify-content: space-between; padding: 14px 16px 10px; }
+.p-logo { font-weight: 800; font-size: 16px; letter-spacing: .02em; }
+.p-red { color: #e2001a; }
+.p-site { font: 600 10.5px/1 -apple-system, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+
+.p-body { padding: 0 16px 4px; }
+
+.p-empty { padding: 10px 0 14px; color: var(--ink-2); }
+.p-empty p { margin: 0 0 6px; }
+.p-empty-sub { font-size: 12px; color: var(--ink-3); }
+.p-reload-btn { margin-top: 8px; height: 32px; padding: 0 14px; border: 1px solid var(--accent); border-radius: 0; background: var(--accent); color: var(--on-accent); font: 600 12.5px/1 -apple-system, sans-serif; cursor: pointer; }
+
+.p-loading { padding: 20px 0; text-align: center; color: var(--ink-3); font-size: 12px; }
+
+.p-toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 0 12px; font-weight: 600; cursor: pointer; }
+.p-switch { position: relative; display: inline-block; width: 38px; height: 22px; flex: 0 0 auto; }
+.p-switch input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
+.p-switch-track { position: absolute; inset: 0; background: var(--line); border-radius: 999px; transition: background .15s ease; }
+.p-switch-thumb { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .15s ease; }
+.p-switch input:checked ~ .p-switch-track { background: var(--accent); }
+.p-switch input:checked ~ .p-switch-track .p-switch-thumb { transform: translateX(16px); }
+
+.p-row { padding: 10px 0; border-top: 1px solid var(--line); }
+.p-label { display: block; font: 700 10px/1 -apple-system, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; }
+
+.p-seg { display: flex; gap: 6px; }
+.p-seg-btn { flex: 1 1 0; height: 30px; border: 1px solid var(--line); border-radius: 0; background: var(--surface-2); color: var(--ink); font: 600 12px/1 -apple-system, sans-serif; cursor: pointer; transition: border-color .12s ease, background .12s ease, color .12s ease; }
+.p-seg-btn.is-active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+.p-skins { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.p-skin { cursor: pointer; border: 1.5px solid var(--line); border-radius: 0; padding: 7px 3px; text-align: center; background: var(--surface-2); transition: border-color .12s ease; }
+.p-skin:hover { border-color: var(--ink-3); }
+.p-skin.is-active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.p-skin-sw { display: flex; justify-content: center; gap: 2px; margin-bottom: 5px; }
+.p-skin-sw span { width: 11px; height: 11px; border-radius: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+.p-skin-name { font: 600 9.5px/1 -apple-system, sans-serif; color: var(--ink); }
+
+.p-note { font-size: 11px; line-height: 1.5; color: var(--ink-3); padding: 10px 0 6px; border-top: 1px solid var(--line); margin: 4px 0 0; }
+.p-note strong { color: var(--ink-2); }
+
+.p-footer { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--line); font: 600 11px/1 -apple-system, sans-serif; color: var(--ink-3); }
+.p-footer-links { display: inline-flex; gap: 10px; }
+.p-footer-links a { display: inline-flex; color: var(--ink-3); }
+.p-footer-links a:hover { color: var(--ink); }
+.p-footer-links svg { width: 14px; height: 14px; }
