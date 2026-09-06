@@ -28,6 +28,8 @@ L'en-tête, le menu de gauche et les blocs natifs sont réhabillés avec un syst
 La console de session en haut de page suit le calendrier universitaire officiel de l'ÉTS plutôt qu'une estimation : elle sait distinguer une semaine de cours, une semaine de relâche, une période d'examens et un congé, avec les bonnes dates de reprise.
 
 ![](docs/images/console-session.png)
+![](docs/images/console-session1.png)
+
 
 La barre de raccourcis ne garde que les sites officiels de l'ÉTS.
 
