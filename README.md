@@ -63,7 +63,7 @@ Quatre thèmes, chacun avec une version claire et une version sombre, synchronis
 
 L'accent de couleur, la police et plusieurs options d'affichage se règlent depuis le panneau des paramètres.
 
-### Fond d'écran personnalisé
+## Fond d'écran personnalisé
 
 Les deux sites acceptent une image de fond, à choisir dans **Paramètres**, sous **Paramètres avancés**. Deux façons de faire :
 
