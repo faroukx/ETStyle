@@ -28,7 +28,7 @@
   };
   var DEFAULTS = {
     theme: "light", skin: "classic", accent: SKINS.classic.accent, sourceAccent: false, font: "",
-    minimalTable: false, wideTable: false, minimalNav: false, hiddenSigNav: [],
+    minimalTable: false, minimalNav: false, hiddenSigNav: [],
     hideBar: false, hideEvo: false, hideDetailEvo: false, hideDetailDist: false,
     progFont: 1, showNotePct: true, showDelta: true, excludedSessions: [], bg: "", enabled: true
   };
@@ -67,7 +67,7 @@
     root.style.setProperty("--etsx-on-accent", luminance(a) > 0.62 ? "#16181d" : "#ffffff");
     if (settings.font && FONTS[settings.font]) root.style.setProperty("--etsx-ui", FONTS[settings.font]);
     else root.style.removeProperty("--etsx-ui");
-    root.classList.toggle("etsx-sig-wide", !!settings.wideTable);
+    root.classList.remove("etsx-sig-wide");   // ancien « mode large », retiré
     root.classList.toggle("etsx-sig-minnav", !!settings.minimalNav);
     try { applyMinimalTable(); } catch (e) {}
     root.style.setProperty("--etsx-prog-font", String(settings.progFont || 1));
@@ -277,7 +277,6 @@
       '<div class="etsx-skins">' + skinCards + '</div>' +
       '<div class="etsx-set-title">Affichage</div>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-mintable" ' + (settings.minimalTable ? "checked" : "") + '><span>Mode minimal (colonnes essentielles)</span></label>' +
-      '<label class="etsx-check"><input type="checkbox" id="etsx-opt-wide" ' + (settings.wideTable ? "checked" : "") + '><span>Mode large (élargir les tableaux)</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-minnav" ' + (settings.minimalNav ? "checked" : "") + '><span>Menu en style minimal (icônes)</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-pct" ' + (settings.showNotePct ? "checked" : "") + '><span>Afficher le pourcentage à côté de la cote</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-delta" ' + (settings.showDelta ? "checked" : "") + '><span>Afficher l\'écart à la moyenne (+x)</span></label>' +
@@ -313,10 +312,6 @@
         '<div class="etsx-set-note">Projet personnel et indépendant, sans lien officiel avec l’ÉTS.</div>' +
       '</div>';
     p.querySelector("#etsx-opt-mintable").addEventListener("change", function (e) { settings.minimalTable = e.target.checked; saveSettings(); applyTheme(); });
-    p.querySelector("#etsx-opt-wide").addEventListener("change", function (e) {
-      settings.wideTable = e.target.checked; saveSettings(); applyTheme();
-      realignerColonnes();   // la largeur des tables vient de changer
-    });
     p.querySelector("#etsx-opt-minnav").addEventListener("change", function (e) { settings.minimalNav = e.target.checked; saveSettings(); applyTheme(); manageNav(); });
     p.querySelector("#etsx-opt-pct").addEventListener("change", function (e) {
       settings.showNotePct = e.target.checked; saveSettings();

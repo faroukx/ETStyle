@@ -223,16 +223,9 @@ html.etsx-has-bg body { background-image: var(--etsx-bg-img) !important; backgro
 html[data-etsx-theme="dark"] #etsx-settings .etsx-about-icon { color: #ffffff; }
 #etsx-settings .etsx-about .etsx-set-note { margin-top: 8px; }
 
-/* ----------------------------------------------------------------------------
- * 10. MODE LARGE, on élargit la page SANS casser les floats (239px + reste)
- * ------------------------------------------------------------------------- */
-html.etsx-sig-wide #etspage { width: 95vw !important; max-width: 1500px !important; }
-html.etsx-sig-wide #etsMCContainer { width: 100% !important; }
-html.etsx-sig-wide #etsMCTwoRight { width: calc(100% - 239px) !important; }   /* reste à droite */
-html.etsx-sig-wide .etsMCLeft { width: 239px !important; }                     /* colonne gauche inchangée */
-html.etsx-sig-wide #etsMCContent { width: auto !important; }
-/* NB : on NE force PAS width:100% sur les grilles Infragistics, l'en-tête et le
-   corps sont des tables séparées et se désalignent sinon (colonnes décalées). */
+/* Le « mode large » a été retiré : il élargissait la page, or l'en-tête et le
+   corps des grilles Infragistics sont deux tables séparées qui ne se
+   redimensionnaient pas de la même façon, ce qui décalait les colonnes. */
 
 /* Page d'un cours, le panneau à onglets (Mes notes, Coéquipiers, Dates
    importantes, Enseignants, Séances, Évaluation du cours) est un contrôle
