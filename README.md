@@ -54,7 +54,7 @@ Les deux sites acceptent une image de fond, à choisir dans **Paramètres**, sou
 
 L'image est enregistrée uniquement dans ton navigateur et n'est envoyée nulle part. Le bouton **Retirer** remet le fond d'origine.
 
-![](docs/images/fond-ecran.png)
+![](docs/images/fond-ecran.gif)
 
 ## Installation en local
 
