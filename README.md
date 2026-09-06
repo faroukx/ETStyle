@@ -11,7 +11,7 @@ Tout tourne dans le navigateur : aucune donnée n'est envoyée à un serveur aut
 - [Le portail](#le-portail)
 - [SignETS](#signets)
 - [Thèmes](#thèmes)
-  - [Fond d'écran personnalisé](#fond-décran-personnalisé)
+- [Fond d'écran personnalisé](#fond-décran-personnalisé)
 - [Installation en local](#installation-en-local)
 - [Confidentialité](#confidentialité)
 - [Remerciements](#remerciements)
