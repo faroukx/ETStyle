@@ -6,6 +6,19 @@
 Tout tourne dans le navigateur : aucune donnée n'est envoyée à un serveur autre que ceux de l'ÉTS déjà utilisés par les pages elles-mêmes.
 
 
+## Table des matières
+
+- [Le portail](#le-portail)
+- [SignETS](#signets)
+- [Thèmes](#thèmes)
+  - [Fond d'écran personnalisé](#fond-décran-personnalisé)
+- [Installation en local](#installation-en-local)
+- [Confidentialité](#confidentialité)
+- [Remerciements](#remerciements)
+- [Licence](#licence)
+- [À propos](#à-propos)
+- [Avertissement](#avertissement)
+
 ## Le portail
 
 L'en-tête, le menu de gauche et les blocs natifs sont réhabillés avec un système de thème cohérent, en clair comme en sombre.
