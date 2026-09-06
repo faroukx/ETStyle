@@ -38,7 +38,7 @@
   // L'accent par défaut est celui du thème « classic », comme sur SignETS : sans
   // ça une installation neuve démarrait rouge sur le portail et bleue sur SignETS.
   // Écrit en dur parce que SKINS est défini plus bas dans le fichier.
-  var DEFAULTS = { theme: "light", accent: "#1c4e89", sourceAccent: false, showConsole: true, hiddenNav: [], hiddenBlocks: [], collapsed: [], rememberLayout: false, sidebarHidden: false, cols: 2, bg: "", font: "", skin: "classic", coursView: "table", compact: false, clock: false, hideQuickbar: false, enabled: true };
+  var DEFAULTS = { theme: "light", accent: "#1c4e89", sourceAccent: true, showConsole: true, hiddenNav: [], hiddenBlocks: [], collapsed: [], rememberLayout: false, sidebarHidden: false, cols: 2, bg: "", font: "", skin: "classic", coursView: "gallery", compact: false, clock: false, hideQuickbar: false, enabled: true };
   var settings = loadSettings();
   // Disposition temporaire par défaut : on ne restaure les blocs réduits que si demandé.
   if (!settings.rememberLayout) { settings.collapsed = []; saveSettings(); }
@@ -536,6 +536,55 @@
     var sb = document.getElementById("etsx-opt-sidebar"); if (sb) sb.checked = !settings.sidebarHidden; var qb2 = document.getElementById("etsx-opt-quickbar"); if (qb2) qb2.checked = !settings.hideQuickbar;
   }
 
+  // Section repliée par défaut : les longues listes (menu, blocs, réglages
+  // rares) ne gonflent plus le panneau. On n'utilise pas l'attribut « hidden »,
+  // que le CSS du portail peut annuler, mais une classe à nous.
+  function fold(titre, contenu) {
+    return '<button type="button" class="etsx-set-fold">' + titre + '</button>' +
+           '<div class="etsx-fold-body">' + contenu + '</div>';
+  }
+  // Le fichier est réduit avant d'être enregistré : une photo de plusieurs Mo
+  // dépasse le quota de localStorage, l'enregistrement échouait alors en
+  // silence et le fond disparaissait au rechargement.
+  function lireImage(file, cb) {
+    if (!file) return cb(null, "Aucun fichier choisi.");
+    if (file.type && !/^image\//.test(file.type)) return cb(null, "Ce fichier n'est pas une image.");
+    var rd = new FileReader();
+    rd.onerror = function () { cb(null, "Lecture du fichier impossible."); };
+    rd.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var max = 1920, w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+        if (!w || !h) return cb(rd.result, null);
+        var k = Math.min(1, max / w, max / h);
+        w = Math.round(w * k); h = Math.round(h * k);
+        try {
+          var c = document.createElement("canvas"); c.width = w; c.height = h;
+          c.getContext("2d").drawImage(img, 0, 0, w, h);
+          var petit = c.toDataURL("image/jpeg", 0.82);
+          cb(petit && petit.length < String(rd.result).length ? petit : rd.result, null);
+        } catch (e) { cb(rd.result, null); }
+      };
+      img.onerror = function () { cb(null, "Image illisible, ou bloquée par le site."); };
+      img.src = rd.result;
+    };
+    rd.readAsDataURL(file);
+  }
+  function bgNote(p, msg, ko) {
+    var el = p.querySelector(".etsx-bg-note"); if (!el) return;
+    el.textContent = msg || "";
+    el.className = "etsx-set-note etsx-bg-note" + (ko ? " is-ko" : "");
+  }
+  function appliquerFichierFond(p, file) {
+    lireImage(file, function (dataUrl, err) {
+      if (err) { bgNote(p, err, true); return; }
+      setBackground(dataUrl);
+      var garde = false;
+      try { garde = (JSON.parse(localStorage.getItem(LS_KEY) || "{}").bg || "") === dataUrl; } catch (e) {}
+      bgNote(p, garde ? "Image appliquée." : "Image appliquée, mais trop lourde pour être gardée au rechargement.", !garde);
+    });
+  }
+
   function buildSettings() {
     var p = document.createElement("div");
     p.id = "etsx-settings";
@@ -577,25 +626,26 @@
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-console" ' + (settings.showConsole ? "checked" : "") + '><span>Afficher la console de session</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-remember" ' + (settings.rememberLayout ? "checked" : "") + '><span>Garder les blocs réduits (mémoriser)</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-source" ' + (settings.sourceAccent ? "checked" : "") + '><span>Teinter les sources du calendrier selon l’accent</span></label>' +
-      '<div class="etsx-set-title">Compte & langue</div>' +
-      '<div class="etsx-row-btns">' +
-        '<button type="button" class="etsx-btn" id="etsx-act-lang">Langue (EN/FR)</button>' +
-        '<button type="button" class="etsx-btn" id="etsx-act-fs">Plein écran</button>' +
-      '</div>' +
       '<div class="etsx-set-title">Police</div>' +
       '<div class="etsx-row-btns" id="etsx-fonts"></div>' +
-      '<div class="etsx-set-title">Fond d\'écran</div>' +
-      '<input type="text" id="etsx-bg-url" class="etsx-input" placeholder="Coller une URL d\'image..." value="' + (/^https?:/.test(settings.bg || "") ? settings.bg : "") + '">' +
-      '<div class="etsx-row-btns">' +
-        '<button type="button" class="etsx-btn etsx-bg-apply">Appliquer</button>' +
-        '<label class="etsx-btn etsx-bg-file">Fichier<input type="file" accept="image/*" hidden></label>' +
-        '<button type="button" class="etsx-btn etsx-bg-clear">Retirer</button>' +
-      '</div>' +
-      '<div class="etsx-set-title">Menu de gauche</div>' + navRows +
-      '<div class="etsx-set-title">Blocs du tableau de bord</div>' + blockRows +
-      '<div class="etsx-set-title">Fonctions avancées</div>' +
-      '<label class="etsx-check"><input type="checkbox" id="etsx-opt-compact" ' + (settings.compact ? "checked" : "") + '><span>Mode compact</span></label>' +
-      '<div class="etsx-set-note">Chaque bloc se réduit aussi via le chevron de son en-tête. Par défaut l’état revient au rechargement ; coche « mémoriser » pour le garder.</div>' +
+      fold("Menu de gauche", navRows) +
+      fold("Blocs du tableau de bord", blockRows) +
+      fold("Paramètres avancés",
+        '<label class="etsx-check"><input type="checkbox" id="etsx-opt-compact" ' + (settings.compact ? "checked" : "") + '><span>Mode compact</span></label>' +
+        '<div class="etsx-set-sub">Compte & langue</div>' +
+        '<div class="etsx-row-btns">' +
+          '<button type="button" class="etsx-btn" id="etsx-act-lang">Langue (EN/FR)</button>' +
+          '<button type="button" class="etsx-btn" id="etsx-act-fs">Plein écran</button>' +
+        '</div>' +
+        '<div class="etsx-set-sub">Fond d\'écran</div>' +
+        '<input type="text" id="etsx-bg-url" class="etsx-input" placeholder="Coller une URL d\'image..." value="' + (/^https?:/.test(settings.bg || "") ? settings.bg : "") + '">' +
+        '<div class="etsx-row-btns">' +
+          '<button type="button" class="etsx-btn etsx-bg-apply">Appliquer</button>' +
+          '<label class="etsx-btn etsx-bg-file">Fichier<input type="file" accept="image/*" hidden></label>' +
+          '<button type="button" class="etsx-btn etsx-bg-clear">Retirer</button>' +
+        '</div>' +
+        '<div class="etsx-set-note etsx-bg-note"></div>' +
+        '<div class="etsx-set-note">Chaque bloc se réduit aussi via le chevron de son en-tête. Par défaut l’état revient au rechargement ; coche « mémoriser » pour le garder.</div>') +
       '<div class="etsx-set-title">À propos</div>' +
       '<div class="etsx-about">' +
         '<a class="etsx-about-repo" href="https://github.com/faroukx/ETStyle" target="_blank" rel="noopener noreferrer">' + ICON_GITHUB + '<span>Code source sur GitHub</span></a>' +
@@ -666,13 +716,15 @@
     });
     p.querySelector(".etsx-bg-apply").addEventListener("click", function () { setBackground(p.querySelector("#etsx-bg-url").value.trim()); });
     p.querySelector(".etsx-bg-clear").addEventListener("click", function () { setBackground(""); var i = p.querySelector("#etsx-bg-url"); if (i) i.value = ""; });
-    p.querySelector(".etsx-bg-file input").addEventListener("change", function (e) {
-      var file = e.target.files[0]; if (!file) return;
-      if (file.size > 2600000) { alert("Image trop lourde (max ~2,5 Mo). Utilise plutôt une URL."); return; }
-      var rd = new FileReader(); rd.onload = function () { setBackground(rd.result); }; rd.readAsDataURL(file);
-    });
+    p.querySelector(".etsx-bg-file input").addEventListener("change", function (e) { appliquerFichierFond(p, e.target.files[0]); });
     var adv = function (id, key) { var el = p.querySelector(id); if (el) el.addEventListener("change", function (e) { settings[key] = e.target.checked; saveSettings(); applyAdvanced(); }); };
     adv("#etsx-opt-compact", "compact");
+    p.querySelectorAll(".etsx-set-fold").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var ouvert = b.classList.toggle("is-open");
+        if (b.nextElementSibling) b.nextElementSibling.classList.toggle("is-open", ouvert);
+      });
+    });
     return p;
   }
 

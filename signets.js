@@ -28,9 +28,9 @@
   };
   var DEFAULTS = {
     theme: "light", skin: "classic", accent: SKINS.classic.accent, sourceAccent: false, font: "",
-    wideTable: false, minimalNav: false, hiddenSigNav: [],
-    hideBar: false, hideEvo: false,
-    progFont: 1, showRcentile: false, showDelta: true, excludedSessions: [], bg: "", enabled: true
+    minimalTable: false, wideTable: false, minimalNav: false, hiddenSigNav: [],
+    hideBar: false, hideEvo: false, hideDetailEvo: false, hideDetailDist: false,
+    progFont: 1, showNotePct: true, showDelta: true, excludedSessions: [], bg: "", enabled: true
   };
 
   function loadSettings() {
@@ -69,7 +69,7 @@
     else root.style.removeProperty("--etsx-ui");
     root.classList.toggle("etsx-sig-wide", !!settings.wideTable);
     root.classList.toggle("etsx-sig-minnav", !!settings.minimalNav);
-    root.classList.toggle("etsx-sig-norc", !settings.showRcentile);
+    try { applyMinimalTable(); } catch (e) {}
     root.style.setProperty("--etsx-prog-font", String(settings.progFont || 1));
     applyBackground();
     syncHeader();
@@ -211,6 +211,54 @@
     });
     return items;
   }
+  // Section repliée par défaut : les longues listes (menu, réglages rares) ne
+  // gonflent plus le panneau. On n'utilise pas l'attribut « hidden », que le CSS
+  // du site peut annuler, mais une classe à nous.
+  function fold(titre, contenu) {
+    return '<button type="button" class="etsx-set-fold">' + titre + '</button>' +
+           '<div class="etsx-fold-body">' + contenu + '</div>';
+  }
+  // Le fichier est réduit avant d'être enregistré : une photo de plusieurs Mo
+  // dépasse le quota de localStorage, l'enregistrement échouait alors en
+  // silence et le fond disparaissait au rechargement.
+  function lireImage(file, cb) {
+    if (!file) return cb(null, "Aucun fichier choisi.");
+    if (file.type && !/^image\//.test(file.type)) return cb(null, "Ce fichier n'est pas une image.");
+    var rd = new FileReader();
+    rd.onerror = function () { cb(null, "Lecture du fichier impossible."); };
+    rd.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var max = 1920, w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+        if (!w || !h) return cb(rd.result, null);
+        var k = Math.min(1, max / w, max / h);
+        w = Math.round(w * k); h = Math.round(h * k);
+        try {
+          var c = document.createElement("canvas"); c.width = w; c.height = h;
+          c.getContext("2d").drawImage(img, 0, 0, w, h);
+          var petit = c.toDataURL("image/jpeg", 0.82);
+          cb(petit && petit.length < String(rd.result).length ? petit : rd.result, null);
+        } catch (e) { cb(rd.result, null); }
+      };
+      img.onerror = function () { cb(null, "Image illisible, ou bloquée par le site."); };
+      img.src = rd.result;
+    };
+    rd.readAsDataURL(file);
+  }
+  function bgNote(p, msg, ko) {
+    var el = p.querySelector(".etsx-bg-note"); if (!el) return;
+    el.textContent = msg || "";
+    el.className = "etsx-set-note etsx-bg-note" + (ko ? " is-ko" : "");
+  }
+  function appliquerFichierFond(p, file) {
+    lireImage(file, function (dataUrl, err) {
+      if (err) { bgNote(p, err, true); return; }
+      setBackground(dataUrl);
+      var garde = false;
+      try { garde = (JSON.parse(localStorage.getItem(LS_KEY) || "{}").bg || "") === dataUrl; } catch (e) {}
+      bgNote(p, garde ? "Image appliquée." : "Image appliquée, mais trop lourde pour être gardée au rechargement.", !garde);
+    });
+  }
   function buildSettings() {
     var p = document.createElement("div");
     p.id = "etsx-settings";
@@ -228,26 +276,32 @@
       '<div class="etsx-set-title">Thème d\'interface</div>' +
       '<div class="etsx-skins">' + skinCards + '</div>' +
       '<div class="etsx-set-title">Affichage</div>' +
+      '<label class="etsx-check"><input type="checkbox" id="etsx-opt-mintable" ' + (settings.minimalTable ? "checked" : "") + '><span>Mode minimal (colonnes essentielles)</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-wide" ' + (settings.wideTable ? "checked" : "") + '><span>Mode large (élargir les tableaux)</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-minnav" ' + (settings.minimalNav ? "checked" : "") + '><span>Menu en style minimal (icônes)</span></label>' +
-      '<label class="etsx-check"><input type="checkbox" id="etsx-opt-rc" ' + (settings.showRcentile ? "checked" : "") + '><span>Afficher la colonne R-centile</span></label>' +
+      '<label class="etsx-check"><input type="checkbox" id="etsx-opt-pct" ' + (settings.showNotePct ? "checked" : "") + '><span>Afficher le pourcentage à côté de la cote</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-delta" ' + (settings.showDelta ? "checked" : "") + '><span>Afficher l\'écart à la moyenne (+x)</span></label>' +
       '<div class="etsx-set-title">Taille du texte (tableau)</div>' +
       '<div class="etsx-row-btns etsx-fontsize"><button type="button" class="etsx-fontbtn" id="etsx-font-dn">A\u2212</button><span id="etsx-font-val">' + Math.round((settings.progFont || 1) * 100) + '%</span><button type="button" class="etsx-fontbtn" id="etsx-font-up">A+</button></div>' +
-      '<div class="etsx-set-title">Graphiques (colonne de gauche)</div>' +
+      '<div class="etsx-set-title">Graphiques (liste des cours)</div>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-bar" ' + (settings.hideBar ? "" : "checked") + '><span>Votre note vs groupe</span></label>' +
       '<label class="etsx-check"><input type="checkbox" id="etsx-opt-evo" ' + (settings.hideEvo ? "" : "checked") + '><span>Évolution de votre cote</span></label>' +
-      '<div class="etsx-set-title">Fond d\'écran</div>' +
-      '<input type="text" id="etsx-bg-url" class="etsx-input" placeholder="Coller une URL d\'image..." value="' + (/^https?:/.test(settings.bg || "") ? settings.bg : "") + '">' +
-      '<div class="etsx-row-btns">' +
-        '<button type="button" class="etsx-fontbtn etsx-bg-apply">Appliquer</button>' +
-        '<label class="etsx-fontbtn etsx-bg-file">Fichier<input type="file" accept="image/*" hidden></label>' +
-        '<button type="button" class="etsx-fontbtn etsx-bg-clear">Retirer</button>' +
-      '</div>' +
+      '<div class="etsx-set-title">Graphiques (page d\'un cours)</div>' +
+      '<label class="etsx-check"><input type="checkbox" id="etsx-opt-devo" ' + (settings.hideDetailEvo ? "" : "checked") + '><span>Évolution de votre moyenne</span></label>' +
+      '<label class="etsx-check"><input type="checkbox" id="etsx-opt-ddist" ' + (settings.hideDetailDist ? "" : "checked") + '><span>Distribution estimée des notes</span></label>' +
       '<div class="etsx-set-title">Police</div>' +
       '<div class="etsx-row-btns" id="etsx-fonts"></div>' +
-      '<div class="etsx-set-title">Éléments du menu</div>' + navRows +
-      '<div class="etsx-set-note">Réglages enregistrés localement. Le thème est partagé avec le portail.</div>' +
+      fold("Éléments du menu", navRows) +
+      fold("Paramètres avancés",
+        '<div class="etsx-set-sub">Fond d\'écran</div>' +
+        '<input type="text" id="etsx-bg-url" class="etsx-input" placeholder="Coller une URL d\'image..." value="' + (/^https?:/.test(settings.bg || "") ? settings.bg : "") + '">' +
+        '<div class="etsx-row-btns">' +
+          '<button type="button" class="etsx-fontbtn etsx-bg-apply">Appliquer</button>' +
+          '<label class="etsx-fontbtn etsx-bg-file">Fichier<input type="file" accept="image/*" hidden></label>' +
+          '<button type="button" class="etsx-fontbtn etsx-bg-clear">Retirer</button>' +
+        '</div>' +
+        '<div class="etsx-set-note etsx-bg-note"></div>' +
+        '<div class="etsx-set-note">Réglages enregistrés localement. Le thème est partagé avec le portail.</div>') +
       '<div class="etsx-set-title">À propos</div>' +
       '<div class="etsx-about">' +
         '<a class="etsx-about-repo" href="https://github.com/faroukx/ETStyle" target="_blank" rel="noopener noreferrer">' + ICON_GITHUB + '<span>Code source sur GitHub</span></a>' +
@@ -258,9 +312,19 @@
         '</div>' +
         '<div class="etsx-set-note">Projet personnel et indépendant, sans lien officiel avec l’ÉTS.</div>' +
       '</div>';
-    p.querySelector("#etsx-opt-wide").addEventListener("change", function (e) { settings.wideTable = e.target.checked; saveSettings(); applyTheme(); });
+    p.querySelector("#etsx-opt-mintable").addEventListener("change", function (e) { settings.minimalTable = e.target.checked; saveSettings(); applyTheme(); });
+    p.querySelector("#etsx-opt-wide").addEventListener("change", function (e) {
+      settings.wideTable = e.target.checked; saveSettings(); applyTheme();
+      realignerColonnes();   // la largeur des tables vient de changer
+    });
     p.querySelector("#etsx-opt-minnav").addEventListener("change", function (e) { settings.minimalNav = e.target.checked; saveSettings(); applyTheme(); manageNav(); });
-    p.querySelector("#etsx-opt-rc").addEventListener("change", function (e) { settings.showRcentile = e.target.checked; saveSettings(); applyTheme(); });
+    p.querySelector("#etsx-opt-pct").addEventListener("change", function (e) {
+      settings.showNotePct = e.target.checked; saveSettings();
+      // La bulle est retirée/reposée tout de suite, sans attendre le cycle.
+      document.querySelectorAll(".etsx-rc").forEach(function (c) { c.remove(); });
+      document.querySelectorAll("[data-etsx-done]").forEach(function (tr) { tr.removeAttribute("data-etsx-done"); });
+      try { repaintList(); } catch (e2) {}
+    });
     p.querySelector("#etsx-opt-delta").addEventListener("change", function (e) {
       settings.showDelta = e.target.checked; saveSettings();
       document.querySelectorAll(".etsx-delta").forEach(function (d) { d.remove(); });
@@ -272,6 +336,14 @@
     p.querySelector("#etsx-font-up").addEventListener("click", function () { setFont(0.1); });
     p.querySelector("#etsx-opt-bar").addEventListener("change", function (e) { settings.hideBar = !e.target.checked; saveSettings(); applyChartVisibility(); });
     p.querySelector("#etsx-opt-evo").addEventListener("change", function (e) { settings.hideEvo = !e.target.checked; saveSettings(); applyChartVisibility(); });
+    p.querySelector("#etsx-opt-devo").addEventListener("change", function (e) { settings.hideDetailEvo = !e.target.checked; saveSettings(); applyChartVisibility(); });
+    p.querySelector("#etsx-opt-ddist").addEventListener("change", function (e) { settings.hideDetailDist = !e.target.checked; saveSettings(); applyChartVisibility(); });
+    p.querySelectorAll(".etsx-set-fold").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var ouvert = b.classList.toggle("is-open");
+        if (b.nextElementSibling) b.nextElementSibling.classList.toggle("is-open", ouvert);
+      });
+    });
     p.querySelectorAll("input[data-signav]").forEach(function (cb) {
       cb.addEventListener("change", function () {
         var k = cb.getAttribute("data-signav");
@@ -291,7 +363,8 @@
     });
     var bgApply = p.querySelector(".etsx-bg-apply"); if (bgApply) bgApply.addEventListener("click", function () { setBackground(p.querySelector("#etsx-bg-url").value.trim()); });
     var bgClear = p.querySelector(".etsx-bg-clear"); if (bgClear) bgClear.addEventListener("click", function () { setBackground(""); var i = p.querySelector("#etsx-bg-url"); if (i) i.value = ""; });
-    var bgFile = p.querySelector(".etsx-bg-file input"); if (bgFile) bgFile.addEventListener("change", function (e) { var f = e.target.files[0]; if (!f) return; if (f.size > 2600000) { alert("Image trop lourde (max ~2,5 Mo). Utilise plutôt une URL."); return; } var rd = new FileReader(); rd.onload = function () { setBackground(rd.result); }; rd.readAsDataURL(f); });
+    var bgFile = p.querySelector(".etsx-bg-file input");
+    if (bgFile) bgFile.addEventListener("change", function (e) { appliquerFichierFond(p, e.target.files[0]); });
     return p;
   }
   function syncSettingsPanel() {
@@ -354,9 +427,36 @@
   }
   // Masquer/afficher les cartes de graphiques selon les Paramètres.
   function applyChartVisibility() {
-    var host = document.getElementById("etsx-charts"); if (!host) return;
-    var bar = host.querySelector(".etsx-bar-card"); if (bar) bar.style.display = settings.hideBar ? "none" : "";
-    var evo = host.querySelector(".etsx-evo-card"); if (evo) evo.style.display = settings.hideEvo ? "none" : "";
+    var host = document.getElementById("etsx-charts");
+    if (host) {
+      var bar = host.querySelector(".etsx-bar-card"); if (bar) bar.style.display = settings.hideBar ? "none" : "";
+      var evo = host.querySelector(".etsx-evo-card"); if (evo) evo.style.display = settings.hideEvo ? "none" : "";
+    }
+    // Cartes de la page d'un cours (colonne de gauche).
+    var det = document.getElementById("etsx-detail-extras");
+    if (det) {
+      var dEvo = det.querySelector(".etsx-detail-evo-card"); if (dEvo) dEvo.style.display = settings.hideDetailEvo ? "none" : "";
+      var dDist = det.querySelector(".etsx-dist-card"); if (dDist) dDist.style.display = settings.hideDetailDist ? "none" : "";
+    }
+  }
+
+  /* ---- MODE MINIMAL (grille de notes d'un cours) -------------------------
+   * On garde Élément, Note, Pondération, Moy. et Rang centile ; on masque
+   * Équipe, Date-cible, Corrigé sur, Écart-type, Méd. et Message de
+   * l'enseignant. Le numéro de colonne est lu par expression régulière plutôt
+   * qu'avec un sélecteur « contient » : sinon « columnheader_1 » attraperait
+   * aussi « columnheader_10 ». */
+  var MINIMAL_HIDDEN_COLS = [1, 2, 4, 7, 8, 10];
+  function applyMinimalTable() {
+    var on = !!settings.minimalTable;
+    // Un seul balayage du document : la fonction tourne à chaque cycle de rendu.
+    document.querySelectorAll('[aria-describedby*="grilleNotes_columnheader_"], [id*="grilleNotes_columnheader_"]').forEach(function (el) {
+      var s = el.getAttribute("aria-describedby") || el.id || "";
+      var m = s.match(/grilleNotes_columnheader_(\d+)/);
+      if (!m) return;
+      if (MINIMAL_HIDDEN_COLS.indexOf(parseInt(m[1], 10)) === -1) return;
+      el.style.display = on ? "none" : "";
+    });
   }
 
   // Page d'un cours (DetailsCoursGroupe) : % de chaque évaluation + écart.
@@ -520,33 +620,224 @@
         titre: sigleTxt.indexOf("-") !== -1 ? sigleTxt.split("-").slice(1).join("-").trim() : "",
         session: nearestSessionLabel(row),
         coteCell: cellByCol(row, 5),
-        rangCell: cellByCol(row, 6),
         credCell: cellByCol(row, 4)
       });
     });
     return rows;
   }
 
-  // Cellule d'en-tête d'une colonne (n) si elle existe.
-  function headerCellForCol(n) {
-    var el = document.getElementById("ctl00_columnheader_" + n);
-    if (el) return el;
-    var cands = document.querySelectorAll('[id$="columnheader_' + n + '"]');
-    for (var i = 0; i < cands.length; i++) {
-      var c = cands[i];
-      if (c.closest("thead") || c.tagName === "TH" || /header/i.test(c.className || "") || /header/i.test(c.id || "")) return c;
-    }
-    return null;
+  // Colonne « Rang centile », insérée juste après « Cote ». Toujours affichée :
+  // aucun réglage ne la retire.
+  //
+  // L'en-tête et le corps de la grille Infragistics sont deux <table>
+  // distinctes. RÈGLE ABSOLUE : aucune cellule n'est ajoutée à une ligne tant
+  // que la cellule d'en-tête n'existe pas, sinon les lignes ont une colonne de
+  // plus que l'en-tête et tout le tableau se décale.
+  var RC_WIDTH = "94px";
+  // Largeur MINIMALE seulement : la colonne doit rester lisible quand elle est
+  // vide (session en cours), mais doit pouvoir s'élargir avec le tableau en
+  // mode large. Une largeur fixe la faisait entrer en conflit avec la mise en
+  // page et décalait l'en-tête.
+  function styleRcCell(el) {
+    el.style.minWidth = RC_WIDTH;
+    el.style.textAlign = "center";
   }
-  // Insère NOTRE colonne « R-centile » juste APRÈS la colonne « Cote ».
-  // (La colonne native columnheader_6 est de largeur nulle et ses cellules
-  //  contiennent le sigle de base, inutilisable. On crée donc la nôtre. Vérifié
-  //  en direct : l'insertion s'aligne avec les colonnes natives.)
-  function ensureRcentileColumn() {
-    // Colonne insérée DÉSACTIVÉE : l'en-tête et le corps d'Infragistics sont des
-    // tables séparées et se désalignent. Le rang est affiché en badge dans la
-    // cellule « Cote » (voir applySummaryToRow). On nettoie toute ancienne colonne.
-    document.querySelectorAll(".etsx-rc-h, .etsx-rc-cell").forEach(function (e) { e.remove(); });
+  // Beaucoup de grilles fixent leurs largeurs avec un <colgroup>. Ajouter une
+  // cellule sans ajouter le <col> correspondant fait recalculer TOUTES les
+  // largeurs de cette table, et comme l'en-tête et le corps sont deux tables
+  // séparées, elles ne recalculent pas pareil : d'où les colonnes décalées.
+  function insertRcCol(row, idx) {
+    var table = row.closest("table"); if (!table) return;
+    var cg = table.querySelector("colgroup"); if (!cg) return;
+    if (cg.querySelector("col.etsx-rc-col")) return;
+    var col = document.createElement("col");
+    col.className = "etsx-rc-col";
+    col.style.width = RC_WIDTH;
+    var ref = cg.children[idx];
+    if (ref && ref.nextSibling) cg.insertBefore(col, ref.nextSibling);
+    else cg.appendChild(col);
+  }
+  // Filet de sécurité : on aligne l'en-tête sur le corps, qui fait foi. Sans
+  // <colgroup>, chaque table dimensionne ses colonnes d'après SON contenu, et
+  // « Programme » (en-tête) n'a pas la même largeur naturelle que « 5766 »
+  // (corps). On ne touche à rien tant que les bords coïncident déjà.
+  //
+  // Les largeurs posées ici décrivent UNE disposition donnée. Après un
+  // changement (mode large, redimensionnement de la fenêtre), elles sont
+  // périmées et figent l'en-tête sur l'ancienne mise en page : on les efface
+  // donc avant de remesurer. Sans cet effacement, basculer le mode large
+  // décalait durablement les colonnes.
+  function clearSyncedWidths(headerRow) {
+    var t = headerRow.closest("table");
+    if (t) { t.style.removeProperty("width"); t.style.removeProperty("table-layout"); }
+    [].forEach.call(headerRow.children, function (c) {
+      if (!c.classList.contains("etsx-wsync")) return;
+      c.classList.remove("etsx-wsync");
+      c.style.removeProperty("width"); c.style.removeProperty("min-width"); c.style.removeProperty("max-width");
+    });
+  }
+  function alignHeaderToBody(headerRow, bodyRow) {
+    var hc = headerRow.children, bc = bodyRow.children;
+    if (hc.length !== bc.length) return;
+    var i, decale = false;
+    for (i = 0; i < hc.length; i++) {
+      if (Math.abs(hc[i].getBoundingClientRect().left - bc[i].getBoundingClientRect().left) > 1) { decale = true; break; }
+    }
+    if (!decale) return;
+    clearSyncedWidths(headerRow);
+    // La table d'en-tête doit faire la même largeur totale que celle du corps,
+    // sinon l'espace restant gonfle la dernière colonne (« Rang centile » qui
+    // s'étirait sur la session sans cote, dont les cellules sont vides).
+    var ht = headerRow.closest("table"), bt = bodyRow.closest("table");
+    if (ht && bt && ht !== bt) {
+      var tw = bt.getBoundingClientRect().width;
+      if (tw > 0) { ht.style.boxSizing = "border-box"; ht.style.width = tw + "px"; ht.style.tableLayout = "fixed"; }
+    }
+    for (i = 0; i < hc.length; i++) {
+      var w = bc[i].getBoundingClientRect().width;
+      if (w <= 0) continue;
+      // getBoundingClientRect mesure bordures comprises, alors que « width »
+      // ne vise que le contenu : sans box-sizing, l'en-tête restait plus large
+      // que le corps de la valeur du padding et des bordures.
+      hc[i].classList.add("etsx-wsync");
+      hc[i].style.boxSizing = "border-box";
+      hc[i].style.width = w + "px"; hc[i].style.minWidth = w + "px"; hc[i].style.maxWidth = w + "px";
+    }
+  }
+  // Lignes d'en-tête contenant une colonne « Cote », avec l'indice de cette
+  // colonne. Repérage par TEXTE et par INDICE, jamais par identifiant : sur une
+  // session sans cote encore publiée, les cellules Cote sont vides et n'ont pas
+  // toujours d'aria-describedby, ce qui faisait disparaître toute la colonne.
+  function coteHeaderRows() {
+    var out = [];
+    document.querySelectorAll("tr").forEach(function (row) {
+      if (row.closest("#etsx-modal, .etsx-hist, #etsx-settings")) return; // nos propres tableaux
+      var cells = row.children, hasTh = false, idx = -1;
+      for (var i = 0; i < cells.length; i++) {
+        if (cells[i].tagName === "TH") hasTh = true;
+        if (/^cote$/i.test((cells[i].textContent || "").replace(/\s+/g, " ").trim())) idx = i;
+      }
+      if (idx === -1 || (!hasTh && !row.closest("thead"))) return;
+      out.push({ row: row, idx: idx });
+    });
+    return out;
+  }
+  // L'en-tête d'une ligne, c'est le DERNIER en-tête « Cote » qui la précède dans
+  // le document. Même principe que nearestSessionLabel() : la page empile une
+  // grille par session, et chaque grille suit son propre en-tête.
+  function headerRowFor(bodyRow) {
+    var hs = coteHeaderRows(), best = null;
+    for (var i = 0; i < hs.length; i++) {
+      // DOCUMENT_POSITION_FOLLOWING (4) : la ligne suit l'en-tête
+      if (hs[i].row.compareDocumentPosition(bodyRow) & 4) best = hs[i];
+    }
+    return best;
+  }
+  // Insère la cellule de la ligne ET celle de l'en-tête de la MÊME grille.
+  // Garde-fou : on ne touche à rien tant que la ligne d'en-tête et la ligne de
+  // données n'ont pas le même nombre de colonnes. Impossible, donc, de se
+  // retrouver avec une colonne de plus d'un côté que de l'autre.
+  function rcentileCell(info) {
+    var bodyRow = info.row;
+    if (!bodyRow || !bodyRow.children.length) return null;
+    var h = headerRowFor(bodyRow);
+    var existing = bodyRow.querySelector(".etsx-rc-cell");
+    if (!h) { if (existing) existing.remove(); return null; }
+    // Grille où la colonne s'est révélée impossible à aligner : on n'y retouche
+    // pas tant que la disposition n'a pas changé (voir verifierAlignement).
+    if (h.row.getAttribute("data-etsx-rc-off") === "1") { if (existing) existing.remove(); return null; }
+    var headerRow = h.row;
+    var hRc = headerRow.querySelector(".etsx-rc-h");
+    var headerCols = headerRow.children.length - (hRc ? 1 : 0);
+    var bodyCols = bodyRow.children.length - (existing ? 1 : 0);
+    if (headerCols !== bodyCols) { if (existing) existing.remove(); return null; }
+    if (!hRc) {
+      var refHead = headerRow.children[h.idx];
+      if (!refHead) return null;
+      var th = document.createElement(refHead.tagName.toLowerCase());
+      th.className = ((refHead.className || "") + " etsx-rc-h").trim();
+      th.textContent = "Rang centile";
+      styleRcCell(th);
+      headerRow.insertBefore(th, refHead.nextSibling);
+      insertRcCol(headerRow, h.idx);
+    }
+    if (!existing) {
+      // La cellule Cote de CETTE ligne est prise par indice : elle peut être
+      // vide (session en cours) et donc introuvable par attribut.
+      var refCell = bodyRow.children[h.idx];
+      if (!refCell) return null;
+      var td = document.createElement(refCell.tagName.toLowerCase());
+      td.className = ((refCell.className || "") + " etsx-rc-cell").trim();
+      styleRcCell(td);
+      bodyRow.insertBefore(td, refCell.nextSibling);
+      insertRcCol(bodyRow, h.idx);
+      existing = td;
+    }
+    alignHeaderToBody(headerRow, bodyRow);
+    return existing;
+  }
+  // Recalage des colonnes après un changement de disposition (mode large,
+  // redimensionnement de la fenêtre) : la mise en page doit d'abord se stabiliser,
+  // d'où le passage par requestAnimationFrame puis un second essai différé.
+  function realignerColonnes() {
+    if (!isListPage()) return;
+    var relance = function () {
+      try {
+        // La disposition a changé : on redonne sa chance à une grille écartée.
+        document.querySelectorAll('[data-etsx-rc-off="1"]').forEach(function (r) { r.removeAttribute("data-etsx-rc-off"); });
+        ensureRcentileColumn(collectCourseRows());
+      } catch (e) {}
+    };
+    if (window.requestAnimationFrame) requestAnimationFrame(relance); else relance();
+    setTimeout(relance, 250);
+  }
+  // Retire complètement notre colonne d'une grille (en-tête, cellules, <col>).
+  function retirerColonneRc(headerRow, lignes) {
+    clearSyncedWidths(headerRow);
+    var th = headerRow.querySelector(".etsx-rc-h"); if (th) th.remove();
+    var ht = headerRow.closest("table");
+    if (ht) { var c1 = ht.querySelector("col.etsx-rc-col"); if (c1) c1.remove(); }
+    lignes.forEach(function (r) {
+      var td = r.querySelector(".etsx-rc-cell"); if (td) td.remove();
+      var bt = r.closest("table");
+      if (bt) { var c2 = bt.querySelector("col.etsx-rc-col"); if (c2) c2.remove(); }
+    });
+    headerRow.setAttribute("data-etsx-rc-off", "1");
+    LOG("colonne Rang centile retirée d'une grille : alignement impossible ici");
+  }
+  // Une cellule est ajoutée à CHAQUE ligne de cours, même sans sommaire connu,
+  // sinon les lignes d'une même grille n'ont pas toutes le même nombre de
+  // colonnes. rcentileCell() s'occupe seul de l'en-tête de sa grille.
+  //
+  // Dernier garde-fou : si une grille reste décalée après l'alignement, on y
+  // retire notre colonne. Mieux vaut une grille sans « Rang centile » qu'une
+  // grille dont les valeurs ne tombent pas sous leur titre.
+  function ensureRcentileColumn(rows) {
+    var groupes = [];
+    (rows || []).forEach(function (info) {
+      if (!rcentileCell(info)) return;
+      var h = headerRowFor(info.row); if (!h) return;
+      var g = null;
+      for (var i = 0; i < groupes.length; i++) { if (groupes[i].headerRow === h.row) { g = groupes[i]; break; } }
+      if (!g) { g = { headerRow: h.row, lignes: [] }; groupes.push(g); }
+      g.lignes.push(info.row);
+    });
+    groupes.forEach(function (g) {
+      var hr = g.headerRow, br = g.lignes[0];
+      if (!br || !hr.getBoundingClientRect().width) return;   // grille repliée : rien à vérifier
+      var casse = false;
+      for (var i = 0; i < hr.children.length; i++) {
+        var b = br.children[i];
+        if (!b) { casse = true; break; }
+        if (Math.abs(hr.children[i].getBoundingClientRect().left - b.getBoundingClientRect().left) > 2) { casse = true; break; }
+      }
+      if (casse) retirerColonneRc(hr, g.lignes);
+    });
+  }
+  function fillRcentile(info, sum) {
+    if (!sum || !sum.rang) return;
+    var cell = rcentileCell(info);
+    if (cell) cell.textContent = sum.rang;
   }
 
   function applySummaryToRow(info, sum, quiet, forcer) {
@@ -555,22 +846,27 @@
     // Rafraîchissement : on efface d'abord ce que NOUS avions écrit dans la cellule
     // Cote (le pourcentage et le badge R), sinon la nouvelle valeur ne s'affiche pas.
     if (forcer && info.coteCell && info.coteCell.getAttribute("data-etsx-ours") === "1") info.coteCell.textContent = "";
+    if (forcer && info.coteCell) { var oldPct = info.coteCell.querySelector(".etsx-rc"); if (oldPct) oldPct.remove(); }
     if (!quiet) LOG("  •", info.sigle, "| note%:", isNaN(sum.notePct) ? "N/D" : sum.notePct, "moy%:", isNaN(sum.moyPct) ? "N/D" : sum.moyPct,
-        "| rang:", sum.rang || "N/D", "| cote:", sum.cote || "N/D", "| cellCote:", !!info.coteCell, "cellRang:", !!info.rangCell);
-    // Cote (%) si la cellule est vide. On marque la cellule pour pouvoir la
-    // réécrire lors d'un rafraîchissement (voir plus haut).
-    if (info.coteCell && !txt(info.coteCell) && !isNaN(sum.notePct)) {
+        "| rang:", sum.rang || "N/D", "| cote:", sum.cote || "N/D", "| cellCote:", !!info.coteCell);
+    // Session en cours : pas encore de cote officielle, la colonne Cote affiche
+    // la note à ce jour en pourcentage. Session terminée : la lettre reste, et
+    // le pourcentage passe dans la petite bulle à côté (jamais les deux fois le
+    // même chiffre).
+    var coteTxt = info.coteCell ? txt(info.coteCell).replace(/\s+/g, "") : "";
+    // On retire d'abord la bulle déjà posée (« A+83,5% » -> « A+ ») : sans les
+    // décimales dans le motif, « 83,5% » n'était pas entièrement retiré.
+    var aUneLettre = /^[A-E][+\-]?$/i.test(coteTxt.replace(/[\d.,]+%$/, ""));
+    if (info.coteCell && !isNaN(sum.notePct) && (!coteTxt || info.coteCell.getAttribute("data-etsx-ours") === "1")) {
       info.coteCell.textContent = sum.notePct + "%";
       info.coteCell.setAttribute("data-etsx-ours", "1");
+    } else if (settings.showNotePct && aUneLettre && info.coteCell && !isNaN(sum.notePct)) {
+      var pctChip = info.coteCell.querySelector(".etsx-rc");
+      if (!pctChip) { pctChip = document.createElement("span"); pctChip.className = "etsx-rc"; info.coteCell.appendChild(pctChip); }
+      pctChip.textContent = sum.notePct + "%";
+      pctChip.title = "Note à ce jour : " + sum.notePct + "%";
     }
-    // R.centile : colonne dédiée si elle existe
-    if (info.rangCell && !txt(info.rangCell) && sum.rang) info.rangCell.textContent = sum.rang;
-    // Rang centile : badge « R xx » dans la cellule Cote (sans casser l'alignement)
-    if (sum.rang && info.coteCell) {
-      var rc = info.coteCell.querySelector(".etsx-rc");
-      if (!rc) { rc = document.createElement("span"); rc.className = "etsx-rc"; info.coteCell.appendChild(rc); }
-      rc.textContent = "R" + sum.rang; rc.title = "Rang centile : " + sum.rang + "e";
-    }
+    fillRcentile(info, sum);
     info.row.setAttribute("data-etsx-done", "1");
   }
 
@@ -583,8 +879,11 @@
     ensureRcentileColumn(rows);
     var any = false;
     rows.forEach(function (info) {
-      if (info.row.getAttribute("data-etsx-done") === "1") return;
       var sum = _lastCache && _lastCache[info.key];
+      // Le rang centile est (re)posé à chaque cycle : la colonne peut venir
+      // d'être réactivée dans les Paramètres alors que la ligne est déjà traitée.
+      if (sum) fillRcentile(info, sum);
+      if (info.row.getAttribute("data-etsx-done") === "1") return;
       if (sum) { applySummaryToRow(info, sum, true); any = true; }
     });
     if (any) { try { buildCharts(rows, _lastCache); } catch (e) {} }
@@ -960,7 +1259,21 @@
         menuGauche: !!document.getElementById("ctl00_LoginViewLeftColumn_MenuVertical"),
         cours: _lastRows.map(function (r) {
           var s = _lastCache[r.key] || {};
-          return { sigle: r.sigle, notePct: s.notePct, moyPct: s.moyPct, rang: s.rang, cote: s.cote, cellCote: !!r.coteCell, cellRang: !!r.rangCell, href: r.href };
+          return { sigle: r.sigle, notePct: s.notePct, moyPct: s.moyPct, rang: s.rang, cote: s.cote, cellCote: !!r.coteCell, href: r.href };
+        }),
+        // Pourquoi la colonne « Rang centile » apparaît (ou pas) sur une grille.
+        colonneRangCentile: collectCourseRows().map(function (r) {
+          var h = headerRowFor(r.row);
+          var rc = r.row.querySelector(".etsx-rc-cell");
+          return {
+            sigle: r.sigle,
+            session: r.session,
+            enTeteTrouve: !!h,
+            indiceCote: h ? h.idx : null,
+            colonnesEnTete: h ? h.row.children.length - (h.row.querySelector(".etsx-rc-h") ? 1 : 0) : null,
+            colonnesLigne: r.row.children.length - (rc ? 1 : 0),
+            celluleInseree: !!rc
+          };
         }),
         programmes: programmesData
       };
@@ -1460,7 +1773,9 @@
           '<button type="button" class="etsx-hist-sortbtn" data-sort="titre">Titre</button>' +
         '</div>' +
       '</div>' +
-      '<div class="etsx-hist-tablewrap"><table class="etsx-hist-table"><thead><tr><th>Sigle</th><th>Cours</th><th>Session</th><th>Cote</th></tr></thead><tbody id="etsx-hist-body"></tbody></table></div>';
+      '<div class="etsx-hist-tablewrap"><table class="etsx-hist-table"><thead><tr>' +
+        '<th>Sigle</th><th>Cours</th><th>Session</th><th>Cote</th>' +
+      '</tr></thead><tbody id="etsx-hist-body"></tbody></table></div>';
 
     var sort = "cote", activeProgs = {}, withProg = items;
 
@@ -1754,13 +2069,83 @@
     if (est) wrap.insertBefore(distCard, est); else wrap.appendChild(distCard);
     LOG("distribution : ajoutée (moy " + moyPct + "%, vous " + myPct + "%)");
   }
+  /* ---- CE QU'IL TE RESTE (page d'un cours) ------------------------------
+   * Lit la grille de notes déjà affichée : Note (col 3), Corrigé sur (col 4)
+   * et Pondération (col 5). Une évaluation sans note compte comme « à venir ».
+   * Rien n'est deviné : si la pondération n'est pas lisible, la carte ne
+   * s'affiche pas. Elle disparaît aussi quand tout est corrigé, puisqu'il ne
+   * reste alors plus rien à aller chercher. */
+  // Lit un nombre dans une cellule SANS ce que nous y avons nous-mêmes ajouté
+  // (la puce d'écart, le pourcentage) : sinon « 97,5 » + « +43.6% » se lisait
+  // comme 97.543.
+  function cellNum(el) {
+    if (!el) return NaN;
+    var clone = el.cloneNode(true);
+    clone.querySelectorAll(".etsx-delta, .etsx-rc, .etsx-pct, .etsx-pct-big, .etsx-est-inline").forEach(function (n) { n.remove(); });
+    return num(clone.textContent);
+  }
+  function resteStats() {
+    var notes = document.querySelectorAll('[aria-describedby*="grilleNotes_columnheader_3"]');
+    var maxs  = document.querySelectorAll('[aria-describedby*="grilleNotes_columnheader_4"]');
+    var ponds = document.querySelectorAll('[aria-describedby*="grilleNotes_columnheader_5"]');
+    if (!notes.length || ponds.length !== notes.length) return null;
+    var acquis = 0, corrige = 0, restant = 0, vues = 0;
+    for (var i = 0; i < notes.length; i++) {
+      var pond = cellNum(ponds[i]);
+      if (isNaN(pond) || pond <= 0) continue;
+      vues++;
+      var n = cellNum(notes[i]), mx = cellNum(maxs[i]);
+      if (!isNaN(n) && !isNaN(mx) && mx > 0) { acquis += (n / mx) * pond; corrige += pond; }
+      else restant += pond;
+    }
+    if (!vues || (corrige + restant) <= 0) return null;
+    var total = corrige + restant;
+    return { acquis: acquis, corrige: corrige, restant: restant, total: total,
+             noteAJour: corrige > 0 ? acquis / corrige * 100 : NaN,
+             maxPossible: (acquis + restant) / total * 100 };
+  }
+  function renderResteCard(wrap) {
+    var st = resteStats();
+    var card = wrap.querySelector(".etsx-reste-card");
+    // Tout est corrigé (ou données illisibles) : la carte n'a rien à dire.
+    if (!st || st.restant <= 0) { if (card) card.remove(); return; }
+    if (!card) {
+      card = document.createElement("div");
+      card.className = "etsx-chart-card etsx-reste-card";
+      card.innerHTML =
+        '<div class="etsx-chart-title">Ce qu\'il te reste</div>' +
+        '<div class="etsx-reste-bar"><span class="etsx-reste-fill"></span></div>' +
+        '<div class="etsx-reste-legend"></div>' +
+        '<div class="etsx-reste-now"></div>' +
+        '<div class="etsx-reste-target">Viser <input type="number" min="0" max="100" step="1" class="etsx-reste-in" placeholder="80"> % au final</div>' +
+        '<div class="etsx-reste-out"></div>';
+      wrap.insertBefore(card, wrap.firstChild);   // tout en haut de la colonne
+      var inp = card.querySelector(".etsx-reste-in");
+      inp.value = _resteTarget || "";
+      inp.addEventListener("input", function () { _resteTarget = inp.value; renderResteCard(wrap); });
+    }
+    card.querySelector(".etsx-reste-fill").style.width = r1(st.corrige / st.total * 100) + "%";
+    card.querySelector(".etsx-reste-legend").innerHTML =
+      '<b>' + r1(st.corrige) + ' %</b> corrigé, <b>' + r1(st.restant) + ' %</b> à venir';
+    card.querySelector(".etsx-reste-now").innerHTML = isNaN(st.noteAJour) ? "Aucune évaluation corrigée pour l'instant." :
+      'Note à ce jour : <b>' + r1(st.noteAJour) + ' %</b> sur ce qui est corrigé';
+    var out = card.querySelector(".etsx-reste-out");
+    var cible = parseFloat(String(_resteTarget).replace(",", "."));
+    if (isNaN(cible)) { out.textContent = ""; out.className = "etsx-reste-out"; return; }
+    var requis = (cible / 100 * st.total - st.acquis) / st.restant * 100;
+    if (requis <= 0) { out.className = "etsx-reste-out is-ok"; out.innerHTML = 'Déjà atteint : même à <b>0 %</b> sur le reste, tu finis au-dessus de ' + r1(cible) + ' %.'; }
+    else if (requis > 100) { out.className = "etsx-reste-out is-ko"; out.innerHTML = 'Hors d\'atteinte : le maximum possible est <b>' + r1(st.maxPossible) + ' %</b>.'; }
+    else { out.className = "etsx-reste-out"; out.innerHTML = 'Il te faut <b>' + r1(requis) + ' %</b> sur les ' + r1(st.restant) + ' % restants.'; }
+  }
+  var _resteTarget = "";
+
   function buildCourseDetailExtras() {
     if (!document.querySelector('[aria-describedby*="grilleNotes_columnheader_3"]')) return;
     var host = chartHost(); if (!host) { LOG("page d'un cours : menu de gauche introuvable"); return; }
     var wrap = document.getElementById("etsx-detail-extras");
     if (!wrap) {
       wrap = document.createElement("div"); wrap.id = "etsx-detail-extras";
-      var barCard = document.createElement("div"); barCard.className = "etsx-chart-card";
+      var barCard = document.createElement("div"); barCard.className = "etsx-chart-card etsx-detail-evo-card";
       // Légende et libellés d'axes : dessinés par Chart.js à même le canevas
       // (plus besoin de les dupliquer en HTML à côté).
       barCard.innerHTML =
@@ -1771,6 +2156,7 @@
       host.appendChild(wrap);
       LOG("page d'un cours : graphiques + estimateur créés");
     }
+    renderResteCard(wrap);
     ensureDetailDist(wrap);
     renderDetailBarChart();
     makeRowsDraggable();
@@ -1797,6 +2183,10 @@
       var sched = false;
       new MutationObserver(function () { if (sched) return; sched = true; setTimeout(function () { sched = false; applyAll(); }, 250); }).observe(document.body, { childList: true, subtree: true });
     }
+    // Un redimensionnement ne modifie pas le DOM : l'observateur ne se déclenche
+    // pas, il faut donc recaler les colonnes nous-mêmes.
+    var rsz = null;
+    window.addEventListener("resize", function () { clearTimeout(rsz); rsz = setTimeout(realignerColonnes, 200); });
     if (window.ETSXSync) window.ETSXSync.subscribe(function (shared) {
       Object.assign(settings, shared);
       if (settings.skin === "harvard") settings.skin = "prestige"; // ancien nom, valeur partagée possiblement périmée

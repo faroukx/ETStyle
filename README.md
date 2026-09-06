@@ -15,8 +15,6 @@ L'en-tête, le menu de gauche et les blocs natifs sont réhabillés avec un syst
 La console de session en haut de page suit le calendrier universitaire officiel de l'ÉTS plutôt qu'une estimation : elle sait distinguer une semaine de cours, une semaine de relâche, une période d'examens et un congé, avec les bonnes dates de reprise.
 
 ![](docs/images/console-session.png)
-![](docs/images/console-session1.png)
-
 
 La barre de raccourcis ne garde que les sites officiels de l'ÉTS.
 
@@ -47,6 +45,17 @@ Quatre thèmes, chacun avec une version claire et une version sombre, synchronis
 
 L'accent de couleur, la police et plusieurs options d'affichage se règlent depuis le panneau des paramètres.
 
+### Fond d'écran personnalisé
+
+Les deux sites acceptent une image de fond, à choisir dans **Paramètres**, sous **Paramètres avancés**. Deux façons de faire :
+
+- **Coller une adresse d'image** dans le champ, puis **Appliquer**. L'image est chargée depuis son site d'origine, rien n'est copié localement.
+- **Choisir un fichier** sur l'ordinateur avec le bouton **Fichier**. L'image est réduite à 1920 pixels de large avant d'être gardée, ce qui permet d'utiliser une photo de plusieurs mégaoctets sans dépasser l'espace de stockage du navigateur.
+
+L'image est enregistrée uniquement dans ton navigateur et n'est envoyée nulle part. Le bouton **Retirer** remet le fond d'origine.
+
+![](docs/images/fond-ecran.png)
+
 ## Installation en local
 
 Pour installer le projet depuis le code source plutôt que depuis le Chrome Web Store :
@@ -63,6 +72,10 @@ git clone https://github.com/faroukx/ETStyle.git
 ## Confidentialité
 
 Les préférences (thème, accent, options d'affichage) sont conservées en local, dans `localStorage` et dans `chrome.storage.sync` pour la synchronisation entre les deux sites. Rien d'autre n'est collecté, et rien n'est envoyé à un serveur tiers. Détails dans [PRIVACY.md](PRIVACY.md).
+
+## Remerciements
+
+L'idée des graphiques « Évolution de votre moyenne » et « Distribution estimée des notes » vient de [SignETS Plugin](https://github.com/hadi4172/signets-plugin), une extension antérieure pour ce même site, créée par Hadi Yahia ([hadi4172](https://github.com/hadi4172)) et ses contributeurs. Le code d'ETStyle est écrit indépendamment, sans reprendre le code source de ce projet.
 
 ## Licence
 

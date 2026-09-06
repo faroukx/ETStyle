@@ -83,7 +83,9 @@ html[data-etsx-skin] .AspNet-Menu li { background: transparent !important; borde
 html[data-etsx-skin] .AspNet-Menu .AspNet-Menu-Link { color: var(--etsx-ink) !important; background: transparent !important; border-radius: var(--etsx-radius-sm) !important; transition: background .12s ease, color .12s ease; padding: 7px 10px !important; }
 html[data-etsx-skin] .AspNet-Menu .AspNet-Menu-Link:hover { background: var(--etsx-surface-2) !important; color: var(--etsx-accent) !important; }
 html[data-etsx-skin] .AspNet-Menu .AspNet-Menu-Selected, html[data-etsx-skin] .AspNet-Menu .CMSListMenuLinkHighlighted { background: var(--etsx-accent) !important; color: var(--etsx-on-accent) !important; }
-html[data-etsx-skin] .AspNet-Menu .active > .AspNet-Menu-Link { background: var(--etsx-accent-soft, var(--etsx-surface-2)) !important; color: var(--etsx-accent) !important; }
+/* Pas de second fond (accent-soft) sur .active en plus de la case déjà colorée
+   ci-dessus : les deux ensemble donnaient une case dans une case. */
+html[data-etsx-skin] .AspNet-Menu .active > .AspNet-Menu-Link:not(.AspNet-Menu-Selected):not(.CMSListMenuLinkHighlighted) { color: var(--etsx-accent) !important; }
 
 /* ----------------------------------------------------------------------------
  * 5. PANNEAUX / ACCORDÉON jQuery UI
@@ -101,9 +103,15 @@ html[data-etsx-skin] .ig_Office2010BlueControl, html[data-etsx-skin] .igg_Office
   background: var(--etsx-surface) !important; color: var(--etsx-ink) !important; border: 1px solid var(--etsx-line) !important; border-radius: var(--etsx-radius) !important; box-shadow: var(--etsx-shadow) !important; }
 html[data-etsx-skin] .ig_Office2010BlueHeader, html[data-etsx-skin] .igg_Office2010BlueHeader, html[data-etsx-skin] .igg_Office2010BlueHeaderCaption {
   background: var(--etsx-surface-2) !important; background-image: none !important; color: var(--etsx-ink) !important; border-color: var(--etsx-line) !important; font-family: var(--etsx-head) !important; font-weight: 700 !important; }
-html[data-etsx-skin] .ig_Office2010BlueItem, html[data-etsx-skin] .igg_Office2010BlueItem {
-  background: var(--etsx-surface) !important; color: var(--etsx-ink) !important; border-color: var(--etsx-line) !important; }
-html[data-etsx-skin] .ig_Office2010BlueAlt, html[data-etsx-skin] .igg_Office2010BlueAlt {
+/* Pas d'alternance blanc/bleu : toutes les rangées dans la même teinte pâle.
+   Les classes Infragistics ne suffisent pas toujours (certaines grilles peignent
+   les cellules autrement), donc on vise aussi les cellules par leur
+   aria-describedby, le repère déjà utilisé partout ailleurs dans ce fichier. */
+html[data-etsx-skin] .ig_Office2010BlueItem, html[data-etsx-skin] .igg_Office2010BlueItem,
+html[data-etsx-skin] .ig_Office2010BlueAlt, html[data-etsx-skin] .igg_Office2010BlueAlt,
+html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_"],
+html[data-etsx-skin] #etsMCTwoRight td.etsx-rc-cell,
+html[data-etsx-skin] td[aria-describedby*="grilleNotes_columnheader_"] {
   background: var(--etsx-surface-2) !important; color: var(--etsx-ink) !important; border-color: var(--etsx-line) !important; }
 /* survol de ligne */
 html[data-etsx-skin] tr:hover > .ig_Office2010BlueItem, html[data-etsx-skin] tr:hover > .ig_Office2010BlueAlt { filter: brightness(0.97); }
@@ -136,9 +144,12 @@ html[data-etsx-skin] #etsHeaderContainer { padding: 0 !important; }
 html[data-etsx-skin] #leftMenu { margin-top: 34px !important; }
 html[data-etsx-skin] #etsheader > div[style*="position:relative"], html[data-etsx-skin] #etsheader #ctl00_Image1 { flex: 0 0 auto; }
 
-#etsx-sig-hdr { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: 1 1 420px; flex-wrap: nowrap; }
+#etsx-sig-hdr { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: 1 1 420px; flex-wrap: nowrap; }
 #etsx-sig-hdr .etsx-sig-left, #etsx-sig-hdr .etsx-sig-right { display: inline-flex; align-items: center; gap: 10px; flex: 0 0 auto; }
-#etsx-sig-hdr .etsx-sig-center { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; min-width: 0; cursor: pointer; text-decoration: none !important; }
+/* Marque centrée sur la BARRE, pas sur l'espace restant : en flex, le groupe
+   de gauche (plus large depuis l'ajout de boutons) décalait le centre vers la
+   droite. En position absolue à 50 %, elle reste au milieu quoi qu'il arrive. */
+#etsx-sig-hdr .etsx-sig-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; cursor: pointer; text-decoration: none !important; white-space: nowrap; }
 #etsx-sig-hdr a.etsx-sig-center:hover .etsx-sig-sub { color: var(--etsx-accent) !important; }
 #etsx-sig-hdr .etsx-sig-brand { font: 800 21px/1 var(--etsx-head); letter-spacing: .14em; color: var(--etsx-accent) !important; text-shadow: 0 1px 0 rgba(0,0,0,.04); }
 #etsx-sig-hdr .etsx-sig-sub { margin-top: 3px; font: 600 10px/1 var(--etsx-ui); letter-spacing: .22em; text-transform: uppercase; color: var(--etsx-ink-3) !important; }
@@ -184,7 +195,21 @@ html[data-etsx-skin] .etsPerLogoMenu { display: none !important; }
 #etsx-settings .etsx-fontbtn.is-active { background: var(--etsx-accent); color: var(--etsx-on-accent); border-color: var(--etsx-accent); }
 /* champ URL + boutons du Fond d'écran (panneau Paramètres) */
 #etsx-settings .etsx-input { width: 100%; box-sizing: border-box; height: 34px; padding: 0 10px; border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius-sm); background: var(--etsx-surface-2); color: var(--etsx-ink); font: 500 12.5px var(--etsx-ui); margin-bottom: 6px; }
-#etsx-settings .etsx-bg-file input { display: none; }
+#etsx-settings .etsx-bg-file input { display: none !important; }
+#etsx-settings .etsx-bg-note.is-ko { color: #dc2626 !important; }
+/* sections repliables (éléments du menu, réglages avancés) */
+#etsx-settings .etsx-set-fold {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; margin: 14px 0 7px; padding: 0; cursor: pointer;
+  background: transparent; border: 0; text-align: left;
+  font: 700 11px/1 var(--etsx-ui); letter-spacing: .04em; text-transform: uppercase; color: var(--etsx-ink-3);
+}
+#etsx-settings .etsx-set-fold:hover { color: var(--etsx-accent); }
+#etsx-settings .etsx-set-fold::after { content: "+"; font: 700 14px/1 var(--etsx-ui); }
+#etsx-settings .etsx-set-fold.is-open::after { content: "\2212"; }
+#etsx-settings .etsx-fold-body { display: none; }
+#etsx-settings .etsx-fold-body.is-open { display: block; }
+#etsx-settings .etsx-set-sub { margin: 12px 0 6px; font: 700 11px/1 var(--etsx-ui); color: var(--etsx-ink-2); }
 /* FOND D'ÉCRAN personnalisé : image appliquée sur le body, conteneurs transparents */
 html.etsx-has-bg body { background-image: var(--etsx-bg-img) !important; background-size: cover !important; background-position: center !important; background-attachment: fixed !important; }
 #etsx-settings .etsx-set-note { font: 500 11px/1.45 var(--etsx-ui); color: var(--etsx-ink-3); margin-top: 12px; }
@@ -261,6 +286,20 @@ html.etsx-sig-minnav #menuElem > li > ul a:hover { background: var(--etsx-surfac
 #etsx-charts { margin-top: 12px; display: flex; flex-direction: column; gap: 12px; }
 /* les graphiques restent affichés même si le tint des lignes est désactivé */
 .etsx-chart-card { background: var(--etsx-surface) !important; border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius); box-shadow: var(--etsx-shadow); padding: 10px 12px 12px; }
+
+/* ---- Carte « Ce qu'il te reste » (haut de la colonne, page d'un cours) --- */
+.etsx-reste-bar { height: 8px; background: var(--etsx-surface-3); overflow: hidden; margin: 2px 0 7px; }
+.etsx-reste-fill { display: block; height: 100%; background: var(--etsx-accent); transition: width .2s ease; }
+.etsx-reste-legend { font: 600 11.5px/1.4 var(--etsx-ui); color: var(--etsx-ink-2) !important; }
+.etsx-reste-legend b { color: var(--etsx-ink) !important; }
+.etsx-reste-now { margin-top: 3px; font: 600 11.5px/1.4 var(--etsx-ui); color: var(--etsx-ink-2) !important; }
+.etsx-reste-now b { color: var(--etsx-accent) !important; }
+.etsx-reste-target { display: flex; align-items: center; gap: 6px; margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--etsx-line); font: 600 11.5px/1 var(--etsx-ui); color: var(--etsx-ink-2) !important; }
+.etsx-reste-in { width: 62px; font: 700 12.5px/1 var(--etsx-ui); color: var(--etsx-ink); background: var(--etsx-surface-2); border: 1px solid var(--etsx-line); border-radius: 0; padding: 5px 6px; }
+.etsx-reste-out { margin-top: 7px; font: 600 11.5px/1.45 var(--etsx-ui); color: var(--etsx-ink) !important; }
+.etsx-reste-out b { color: var(--etsx-accent) !important; }
+.etsx-reste-out.is-ok b { color: #16a34a !important; }
+.etsx-reste-out.is-ko b { color: #dc2626 !important; }
 .etsx-chart-title { font: 700 12px/1.25 var(--etsx-head); color: var(--etsx-ink) !important; margin: 0 0 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
 .etsx-chart-title .etsx-hint { font: 600 9.5px/1 var(--etsx-ui); letter-spacing: .02em; color: var(--etsx-ink-3) !important; border: 1px solid var(--etsx-line); border-radius: 0; padding: 3px 6px; cursor: help; white-space: nowrap; }
 .etsx-chart-card svg { display: block; }
@@ -271,9 +310,6 @@ html.etsx-sig-minnav #menuElem > li > ul a:hover { background: var(--etsx-surfac
 .etsx-chart-legend span { display: inline-flex; align-items: center; gap: 5px; }
 .etsx-chart-legend i { width: 10px; height: 10px; border-radius: 0; display: inline-block; }
 #etsx-detail-extras { display: flex; flex-direction: column; gap: 12px; }
-
-/* rang centile glissé dans la cellule de cote (liste des cours) */
-.etsx-rc { font: 600 10px/1 var(--etsx-ui); color: var(--etsx-ink-3) !important; margin-left: 4px; white-space: nowrap; }
 
 /* ----------------------------------------------------------------------------
  * 15. TÉMOIN « Notes ✓ » dans la barre (confirme que l'intégration tourne)
@@ -378,17 +414,13 @@ html[data-etsx-skin] #etsheader > div[style*="position:relative"] { height: auto
 /* la partie ETS du titre SIGNETS en rouge (clair ET sombre) */
 #etsx-sig-hdr .etsx-sig-brand .etsx-red { color: #e2001a !important; }
 html[data-etsx-theme="dark"] #etsx-sig-hdr .etsx-sig-brand .etsx-red { color: #ff4d4d !important; }
-/* colonne R-centile insérée : centrée */
-html[data-etsx-skin] .etsx-rc-cell { text-align: center !important; }
 /* un peu plus d'air entre la colonne de gauche et le tableau de session */
 /* gap léger entre la colonne de gauche et le contenu, SANS faire déborder les
    floats (on rétrécit la colonne de gauche au lieu de pousser celle de droite) */
 html[data-etsx-skin] .etsMCLeft, html[data-etsx-skin] #ctl00_etsMCLeft { width: 225px !important; padding-right: 14px !important; box-sizing: border-box !important; }
 /* =============================================================================
- * v26, Badge rang centile, résumé du cours, simulateur de moyenne (refonte)
+ * Résumé du cours, simulateur de moyenne
  * ========================================================================== */
-/* rang centile : petit badge dans la cellule Cote */
-html[data-etsx-skin] .etsx-rc { display: inline-block; margin-left: 6px; padding: 0 6px; border-radius: 0; font: 700 10px/1.5 var(--etsx-ui); background: var(--etsx-accent-soft, var(--etsx-surface-3)); color: var(--etsx-accent) !important; vertical-align: middle; }
 /* résumé du cours : % et cote estimée */
 .etsx-pct-big { font-weight: 800; margin-left: 6px; }
 .etsx-est-inline { font-weight: 800; }
@@ -410,31 +442,43 @@ html[data-etsx-skin] .etsx-rc { display: inline-block; margin-left: 6px; padding
 .etsx-gpa-group .etsx-gpa-reset { margin-left: 4px; padding: 3px 6px; }
 .etsx-gpa-group .etsx-gpa-table { margin: 0; }
 /* =============================================================================
- * v27, Tailles de police, gras cote/cours-groupe, détail cours, R-centile, cote visée
+ * Tailles de police, gras cote/cours-groupe, détail cours, colonne Rang centile
  * ========================================================================== */
 /* S1, taille du texte du tableau de programme (réglable : --etsx-prog-font) */
 html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_1"],
 html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_2"],
 html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_3"],
 html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_4"],
-html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_5"] {
+html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_5"],
+html[data-etsx-skin] #etsMCTwoRight td.etsx-rc-cell {
   font-size: calc(12.5px * var(--etsx-prog-font, 1)) !important;
 }
 /* S3, cote (col 5) et cours-groupe (col 2) en GROS et gras (non réglables) */
 html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_2"] { font-weight: 600 !important; }
-html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_5"] { font-weight: 700 !important; font-size: calc(13px * var(--etsx-prog-font, 1)) !important; }
-html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_5"] .etsx-rc { font-weight: 700 !important; }
+/* nowrap : la cote et sa bulle de pourcentage restent sur une seule ligne
+   (sinon « A+ » et « 83,5 % » se retrouvent l'un au-dessus de l'autre). */
+html[data-etsx-skin] #etsMCTwoRight td[aria-describedby*="columnheader_5"] { font-weight: 700 !important; font-size: calc(13px * var(--etsx-prog-font, 1)) !important; white-space: nowrap !important; }
 
-/* S6, masquer le badge R-centile si désactivé */
-html.etsx-sig-norc .etsx-rc { display: none !important; }
+/* Colonne « Rang centile » insérée après Cote (en-tête + corps) */
+html[data-etsx-skin] .etsx-rc-cell { text-align: center !important; font-weight: 600 !important; }
+html[data-etsx-skin] .etsx-rc-h { text-align: center !important; }
+/* Note en % à côté de la cote officielle (petite bulle) */
+html[data-etsx-skin] .etsx-rc { display: inline-block; margin-left: 6px; padding: 0 6px; font: 700 10px/1.6 var(--etsx-ui); background: var(--etsx-accent-soft, var(--etsx-surface-3)); color: var(--etsx-accent) !important; vertical-align: middle; white-space: nowrap; }
 
-/* S2, détail d'un cours (grilleNotes) : gras + colonne Note lisible */
+/* S2, détail d'un cours (grilleNotes) : gras + colonne Note lisible
+   Taille de texte réglable comme le tableau de programme (--etsx-prog-font),
+   sur TOUTES les colonnes, pas seulement Note/Pondération. */
+html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader_"] { font-size: calc(12.5px * var(--etsx-prog-font, 1)) !important; }
 html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader_0"] { font-weight: 700 !important; }
 html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader_3"],
 html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader_6"],
 html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader_9"] { font-weight: 600 !important; }
 /* cellule Note : on laisse la note + l'écart s'empiler verticalement (pas de chevauchement) */
 html[data-etsx-skin] [aria-describedby*="grilleNotes_columnheader_3"] { white-space: normal !important; overflow: visible !important; vertical-align: middle !important; text-align: center; }
+
+/* MODE MINIMAL : les colonnes secondaires de la grille de notes sont masquées
+   en JS (voir applyMinimalTable), pour repérer le numéro de colonne exactement
+   et ne pas confondre la colonne 1 avec la colonne 10. */
 
 /* S7, mode « Cote visée » */
 .etsx-gpa-target { margin: 4px 0 10px; padding: 8px 10px; background: var(--etsx-surface-2); border: 1px solid var(--etsx-line); border-radius: var(--etsx-radius-sm); }
