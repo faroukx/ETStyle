@@ -40,8 +40,11 @@ L'historique des cours réunit tous les cours suivis dans un seul tableau, triab
 
 Quatre thèmes, chacun avec une version claire et une version sombre, synchronisés entre le portail et SignETS.
 
-![](docs/images/themesdark.png)
-![](docs/images/themeslight.png)
+| Mode Clair                                                                               | Mode Sombre                                                                               |
+| --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+![](docs/images/themeslight.png) | ![](docs/images/themesdark.png) |
+
+
 
 L'accent de couleur, la police et plusieurs options d'affichage se règlent depuis le panneau des paramètres.
 
