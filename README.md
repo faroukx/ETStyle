@@ -5,7 +5,7 @@
 
 Tout tourne dans le navigateur : aucune donnée n'est envoyée à un serveur autre que ceux de l'ÉTS déjà utilisés par les pages elles-mêmes.
 
-[**Installer depuis le Chrome Web Store**](https://chromewebstore.google.com/detail/cmdaaejfdjfhocelidjekhamnloiaekl)
+# [**⬇️ Installer depuis le Chrome Web Store**](https://chromewebstore.google.com/detail/cmdaaejfdjfhocelidjekhamnloiaekl)
 
 
 ## Table des matières
