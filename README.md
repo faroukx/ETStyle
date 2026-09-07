@@ -5,19 +5,24 @@
 
 Tout tourne dans le navigateur : aucune donnée n'est envoyée à un serveur autre que ceux de l'ÉTS déjà utilisés par les pages elles-mêmes.
 
+[**Installer depuis le Chrome Web Store**](https://chromewebstore.google.com/detail/cmdaaejfdjfhocelidjekhamnloiaekl)
+
 
 ## Table des matières
 
 - [Le portail](#le-portail)
 - [SignETS](#signets)
 - [Thèmes](#thèmes)
-- [Fond d'écran personnalisé](#fond-décran-personnalisé)
-- [Installation en local](#installation-en-local)
+  - [Fond d'écran personnalisé](#fond-décran-personnalisé)
+- [Installation](#installation)
+  - [Depuis le Chrome Web Store](#depuis-le-chrome-web-store)
+  - [Depuis le code source](#depuis-le-code-source)
 - [Confidentialité](#confidentialité)
 - [Remerciements](#remerciements)
 - [Licence](#licence)
 - [À propos](#à-propos)
 - [Avertissement](#avertissement)
+
 
 ## Le portail
 
@@ -29,7 +34,6 @@ La console de session en haut de page suit le calendrier universitaire officiel 
 
 ![](docs/images/console-session.png)
 ![](docs/images/console-session1.png)
-
 
 La barre de raccourcis ne garde que les sites officiels de l'ÉTS.
 
@@ -55,15 +59,13 @@ L'historique des cours réunit tous les cours suivis dans un seul tableau, triab
 
 Quatre thèmes, chacun avec une version claire et une version sombre, synchronisés entre le portail et SignETS.
 
-| Mode Clair                                                                               | Mode Sombre                                                                               |
-| --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-![](docs/images/themeslight.png) | ![](docs/images/themesdark.png) |
-
-
+| Mode clair | Mode sombre |
+| --- | --- |
+| ![](docs/images/themeslight.png) | ![](docs/images/themesdark.png) |
 
 L'accent de couleur, la police et plusieurs options d'affichage se règlent depuis le panneau des paramètres.
 
-## Fond d'écran personnalisé
+### Fond d'écran personnalisé
 
 Les deux sites acceptent une image de fond, à choisir dans **Paramètres**, sous **Paramètres avancés**. Deux façons de faire :
 
@@ -74,9 +76,17 @@ L'image est enregistrée uniquement dans ton navigateur et n'est envoyée nulle 
 
 ![](docs/images/fond-ecran.gif)
 
-## Installation en local
+## Installation
 
-Pour installer le projet depuis le code source plutôt que depuis le Chrome Web Store :
+### Depuis le Chrome Web Store
+
+[**Installer ETStyle**](https://chromewebstore.google.com/detail/cmdaaejfdjfhocelidjekhamnloiaekl)
+
+L'extension s'installe en un clic et se met à jour toute seule. Elle fonctionne sur Chrome, Edge, Brave et les autres navigateurs basés sur Chromium.
+
+### Depuis le code source
+
+Utile pour essayer une version modifiée ou pour contribuer :
 
 ```bash
 git clone https://github.com/faroukx/ETStyle.git
